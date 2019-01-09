@@ -15,14 +15,42 @@ head(deff)
 
 # Data cleaning -----------------------------------------------------------
 
+
+# Effect traits -----------------------------------------------------------
 #El set de datos de effect traits viene con columnas que no son necesarias,
 #el genero y especie estas estan separadas y los nombres de las columnas 
 #tiene un nombre inadecuado
 
 deff_clean <- deff %>% 
-  rename(familia=Familia,genero=Género,especie=Especie,af=AF.mm2.,afe=AFE.mm2mg.1.,cfms=CFMS.Mgg.1.,
-         dm=DM.gcm3.1.,n=N.mgg.1.,p=P.mgg.1.) %>% 
-  select(-rasgo.de.) %>% 
+  rename(familia=Familia,genero=Género,especie=Especie,af=AF.mm2.,
+         afe=AFE.mm2mg.1.,cfms=CFMS.Mgg.1.,dm=DM.gcm3.1.,n=N.mgg.1.,
+         p=P.mgg.1.) %>% select(-rasgo.de.) %>% 
   unite(especie,genero,especie,sep="_")
 
-head(deff_clean)
+length(deff_clean$especie)
+
+# Response traits ---------------------------------------------------------
+#El set de datos tiene columnas que no son necesarias, los nombres de las 
+#columnas son inadecuadas y el genero y especie estan en columnas separadas
+dir("data/raw/response_traits")
+
+dresp <- read.csv("data/raw/response_traits/data_response_traits.csv")
+head(dresp)
+
+dresp_clean<-dresp %>% 
+  rename(estrato=Estrato,diseminacion=Diseminación,rep.veg=Rep.Vegetativa,
+         sist.sexual=Sist.Sexual,polinizacion=Polinización,
+         tasacrecimiento=Tasacrecimiento) %>% 
+  select(-autoridad) %>% 
+  unite(especie,genero,especie,sep = "_")
+
+head(dresp_clean)
+
+
+
+
+
+
+
+
+
