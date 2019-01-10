@@ -14,16 +14,25 @@ rm(deff,dresp)
 #y response traits, además de ver cuales especies les faltan response traits
 #en total debe de ser 257 especies
 
-data_full<-left_join(deff_clean,dresp_clean,key=especie)
-head(data_full)
+data_full<-left_join(deff_clean,dresp_clean,key=especie) 
+
+#Ordenar por nombre de la especie 
+data_full<- arrange(data_full,  especie)
 
 #Especies que no tienen response traits
 especies_faltantes<-data_full[!complete.cases(data_full),]
 length(especies_faltantes$especie)
 
+#Ordenar por nombre de la especie 
+especies_faltantes<-arrange(especies_faltantes,especie)
+
 #Especies que tienen response traits
 especies_completas<-data_full[complete.cases(data_full),]
 length(especies_completas$especie)
+
+#Ordenar por nombre de la especie 
+especies_completas<-arrange(especies_completas, especie)
+
 
 # Comprobacion ------------------------------------------------------------
 
