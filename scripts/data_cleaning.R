@@ -17,18 +17,14 @@ head(deff)
 #tiene un nombre inadecuado
 
 deff_clean <- deff %>% 
-  rename(familia=Familia)
-
-,genero=Género,especie=Especie,af=AF.mm2.,
+  rename(familia=Familia,especie=Especie,af=AF.mm2.,
          afe=AFE.mm2mg.1.,cfms=CFMS.Mgg.1.,dm=DM.gcm3.1.,n=N.mgg.1.,
-         p=P.mgg.1) 
-
-
-%>% 
+         p=P.mgg.1.) %>% 
   select(-rasgo.de.) %>% 
   unite(especie,genero,especie,sep="_")
 
 length(deff_clean$especie)
+head(deff_clean)
 
 # Response traits ---------------------------------------------------------
 #El set de datos tiene columnas que no son necesarias, los nombres de las 
@@ -39,13 +35,12 @@ dresp <- read.csv("data/raw/response_traits/data_response_traits.csv")
 head(dresp)
 
 dresp_clean<-dresp %>% 
-  rename(estrato=Estrato,diseminacion=Diseminación,rep.veg=Rep.Vegetativa,
-         sist.sexual=Sist.Sexual,polinizacion=Polinización,
+  rename(estrato=Estrato,diseminacion=Diseminacion,rep.veg=Rep.Vegetativa,
+         sist.sexual=Sist.Sexual,polinizacion=Polinizacion,
          tasacrecimiento=Tasacrecimiento) %>% 
   select(-autoridad) %>% 
   unite(especie,genero,especie,sep = "_")
 
-head(dresp_clean)
 
 
 
