@@ -1,11 +1,10 @@
 rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
-#Calcula los indices fdis,feve y fric para las 127 parcelas siguiendo el 
+#Calcular los indices fdis,feve y fric para las 127 parcelas siguiendo el 
 #capitulo 4 del libro Functional and Phylogenetic Ecology in R
 
 
-#Paquetes
 library(tidyverse)
 library(fBasics)
 library(vegan)
@@ -51,17 +50,38 @@ anti_join(names_abund,names_effe, by="especie")
 
 
 #Especies con abundanca mayor a 0 en la primera parcela
-spp1<-names(dabund[1,dabund[1,]>0])
-spp
+(spp1<-names(dabund[1,dabund[1,]>0]))
 
-spp2<-names(dabund[1,dabund[2,]>0])
-spp2
+(spp12<-names(dabund[12,dabund[12,]>0]))
+
+(spp3<-names(dabund[3,dabund[3,]>0]))
 
 #Seria interesante hacer un loop que me de la composicion de cada parcela
 # el problema es que cada parcela tienen un numero diferente de espieces
 
+#Rasgos funcionales de las especies presentes en la parcela 12
+deff_clean[spp12,]
+
+dabund_relativa<-decostand(dabund,method = "total",MARGIN = 1)
+
+#Abundancia relativa de la parcela 2
+dabund_relativa[12,dabund_relativa[12,]>0]
+rowSums(dabund_relativa[12,dabund_relativa[12,]>0])
 
 
+
+#Se elige la CWM del trait 2, parcela 1
+weighted.mean(deff_clean[colnames(dabund_relativa),2],dabund_relativa[1,])
+
+# CWM del las 127 parcelas weight por abund relativa ----------------------
+# Funcion CWM -------------------------------------------------------------
+
+cwm.func<- function(x){
+  weighted.mean(deff_clean[names(x[x>0]),1],x[x>0],na.rm = T)
+}
+
+apply(dabund_relativa, 1, cwm.func) 
+as.data.frame(apply(dabund, 1, cwm.func)) 
 
 
 
