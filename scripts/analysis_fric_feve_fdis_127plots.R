@@ -72,7 +72,7 @@ rowSums(dabund_relativa[12,dabund_relativa[12,]>0])
 
 #Se elige la CWM del trait 2, parcela 1
 weighted.mean(deff_clean[colnames(dabund_relativa),127],dabund_relativa[1,])#wRONG
-weighted.mean(deff_clean[colnames(dabund_relativa),1],dabund_relativa[127,])#wRONG
+weighted.mean(deff_clean[colnames(dabund_relativa),1],dabund_relativa[127,])
 
 
 # CWM del las 127 parcelas weight por abund relativa ----------------------
