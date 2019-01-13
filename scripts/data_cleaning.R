@@ -41,6 +41,14 @@ dresp_clean<-dresp %>%
   select(-autoridad) %>% 
   unite(especie,genero,especie,sep = "_")
 
+# Save clean data ---------------------------------------------------------
+write.csv(deff_clean,"data/clean/deff_clean.csv")
+write.csv(dresp_clean,"data/clean/dresp_clean.csv")
+
+
+
+
+
 
 
 
