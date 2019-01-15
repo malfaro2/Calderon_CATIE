@@ -47,8 +47,8 @@ dim(dabund)
 dim(deff_clean)
 anti_join(names_abund,names_effe, by="especie")
 
-#Eliminado las espciecies que no tienen rasgos funcionales, para que los
-#datos tengan las mismas especies
+#Eliminar las espcecies que no tienen rasgos funcionales, para que ambos
+#data sets tengan las mismas especies
 dabund_clean <- dabund %>% 
   select(-c(MAYTGU,QUETOC,RUPTCA))
 
@@ -65,15 +65,36 @@ anti_join(names_abund_clean,names_effe,by="especie")
 
 # Analisis ----------------------------------------------------------------
 
+
+
+# loop especies por parcela -----------------------------------------------
+
+# 1-Separar el ser de datos en una lista por parcela
+list<-split(dabund_clean, row.names(dabund_clean))
+
+# 2-Crear una lista para almacenar la composicion de espeices de cada 
+# parcela
+sp_comp<-list()
+
+#Loop 
+for (i in seq_along(names(list))) {
+  
+  #especies de cada parcela con una abundancia mayor a 0 
+  comp<-names(list[[i]][,list[[i]]>0])
+  
+  #Nombres de cada parcela
+  plot<- row.names(list[[i]][,list[[i]]>0])
+  
+  #datos con parcela y composicion de especies 
+  data<-data.frame(comp,plot)
+  
+  #Resultado
+  sp_comp[[i]] <- data
+  #print(sp_comp)
+}
+
+str(sp_comp)
 #Abundancia y abundancia relativa de las especies en las 127 parcelas
-
-
-#Especies con abundanca mayor a 0 en la primera parcela
-(spp1<-names(dabund[1,dabund[1,]>0]))
-
-(spp12<-names(dabund[12,dabund[12,]>0]))
-
-(spp3<-names(dabund[3,dabund[3,]>0]))
 
 
 #Rasgos funcionales de las especies presentes en la parcela 12
