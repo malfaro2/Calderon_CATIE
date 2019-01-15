@@ -1,3 +1,4 @@
+rm(list = ls())
 # Cargar data -------------------------------------------------------------
  source("scripts/data_cleaning_for_loops.R")
 
@@ -44,6 +45,8 @@ for (i in seq_along(names(list))) {
 
 #Prueba
 str(sp_comp)
+
+#Composicion de la parcela numeo 
 sp_comp[[12]]
 
 
