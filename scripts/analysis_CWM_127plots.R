@@ -76,7 +76,6 @@ anti_join(names_abund_clean,names_effe,by="especie")
 (spp3<-names(dabund[3,dabund[3,]>0]))
 
 
-
 #Rasgos funcionales de las especies presentes en la parcela 12
 deff_clean[spp12,]
 
