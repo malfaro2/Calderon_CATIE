@@ -1,9 +1,8 @@
 rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
-#Calcular CWM para los rasgos funcionales de las 127 parcelas siguiendo el 
-#capitulo 4 del libro Functional and Phylogenetic Ecology in R y el tuorial
-# Intro to functional programing
+#Limpiar y organizar los datos para usarlos en los loops que calculan 
+#cwm, fric, feve. fdis y otros de las 127 parcelas
 
 library(tidyverse)
 library(fBasics)
@@ -36,7 +35,6 @@ dim(deff_clean)
 #El numero de columnas en dabund tienen que ser igual al numero de filas en
 #deff_clean, sin embargo en este caso hay 3 especies de mas en dabund
 
-
 names_abund<-as.data.frame(colnames(dabund))
 colnames(names_abund)<-"especie"
 names_effe<-as.data.frame(rownames(deff_clean))
@@ -67,7 +65,7 @@ dabund_clean
 dabund_relativa<-decostand(dabund_clean,method = "total",MARGIN = 1)
 dabund_relativa
 
-#Remover datos que no se utilizan
+#Remover data sets que no se utilizan
 rm(dabund, deff,names_abund_clean,names_abund,names_effe)
 
 
