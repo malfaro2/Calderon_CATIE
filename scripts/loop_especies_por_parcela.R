@@ -29,10 +29,10 @@ sp_comp<-list()
 for (i in seq_along(names(list))) {
   
   #especies de cada parcela con una abundancia mayor a 0 
-  comp<-names(list[[i]][,lista[[i]]>0])
+  comp<-names(list[[i]][,list[[i]]>0])
   
   #Nombres de cada parcela
-  plot<- row.names(lista[[i]][,lista[[i]]>0])
+  plot<- row.names(list[[i]][,list[[i]]>0])
   
   #datos con parcela y composicion de especies 
   data<-data.frame(comp,plot)
