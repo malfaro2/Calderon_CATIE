@@ -1,8 +1,5 @@
-
 # Cargar data -------------------------------------------------------------
- source()
-
-
+ source("scripts/data_cleaning_for_loops.R")
 
 # Loop --------------------------------------------------------------------
 
@@ -22,7 +19,7 @@
 # loop especies por parcela -----------------------------------------------
 
 # 1-Separar el ser de datos en una lista por parcela
-list<-split("data", row.names("data"))
+list<-split(dabund_clean, row.names(dabund_clean))
 
 # 2-Crear una lista para almacenar la composicion de espeices de cada 
 # parcela
@@ -42,12 +39,15 @@ for (i in seq_along(names(list))) {
   
   #Resultado
   sp_comp[[i]] <- data
-  print(sp_comp)
+  #print(sp_comp)
 }
 
 #Prueba
 str(sp_comp)
 sp_comp[[12]]
+
+
+
 
 
 

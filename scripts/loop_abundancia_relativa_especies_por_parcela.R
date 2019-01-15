@@ -1,7 +1,7 @@
 rm(list = ls())
 
 # Cargar script con datos limpios -----------------------------------------
-source("scripts/data_cleaning_for_cwm_fric_analysis.R")
+source("scripts/data_cleaning_for_loops.R")
 
 
 # Loop abundancia relativa ------------------------------------------------
