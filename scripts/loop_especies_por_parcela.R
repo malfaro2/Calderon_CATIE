@@ -3,18 +3,14 @@
 #Este loop funciona para conocer la composion de especies en datos con las
 #parcelas en las filas y las especies en las columnas
 
-
 # Derivacion del loop -----------------------------------------------------
-
 #Todos los argumentos hacen lo mismo excepto el ultimo
-names(my.sample[1,my.sample[1,]>0])
-names(my.sample[1,my.sample[1,]>0])
-names(lista$com1[,lista$com1>0])
-names(lista[[1]][,lista$com1>0])
-names(lista[[1]][,lista[[1]]>0])
-row.names(lista[[1]][,lista[[1]]>0])
-
-
+#names(my.sample[1,my.sample[1,]>0])
+#names(my.sample[1,my.sample[1,]>0])
+#names(lista$com1[,lista$com1>0])
+#names(lista[[1]][,lista$com1>0])
+#names(lista[[1]][,lista[[1]]>0])
+#row.names(lista[[1]][,lista[[1]]>0])
 
 # loop especies por parcela -----------------------------------------------
 
