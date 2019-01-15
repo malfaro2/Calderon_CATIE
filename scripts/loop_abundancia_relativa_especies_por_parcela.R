@@ -1,7 +1,13 @@
+rm(list = ls())
+
+# Cargar script con datos limpios -----------------------------------------
+source("scripts/data_cleaning_for_cwm_fric_analysis.R")
+
+
 # Loop abundancia relativa ------------------------------------------------
 
 #Este loop funciona para conocer la abundancia relativa cada de especie en 
-#cada parcela. 
+#cada una de las 127 parcelas. 
 #Data:parcelas en las filas y las especies en las columnas
 
 #Paquetes
@@ -36,5 +42,15 @@ for (i in seq_along(names(lista))) {
   #print(sp_comp)
 }
 
+#Prueba
+#Todos los codigos deberian dar el mismo resultado
+sp_abundrelat[12]
+sum(lista[[12]][,lista[[12]]>0])
+
+
 lista[[12]][,lista[[12]]>0]
 sum(lista[[12]][,lista[[12]]>0])
+
+#Abundancia relativa de la parcela 12
+dabund_relativa[12,dabund_relativa[12,]>0]
+rowSums(dabund_relativa[12,dabund_relativa[12,]>0])

@@ -1,7 +1,14 @@
+
+# Cargar data -------------------------------------------------------------
+ source()
+
+
+
 # Loop --------------------------------------------------------------------
 
-#Este loop funciona para conocer la composion de especies en datos con las
-#parcelas en las filas y las especies en las columnas
+#Este loop funciona para conocer la composion de especies en cada una de las
+#127 parecelas 
+#data:parcelas en las filas y las especies en las columnas
 
 # Derivacion del loop -----------------------------------------------------
 #Todos los argumentos hacen lo mismo excepto el ultimo
@@ -38,6 +45,9 @@ for (i in seq_along(names(list))) {
   print(sp_comp)
 }
 
+#Prueba
+str(sp_comp)
+sp_comp[[12]]
 
 
 
