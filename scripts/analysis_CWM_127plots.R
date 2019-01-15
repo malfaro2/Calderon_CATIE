@@ -65,8 +65,6 @@ anti_join(names_abund_clean,names_effe,by="especie")
 
 # Analisis ----------------------------------------------------------------
 
-
-
 # loop especies por parcela -----------------------------------------------
 
 # 1-Separar el ser de datos en una lista por parcela
@@ -94,15 +92,21 @@ for (i in seq_along(names(list))) {
 }
 
 str(sp_comp)
-#Abundancia y abundancia relativa de las especies en las 127 parcelas
+sp_comp[[12]]
 
+# Abundancia y abundancia relativa de las especies en las 127 parc --------
+
+#Especies con abundanca mayor a 0 en la parcela 12
+spp12<-names(dabund_clean[12,dabund_clean[12,]>0])
+spp12
 
 #Rasgos funcionales de las especies presentes en la parcela 12
 deff_clean[spp12,]
 
+#Abundancia relativa de las 127 parcelas
 dabund_relativa<-decostand(dabund,method = "total",MARGIN = 1)
 
-#Abundancia relativa de la parcela 2
+#Abundancia relativa de la parcela 12
 dabund_relativa[12,dabund_relativa[12,]>0]
 
 rowSums(dabund_relativa[12,dabund_relativa[12,]>0])
