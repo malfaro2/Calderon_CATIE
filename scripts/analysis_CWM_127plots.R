@@ -27,7 +27,7 @@ deff<-read.csv("data/clean/deff_clean.csv",header=T,row.names = 3)
 #para que ambos data sets sean iguales
 
 deff_clean<-deff %>% 
-  select(-c(familia,especie))
+  select(-c(familia,especie)) 
 
 dim(deff_clean)
 
@@ -42,13 +42,78 @@ colnames(names_abund)<-"especie"
 names_effe<-as.data.frame(rownames(deff_clean))
 colnames(names_effe)<-"especie"
 
-
 #Anti join para saber cuales son las especies diferentes
+dim(dabund)
+dim(deff_clean)
 anti_join(names_abund,names_effe, by="especie")
 
+#Eliminado las espciecies que no tienen rasgos funcionales, para que los
+#datos tengan las mismas especies
+dabund_clean <- dabund %>% 
+  select(-c(MAYTGU,QUETOC,RUPTCA))
+
+#Revisar que los datasets tengan las mismas especies
+dim(deff_clean)
+dim(dabund_clean)
+
+#Anti_joint
+names_abund_clean<-as.data.frame(colnames(dabund_clean))
+colnames(names_abund_clean)<-"especie"
+anti_join(names_abund_clean,names_effe,by="especie")  
+#No hay matches
+
+
+# Analisis ----------------------------------------------------------------
+
+#Abundancia y abundancia relativa de las especies en las 127 parcelas
+
+
+#Especies con abundanca mayor a 0 en la primera parcela
+(spp1<-names(dabund[1,dabund[1,]>0]))
+
+(spp12<-names(dabund[12,dabund[12,]>0]))
+
+(spp3<-names(dabund[3,dabund[3,]>0]))
 
 
 
+#Rasgos funcionales de las especies presentes en la parcela 12
+deff_clean[spp12,]
+
+dabund_relativa<-decostand(dabund,method = "total",MARGIN = 1)
+
+#Abundancia relativa de la parcela 2
+dabund_relativa[12,dabund_relativa[12,]>0]
+
+rowSums(dabund_relativa[12,dabund_relativa[12,]>0])
+
+
+# CWM del las 127 parcelas weight por abund relativa ----------------------
+# Funcion CWM -------------------------------------------------------------
+
+#af
+cwm.func1<- function(x){
+  weighted.mean(deff_clean[names(x[x>0]),1],x[x>0],na.rm = T)
+}
+
+#afe
+cwm.func2<- function(x){
+  weighted.mean(deff_clean[names(x[x>0]),2],x[x>0],na.rm = T)
+}
+
+#cfms
+cwm.func3<- function(x){
+  weighted.mean(deff_clean[names(x[x>0]),3],x[x>0],na.rm = T)
+}
+
+
+apply(dabund_relativa, 1, cwm.func) 
+as.data.frame(apply(dabund, 1, cwm.func)) 
+
+
+#Se elige la CWM del trait 2, parcela 1
+weighted.mean(deff_clean[colnames(dabund_relativa),127],dabund_relativa[1,])#wRONG
+weighted.mean(deff_clean[colnames(dabund_relativa),1],dabund_relativa[127,])
 
 
 
