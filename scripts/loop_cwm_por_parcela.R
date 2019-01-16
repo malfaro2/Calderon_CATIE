@@ -70,6 +70,8 @@ head(data_cwm_coord)
 rm(dabund_clean,dabund_relativa,data,data_cwm,deff_clean,
   list,plot1,sp_cwm_eff,xy_plot)
 
+#write.csv(data_cwm_coord,
+          #"C:/coding_club/1-spatial data and maps/spatial_data_and_maps_127parcelas/data/data_cwm_coord.csv")
 
 
 
