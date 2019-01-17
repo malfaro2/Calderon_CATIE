@@ -1,4 +1,8 @@
 rm(list = ls())
+
+#Fitting species abundance models with maximum likelihood
+#Quick reference for sads package
+
 library(tidyverse)
 library(vegan)
 library(sads)
