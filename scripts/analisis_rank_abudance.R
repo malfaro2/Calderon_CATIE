@@ -6,6 +6,9 @@ rm(list = ls())
 library(tidyverse)
 library(vegan)
 library(sads)
+library(knitr)
+library(kableExtra)
+library(magrittr)
 
 
 #Cargar data
@@ -20,8 +23,18 @@ data_rankabund
 rankabund<-rad(data_rankabund)
 rankabund<-data.frame(rankabund)
 
+kable(rankabund)
+
+kable(rankabund, "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  cat(., file = "rankabund.html")
+
+dir()
+
+
 #Curva
-ggplot(rankabund,aes(x=rank,y=abund)) + geom_point()+theme_bw()
+ggplot(rankabund,aes(x=rank,y=abund)) + geom_point()+theme_bw()+
+  ylab("Abundancia")
 
 #Especies con menos de 10 individuos
 esp10<- (rankabund[rankabund$abund<=10,])
