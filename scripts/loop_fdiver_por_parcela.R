@@ -73,7 +73,7 @@ rm(dabund_clean,dabund_relativa,data,data_fdiv,deff_clean,
    list,plot1,plot_fd_eff,xy_plot)
 
 
-#write.csv(data_fdis_coord,"C:data/clean/data_fdis_coord.csv")
+write.csv(data_fdiv_coord,"C:data/clean/data_fdiversity_coord.csv")
 
 
 
