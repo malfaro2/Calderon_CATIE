@@ -2,7 +2,6 @@ rm(list = ls())
 
 #Cargar paquetes
 library(vegan)
-library(plyr) 
 library(dplyr)
 
 # Cargar data -------------------------------------------------------------
@@ -11,7 +10,7 @@ xy_plot <- read.csv("data/raw/data_posicion_parcelas.csv")
 
 #Ekiminar columnas
 xy_plot <- xy_plot %>% 
-  select(-c(CRTM_90_X,CRTM_90_Y))
+  dplyr::select(-c(CRTM_90_X,CRTM_90_Y))
 
 #Abundancia relativa
 dabund_relativa[1,]
@@ -56,7 +55,7 @@ for (i in seq_along(names(list))) {
 }
 
 #convertir lista a data.frame
-data_cwm<- ldply (sp_cwm_eff, data.frame)
+data_cwm<- plyr::ldply (sp_cwm_eff, data.frame)
 head(data_cwm)
 head(xy_plot)
 
@@ -70,8 +69,8 @@ head(data_cwm_coord)
 rm(dabund_clean,dabund_relativa,data,data_cwm,deff_clean,
   list,plot1,sp_cwm_eff,xy_plot)
 
-#write.csv(data_cwm_coord,
-          #"C:/coding_club/1-spatial data and maps/spatial_data_and_maps_127parcelas/data/data_cwm_coord.csv")
+write.csv(data_cwm_coord,
+"C:data/clean/data_cwm_coord.csv")
 
 
 
