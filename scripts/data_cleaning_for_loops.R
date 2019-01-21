@@ -14,14 +14,11 @@ library(vegan)
 #parcela.
 #   -----------------------------------------------------------------------
 
-
 dabund<-read.csv("data/clean/data_abund_plot.csv",header=T,row.names = 1)
 dim(dabund)
 
-
 # data effect traits ------------------------------------------------------
 #Las especies tienen que venir como row names
-
 deff<-read.csv("data/clean/deff_clean.csv",header=T,row.names = 3)
 
 #Data set sin palmas
@@ -43,7 +40,7 @@ deff_clean_sinpalmas <-  deff_sinpalmas %>%
   select(-c(familia,especie))
 
 head(deff_clean_sinpalmas)  
-
+dim(deff_clean_sinpalmas)
 
 # Prueba ------------------------------------------------------------------
 #El numero de columnas en dabund tienen que ser igual al numero de filas en
@@ -64,16 +61,17 @@ anti_join(names_abund,names_effe, by="especie")
 dabund_clean <- dabund %>% 
   select(-c(MAYTGU,QUETOC,RUPTCA))
 
-dabund_clean_sinpalmas <-
+#Eliminar palmas
+dabund_clean_sinpalmas <-dabund_clean %>% 
+  select(-c(IRIADE,SOCREX,EUTEPR,WELFRE))
 
 
 #Revisar que los datasets tengan las mismas especies
 dim(deff_clean)
 dim(dabund_clean)
 
-
-
-dim(deff_sinpalmas)
+#Data sets sin palmas
+dim(deff_clean_sinpalmas)
 dim(dabund_clean_sinpalmas)
 
 
@@ -88,8 +86,15 @@ dabund_clean
 dabund_relativa<-decostand(dabund_clean,method = "total",MARGIN = 1)
 dabund_relativa
 
+#Abundancia relativa del data set sin palmas
+dabund_clean_sinpalmas
+dabund_relativa_sinpalmas <- decostand(dabund_clean_sinpalmas,
+                                       method = "total",MARGIN = 1)
+head(dabund_relativa_sinpalmas)
+
+
 #Remover data sets que no se utilizan
-rm(dabund, deff,names_abund_clean,names_abund,names_effe)
+rm(dabund, deff,names_abund_clean,names_abund,names_effe,deff_sinpalmas)
 
 
 
