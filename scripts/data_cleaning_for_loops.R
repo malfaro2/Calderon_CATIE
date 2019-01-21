@@ -2,7 +2,8 @@ rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
 #Limpiar y organizar los datos para usarlos en los loops que calculan 
-#cwm, fric, feve. fdis y otros de las 127 parcelas
+#cwm, fric, feve. fdiv y otros de las 127 parcelas
+#   -----------------------------------------------------------------------
 
 library(tidyverse)
 library(fBasics)
@@ -10,7 +11,9 @@ library(vegan)
 
 # data de abundancia por parcela -----------------------------------
 #Las especies van en las columnas y los nombres de las filas es la
-#parcela
+#parcela.
+#   -----------------------------------------------------------------------
+
 
 dabund<-read.csv("data/clean/data_abund_plot.csv",header=T,row.names = 1)
 dim(dabund)
@@ -21,14 +24,25 @@ dim(dabund)
 
 deff<-read.csv("data/clean/deff_clean.csv",header=T,row.names = 3)
 
+#Data set sin palmas
+deff_sinpalmas<-read.csv("data/clean/deff_clean_sin_palmas.csv",header=T,row.names = 3)
+
 # Cleaning data -----------------------------------------------------------
 #Los datos tienen una columna de familia y especie. Es mejor eliminarlas
 #para que ambos data sets sean iguales
+#   -----------------------------------------------------------------------
 
 deff_clean<-deff %>% 
   select(-c(familia,especie)) 
 
 dim(deff_clean)
+head(deff_clean)
+
+#Limpiando el data set sin palmas
+deff_clean_sinpalmas <-  deff_sinpalmas %>% 
+  select(-c(familia,especie))
+
+head(deff_clean_sinpalmas)  
 
 
 # Prueba ------------------------------------------------------------------
@@ -50,9 +64,18 @@ anti_join(names_abund,names_effe, by="especie")
 dabund_clean <- dabund %>% 
   select(-c(MAYTGU,QUETOC,RUPTCA))
 
+dabund_clean_sinpalmas <-
+
+
 #Revisar que los datasets tengan las mismas especies
 dim(deff_clean)
 dim(dabund_clean)
+
+
+
+dim(deff_sinpalmas)
+dim(dabund_clean_sinpalmas)
+
 
 #Anti_joint
 names_abund_clean<-as.data.frame(colnames(dabund_clean))

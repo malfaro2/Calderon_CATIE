@@ -24,12 +24,16 @@ dabund_relativa[1,]
 #Preliminar 
 names(dabund_relativa[1,dabund_relativa[1,]>0])
 (plot1 <- deff_clean[names(dabund_relativa[1,dabund_relativa[1,]>0]),])
-a<-dbFD(plot1)$FDis
-a
 
-b <- dbFD(plot1)$fDiv
-b
+(a<-dbFD(plot1)$FDis)
+
+(b <- dbFD(plot1)$FDiv)
+
+(c <- dbFD(plot1)$FRic)
+
+
 #Poner en una lista 
+
 #Crear una lista por cada parcela
 list<-split(dabund_relativa, row.names(dabund_relativa))
 length(list)
@@ -61,22 +65,22 @@ for (i in seq_along(names(list))) {
 plot_fd_eff[[1]]
 
 #convertir lista a data.frame
-data_fdiv<- plyr::ldply (plot_fd_eff, data.frame)
-head(data_fdiv)
+data_fdiver<- plyr::ldply (plot_fd_eff, data.frame)
+head(data_fdiver)
 head(xy_plot)
 
 #agregar las coordenadas a los datos
-data_fdiv_coord<-left_join(data_fdiv,xy_plot)
-dim(data_fdiv_coord)
-head(data_fdiv_coord)
+data_fdiver_coord<-left_join(data_fdiver,xy_plot)
+dim(data_fdiver_coord)
+head(data_fdiver_coord)
 
 
 #Remover data sets que no son utiles
-rm(dabund_clean,dabund_relativa,data,data_fdiv,deff_clean,
+rm(dabund_clean,dabund_relativa,data,data_fdiver,deff_clean,
    list,plot1,plot_fd_eff,xy_plot)
 
-
-write.csv(data_fdiv_coord,"C:data/clean/data_fdiversity_coord.csv")
+#
+write.csv(data_fdiver_coord,"C:data/clean/data_fdiversity_coord.csv")
 
 
 
