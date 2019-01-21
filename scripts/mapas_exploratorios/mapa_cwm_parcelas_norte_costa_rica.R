@@ -71,18 +71,21 @@ proj4string(costa_rica)<-proj4string(world)
 )
 
 
+# Mapa base de costa rica -------------------------------------------------
+
+mapa_costarica <- ggplot()+
+  geom_polygon(data = costa_rica,
+               aes(x=long,y=lat,group=group),
+               fill="grey",colour="black") 
+
+
 # Mapa cmw area foliar ----------------------------------------------------
 cwm_af<-data_cwm %>% 
   filter(traits %in% "af")
 
 summary(cwm_af)
 
-(mapa_af<-ggplot()+
-    
-    #Mapa de Costa Rica
-    geom_polygon(data = costa_rica,
-                aes(x=long,y=lat,group=group),
-                fill="grey",colour="black")+
+(mapa_af<- mapa_costarica +
     
     #Se agregan los parcelas
     geom_point(data=cwm_af,
@@ -110,12 +113,7 @@ cwm_afe<-data_cwm %>%
 summary(cwm_afe)
 
 
-(mapa_afe<-ggplot()+
-    
-    #Mapa de Costa Rica
-    geom_polygon(data = costa_rica,
-                 aes(x=long,y=lat,group=group),
-                 fill="grey",colour="black")+
+(mapa_afe<-  mapa_costarica+
     
     #Se agregan los parcelas
     geom_point(data=cwm_afe,
@@ -141,12 +139,7 @@ cwm_cfms<-data_cwm %>%
 summary(cwm_cfms)
 
 
-(mapa_cfms<-ggplot()+
-    
-    #Mapa de Costa Rica
-    geom_polygon(data = costa_rica,
-                 aes(x=long,y=lat,group=group),
-                 fill="grey",colour="black")+
+(mapa_cfms<- mapa_costarica+
     
     #Se agregan los parcelas
     geom_point(data=cwm_cfms,
@@ -174,12 +167,7 @@ cwm_dm<-data_cwm %>%
 summary(cwm_dm)
 cwm_dm
 
-(mapa_dm<-ggplot()+
-    
-    #Mapa de Costa Rica
-    geom_polygon(data = costa_rica,
-                 aes(x=long,y=lat,group=group),
-                 fill="grey",colour="black")+
+(mapa_dm <- mapa_costarica+
     
     #Se agregan los parcelas
     geom_point(data=cwm_dm,
@@ -206,12 +194,7 @@ cwm_n<-data_cwm %>%
 summary(cwm_n)
 cwm_n
 
-(mapa_n<-ggplot()+
-    
-    #Mapa de Costa Rica
-    geom_polygon(data = costa_rica,
-                 aes(x=long,y=lat,group=group),
-                 fill="grey",colour="black")+
+(mapa_n<- mapa_costarica+
     
     #Se agregan los parcelas
     geom_point(data=cwm_n,
@@ -238,12 +221,7 @@ cwm_p<-data_cwm %>%
 summary(cwm_p)
 cwm_p
 
-(mapa_p<-ggplot()+
-    
-    #Mapa de Costa Rica
-    geom_polygon(data = costa_rica,
-                 aes(x=long,y=lat,group=group),
-                 fill="grey",colour="black")+
+(mapa_p<- mapa_costarica+
     
     #Se agregan los parcelas
     geom_point(data=cwm_p,
@@ -263,23 +241,3 @@ cwm_p
     theme(panel.grid.major = element_line(linetype = "blank"), 
           panel.grid.minor = element_line(linetype = "blank") 
           ))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
