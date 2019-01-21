@@ -1,7 +1,7 @@
 rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
-#Mostrar los valores de fric,feve, fdis a traves del paisaje
+#Mostrar los valores de fric,feve,fdis a traves del paisaje
 
 #Cargar paquetes
 library(tidyverse)

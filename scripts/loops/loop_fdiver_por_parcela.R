@@ -1,5 +1,8 @@
 rm(list = ls())
 
+# Objetivo ----------------------------------------------------------------
+# Calcular los indices Feve, fdiv y fdis para cada una de las 127 parcelas
+
 #Cargar paquetes
 library(vegan)
 library(dplyr)
@@ -24,7 +27,7 @@ names(dabund_relativa[1,dabund_relativa[1,]>0])
 a<-dbFD(plot1)$FDis
 a
 
-b <- dbFD(plot1)$FRic
+b <- dbFD(plot1)$fDiv
 b
 #Poner en una lista 
 #Crear una lista por cada parcela
@@ -43,13 +46,13 @@ for (i in seq_along(names(list))) {
   #una abundancia mayor a 0 
   fdis <- dbFD(deff_clean[names(list[[i]][,list[[i]]>0]),])$FDis
   feve <- dbFD(deff_clean[names(list[[i]][,list[[i]]>0]),])$FEve
-  fric <- dbFD(deff_clean[names(list[[i]][,list[[i]]>0]),])$FRic
+  fdiv <- dbFD(deff_clean[names(list[[i]][,list[[i]]>0]),])$FDiv
   
   #Nombres de cada parcela
   plot<- unique(row.names(list[[i]][,list[[i]]>0]))
   
   #datos con parcela y composicion de especies 
-  data<-data.frame(plot,fdis,feve,fric)
+  data<-data.frame(plot,fdis,feve,fdiv)
   
   #Resultado
   plot_fd_eff[[i]] <- data
