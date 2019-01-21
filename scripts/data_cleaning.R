@@ -1,3 +1,4 @@
+rm(list = ls())
 dir()
 dir("data/raw/effect_traits")
 
@@ -25,6 +26,19 @@ deff_clean <- deff %>%
 
 length(deff_clean$especie)
 head(deff_clean)
+dim(deff_clean)
+
+#Eliminacion de especies de palmas y del rasgo de area foliar del data set
+#Esto debido a que los analisis se deben hacer tambien sin estas especies
+#además el area foliar se elimina debido a su dificultad de interpretacion
+
+deff_clean_sin_palmas <- deff_clean %>%
+   filter(familia  != "ARECACEAE") %>% 
+   select(-af)
+
+length(deff_clean_sin_palmas$especie)
+dim(deff_clean_sin_palmas)
+head(deff_clean_sin_palmas)
 
 # Response traits ---------------------------------------------------------
 #El set de datos tiene columnas que no son necesarias, los nombres de las 
@@ -42,8 +56,10 @@ dresp_clean<-dresp %>%
   unite(especie,genero,especie,sep = "_")
 
 # Save clean data ---------------------------------------------------------
+
 write.csv(deff_clean,"data/clean/deff_clean.csv")
 write.csv(dresp_clean,"data/clean/dresp_clean.csv")
+write.csv(deff_clean_sin_palmas,"data/clean/deff_clean_sin_palmas.csv")
 
 
 
