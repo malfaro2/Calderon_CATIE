@@ -2,9 +2,11 @@ rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
 #Calcular los indices de diversidad funcional FDis, FDiv, FEve y CWM para 
-#todas las 127 parcelas del norte de Costa Rica mediante el paquete FD
+#todas las 127 parcelas del norte de Costa Rica mediante el paquete FD. 
 
-
+#Para el calculo de los indices se siguio el libro Functional and 
+#Phylogenetic Ecology in R. pp80
+ 
 #Paquetes
 library(FD)
 library(tidyverse)
@@ -12,6 +14,10 @@ library(tidyverse)
 #Cargar datos
 source("scripts/data_cleaning_for_loops.R")
 xy_plot <- read.csv("data/raw/data_posicion_parcelas.csv")
+
+#Eliminar columnas
+xy_plot <- xy_plot %>% 
+  select(-c("CRTM_90_X","CRTM_90_Y"))
 
 
 # remover data que no se va a utilizar ------------------------------------
@@ -40,20 +46,46 @@ dabund_clean2 <- dabund_clean[,order(colnames(dabund_clean))]
 
 # Indices de diversidad ---------------------------------------------------
 
-#calcular distancias euclideas para los rasgos effecto
-eucl_deff <- dist(deff_clean2,method="euclidean")
+#Calcular indices de diversidad
 
-#calcular indices de diversidad
-
-#Weight por abundancia relativa
-
-dbFD(x=eucl_deff, a=dabund_relativa, calc.FDiv = T)
-
-b <- dbFD(x=deff_clean2, a=dabund_relativa, calc.FDiv = T)
-b
-list(b$FEve,b$FDis,b$FDiv)
+indices <- dbFD(deff_clean2[colnames(dabund_relativa),],
+     dabund_relativa, w.abun = T,stand.x = T)
 
 
+(fdiv <- data.frame(indices$FDiv))
+fdiv$plot <- row.names(fdiv)
+colnames(fdiv) <- c("fdiv","plot")
+rownames(fdiv) <- c()
+fdiv
+
+
+(feve <- data.frame(indices$FEve))
+feve$plot <- row.names(feve)
+colnames(feve) <- c("feve","plot")
+rownames(feve) <- c()
+feve
+
+(fdis <- data.frame(indices$FDis))
+fdis$plot <- row.names(fdis)
+colnames(fdis) <- c("fdis","plot")
+rownames(fdis) <- c()
+fdis
+
+
+data_indices <- cbind.data.frame(fdiv[,1],feve[,1],fdis[,1],fdiv[,2])
+
+
+colnames(data_indices)<- c("fdiv","feve","fdis","plot")
+data_indices <- left_join(xy_plot, data_indices, by="plot")
+
+
+#Community Weight means
+(cwm <- data.frame(indices$CWM))
+cwm$plot <- row.names(cwm)
+rownames(cwm) <- c()
+cwm
+colnames(cwm) <- c("cwm_af","cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p","plot")
+data_cwm <- (left_join(xy_plot,cwm,by="plot"))
 
 
 
