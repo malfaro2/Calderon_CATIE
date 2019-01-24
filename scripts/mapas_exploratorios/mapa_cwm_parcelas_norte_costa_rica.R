@@ -80,18 +80,15 @@ mapa_costarica <- ggplot()+
 
 
 # Mapa cmw area foliar ----------------------------------------------------
-cwm_af<-data_cwm %>% 
-  filter(traits %in% "af")
-
-summary(cwm_af)
 
 (mapa_af<- mapa_costarica +
     
     #Se agregan los parcelas
-    geom_point(data=cwm_af,
+    geom_point(data=data_cwm,
                alpha=0.6,position = position_jitter(width=0.04, height=0.04),
                aes(x=longitude,y=latitude,
-                   colour=cwm,shape=forest_type))+
+                   
+                   colour=cwm_af,shape=forest_type))+
     #Mapa
     theme_bw()+
     coord_quickmap()+
@@ -108,18 +105,15 @@ summary(cwm_af)
 
 
 # Mapa cmw area foliar especifica -----------------------------------------
-cwm_afe<-data_cwm %>% 
-  filter(traits %in% "afe")
-summary(cwm_afe)
-
 
 (mapa_afe<-  mapa_costarica+
     
     #Se agregan los parcelas
-    geom_point(data=cwm_afe,
+    geom_point(data=data_cwm,
                alpha=0.6,position = position_jitter(width=0.04, height=0.04),
                aes(x=longitude,y=latitude,
-                   colour=cwm,shape=forest_type))+
+                   
+                   colour=cwm_afe,shape=forest_type))+
     #Mapa
     theme_bw()+
     coord_quickmap()+
@@ -134,18 +128,15 @@ summary(cwm_afe)
     ))
 
 # Mapa cmw cfms -----------------------------------------------------------
-cwm_cfms<-data_cwm %>% 
-  filter(traits %in% "cfms")
-summary(cwm_cfms)
-
 
 (mapa_cfms<- mapa_costarica+
     
     #Se agregan los parcelas
-    geom_point(data=cwm_cfms,
+    geom_point(data=data_cwm,
                alpha=0.6,position = position_jitter(width=0.04, height=0.04),
                aes(x=longitude,y=latitude,
-                   colour=cwm,shape=forest_type))+
+                   
+                   colour=cwm_cfms,shape=forest_type))+
     #Mapa
     theme_bw()+
     coord_quickmap()+
@@ -162,18 +153,15 @@ summary(cwm_cfms)
 
 
 # Mapa cmw densidad de madera ---------------------------------------------
-cwm_dm<-data_cwm %>% 
-  filter(traits %in% "dm")
-summary(cwm_dm)
-cwm_dm
 
 (mapa_dm <- mapa_costarica+
     
     #Se agregan los parcelas
-    geom_point(data=cwm_dm,
+    geom_point(data=data_cwm,
                alpha=0.6,position = position_jitter(width=0.04, height=0.04),
                aes(x=longitude,y=latitude,
-                   colour=cwm,shape=forest_type))+
+                   
+                   colour=cwm_dm,shape=forest_type))+
     #Mapa
     theme_bw()+
     coord_quickmap()+
@@ -189,18 +177,15 @@ cwm_dm
 
 
 # Mapa cmw Nitrogeno ------------------------------------------------------
-cwm_n<-data_cwm %>% 
-  filter(traits %in% "n")
-summary(cwm_n)
-cwm_n
 
 (mapa_n<- mapa_costarica+
     
     #Se agregan los parcelas
-    geom_point(data=cwm_n,
+    geom_point(data=data_cwm,
                alpha=0.6,position = position_jitter(width=0.04, height=0.04),
                aes(x=longitude,y=latitude,
-                   colour=cwm,shape=forest_type
+                   
+                   colour=cwm_n,shape=forest_type
                ))+
     #Mapa
     theme_bw()+
@@ -216,18 +201,15 @@ cwm_n
           ))
 
 # Mapa cmw Fosforo --------------------------------------------------------
-cwm_p<-data_cwm %>% 
-  filter(traits %in% "p")
-summary(cwm_p)
-cwm_p
 
 (mapa_p<- mapa_costarica+
     
     #Se agregan los parcelas
-    geom_point(data=cwm_p,
+    geom_point(data=data_cwm,
                alpha=0.6,position = position_jitter(width=0.04, height=0.04),
                aes(x=longitude,y=latitude,
-                   colour=cwm,shape=forest_type
+                   
+                   colour=cwm_p,shape=forest_type
                ))+
     #Mapa
     theme_bw()+
