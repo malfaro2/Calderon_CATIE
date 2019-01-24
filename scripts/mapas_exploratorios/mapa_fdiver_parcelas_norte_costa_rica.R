@@ -18,8 +18,6 @@ head(data_fdiver)
 dim(data_fdiver)  
 str(data_fdiver)  
 
-
-
 ## Agregar mapa mundial
 world<-getMap(resolution = "high")
 
@@ -38,7 +36,6 @@ proj4string(costa_rica)<-proj4string(world)
 
 # Mapas -------------------------------------------------------------------
 
-
 # Mapa base de Costa Rica -------------------------------------------------
 
 mapacostarica <- ggplot()+
@@ -48,11 +45,8 @@ mapacostarica <- ggplot()+
                aes(x=long,y=lat,group=group),
                fill="grey",colour="black")
   
-  
-
 
 # Mapa Fdis  ----------------------------------------------------
-
 
 (mapa_fdis <-  mapacostarica + 
    
@@ -75,7 +69,6 @@ mapacostarica <- ggplot()+
     
 ))
 
-
 # Mapa FRic ---------------------------------------------------------------
 
 (mapa_fdiv <- mapacostarica  +
@@ -91,9 +84,9 @@ mapacostarica <- ggplot()+
     ylim(8,11.3)+
     xlim(-86,-82.5)+
     guides(colour=guide_legend(tittle="Tipo de Bosque"))+
-    labs(colour = "FRic", shape = "Tipo de Bosque")+
+    labs(colour = "FDiv", shape = "Tipo de Bosque")+
     scale_color_gradient(low="yellow", high="red")+
-    labs(colour = "FRic")+
+    labs(colour = "FDiv")+
     theme(panel.grid.major = element_line(linetype = "blank"), 
     panel.grid.minor = element_line(linetype = "blank") 
     ))
