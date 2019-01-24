@@ -87,7 +87,12 @@ cwm
 colnames(cwm) <- c("cwm_af","cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p","plot")
 data_cwm <- (left_join(xy_plot,cwm,by="plot"))
 
+#Eliminando data sets
+rm(cwm,dabund_clean,dabund_clean2,dabund_relativa, 
+   deff_clean,deff_clean2,fdis,feve,fdiv,indices,n1,n2,xy_plot).
 
-
-
-
+#Salvando datos
+write.csv(data_cwm,
+          "C:data/clean/data_cwm_coord.csv")
+write.csv(data_indices,
+          "C:data/clean/data_fdiversity_coord.csv")
