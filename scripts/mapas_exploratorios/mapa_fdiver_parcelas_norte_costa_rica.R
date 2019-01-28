@@ -29,7 +29,6 @@ costa_rica <- world[world@data$ADMIN %in% costa_rica,]
 costa_rica
 world
 
-
 ##Cambiando el coord. ref
 proj4string(costa_rica)<-proj4string(world)
 
