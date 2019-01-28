@@ -30,9 +30,9 @@ sum(rankabund$relativa)
 
 
 
-#kable(rankabund, "html") %>%
-  #kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  #cat(., file = "rankabund.html")
+kable(rankabund, "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover")) %>%
+  cat(., file = "rankabund_realtiva.html")
 
 #Curva abundancia
 ggplot(rankabund,aes(x=rank,y=abund)) + geom_point()+theme_bw()+
