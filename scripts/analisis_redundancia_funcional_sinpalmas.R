@@ -1,6 +1,5 @@
 rm(list = ls())
 
-
 # Argumentos de la funcion ------------------------------------------------
 
 #comm	A matrix or a data frame of N plots × S species containing the 
@@ -22,34 +21,58 @@ rm(list = ls())
 #El objetivo de este script es calcular el uniqueness y redundancy para los 
 #datos sin palmas de las 127 parcelas
 
-
-# cargar funcion uniqueness -----------------------------------------------
-source("scripts/functions/function_functional_redundancy_original.R")
+#LOS RASGOS UTILIZADOS PARA EL ANALISIS ES AFE,DM,CFMS,N,P
 
 # Cargar data -------------------------------------------------------------
 
 source("scripts/data_cleaning_for_loops.R")
 xy_plot <- read.csv("data/raw/data_posicion_parcelas.csv")
 
+#Eliminar columnas 
+xy_plot <- xy_plot %>% 
+  select(-c(CRTM_90_X,CRTM_90_Y))
+
+# cargar funcion uniqueness -----------------------------------------------
+source("scripts/functions/function_functional_redundancy_original.R")
+
+#Eliminar data sets que no se van a utilizar
+rm(dabund_clean,dabund_relativa,deff_clean)
 
 # comm --------------------------------------------------------------------
 #Data parcelas por especies
-#Columns are species and plots are rows 
+#En las Columnas deben ir las especies y las parcelas en las filas 
 
-abundancia <- read.table("clipboard", header=T)
-abundancia <-   t(abundancia)
-
+comm_sinpalmas<- dabund_clean_sinpalmas
 
 # dis ---------------------------------------------------------------------
 #Data rasgos: se deben convertir objeto dis
 #dis: An object of class 'dist' containing the functional distances among 
 #species
-traits <- read.table("clipboard", header=T)
-traits
 
 #Transformar traits a distancias
-dist <- dist(, method = "euclidean") 
+dist_sinpalmas <- vegdist(deff_clean_sinpalmas, method = "euclidean") 
 
+#Transformar distancias a un rango de entre 0 y 1
+dist_sinpalmas_rescaled <- dist_sinpalmas / max(dist_sinpalmas)
+summary(dist_sinpalmas_rescaled)
 
 # Funcion -----------------------------------------------------------------
-Uni <- uniqueness(com, dis, abundance=TRUE)
+
+unique_sinpalmas <- uniqueness(comm_sinpalmas, dist_sinpalmas_rescaled, abundance=TRUE)
+
+#Extraer medidas de comunidad
+(medidas_redundancia <- unique_sinpalmas$red)
+
+#Agregar medida de redundancia
+(medidas_redundancia <- medidas_redundancia %>% 
+  mutate(plot=row.names(medidas_redundancia)) %>% 
+  mutate(redundancy = 1- U))
+
+#Data full con coordenadas de cada parcela
+data_redundancy_sinpalmas <- left_join(medidas_redundancia, xy_plot, by="plot")
+
+
+write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy_sinpalmas.csv")
+
+
+

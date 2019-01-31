@@ -12,6 +12,7 @@ deff<- read.csv("data/raw/effect_traits/data_effect_traits.csv")
 head(deff)
 
 # Data cleaning -----------------------------------------------------------
+
 # Effect traits -----------------------------------------------------------
 #El set de datos de effect traits viene con columnas que no son necesarias,
 #el genero y especie estas estan separadas y los nombres de las columnas 
