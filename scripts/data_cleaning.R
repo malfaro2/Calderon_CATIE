@@ -2,6 +2,7 @@ rm(list = ls())
 dir()
 dir("data/raw/effect_traits")
 
+#comentario prueba
 
 # Cargar paquetes ---------------------------------------------------------
 library(tidyverse)
