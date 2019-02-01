@@ -13,7 +13,7 @@ library(FD)
 library(tidyverse)
 
 #Cargar datos
-source("scripts/data_cleaning_for_loops.R")
+source("scripts/data_cleaning/data_cleaning_for_loops.R")
 xy_plot <- read.csv("data/raw/data_posicion_parcelas.csv")
 
 #Eliminar columnas
