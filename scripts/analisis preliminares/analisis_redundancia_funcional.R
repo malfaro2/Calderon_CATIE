@@ -70,4 +70,4 @@ unique <- uniqueness(comm, dist_rescaled, abundance=TRUE)
 #Data full con coordenadas de cada parcela
 data_redundancy <- left_join(medidas_redundancia, xy_plot, by="plot")
 
-#write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy_sinpalmas.csv")
+write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy.csv")
