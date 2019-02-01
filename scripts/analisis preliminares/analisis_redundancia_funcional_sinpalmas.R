@@ -16,7 +16,6 @@ rm(list = ls())
 
 #   -----------------------------------------------------------------------
 
-
 # Objetivo ----------------------------------------------------------------
 #El objetivo de este script es calcular el uniqueness y redundancy para los 
 #datos sin palmas de las 127 parcelas
@@ -61,15 +60,15 @@ summary(dist_sinpalmas_rescaled)
 unique_sinpalmas <- uniqueness(comm_sinpalmas, dist_sinpalmas_rescaled, abundance=TRUE)
 
 #Extraer medidas de comunidad
-(medidas_redundancia <- unique_sinpalmas$red)
+(medidas_redundancia_sinpalmas <- unique_sinpalmas$red)
 
 #Agregar medida de redundancia
-(medidas_redundancia <- medidas_redundancia %>% 
-  mutate(plot=row.names(medidas_redundancia)) %>% 
+(medidas_redundancia_sinpalmas <- medidas_redundancia_sinpalmas %>% 
+  mutate(plot=row.names(medidas_redundancia_sinpalmas)) %>% 
   mutate(redundancy = 1- U))
 
 #Data full con coordenadas de cada parcela
-data_redundancy_sinpalmas <- left_join(medidas_redundancia, xy_plot, by="plot")
+data_redundancy_sinpalmas <- left_join(medidas_redundancia_sinpalmas, xy_plot, by="plot")
 
 
 write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy_sinpalmas.csv")
