@@ -71,7 +71,7 @@ unique_sinpalmas <- uniqueness(comm_sinpalmas, dist_sinpalmas_rescaled, abundanc
 data_redundancy_sinpalmas <- left_join(medidas_redundancia_sinpalmas, xy_plot, by="plot")
 
 
-write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy_sinpalmas.csv")
+#write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy_sinpalmas.csv")
 
 
 
