@@ -112,10 +112,3 @@ mapacostarica <- ggplot()+
    theme(panel.grid.major = element_line(linetype = "blank"), 
          panel.grid.minor = element_line(linetype = "blank") 
    ))
-
-
-
-
-
-
-
