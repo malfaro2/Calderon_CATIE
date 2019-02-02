@@ -13,7 +13,7 @@ library(rworldxtra)
 library(ggthemes)
 
 #Cargar data
-data_fdiver_sinpalmas <- read.csv("data/clean/.csv") 
+data_fdiver_sinpalmas <- read.csv("data/clean/resultados_csv/data_redundancy_sinpalmas.csv") 
 head(data_fdiver_sinpalmas)  
 dim(data_fdiver_sinpalmas)  
 str(data_fdiver_sinpalmas)  
