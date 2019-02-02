@@ -1,7 +1,7 @@
 rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
-#Mostrar los valores de uniques y redundancy a traves del paisaje sin palmas
+#Mostrar los valores de uniqueness y redundancy a traves del paisaje sin palmas
 
 #Cargar paquetes
 library(tidyverse)
@@ -13,7 +13,7 @@ library(rworldxtra)
 library(ggthemes)
 
 #Cargar data
-data_fdiver_sinpalmas <- read.csv("data/clean/data_fdiversity_sinpalmas_coord.csv") 
+data_fdiver_sinpalmas <- read.csv("data/clean/.csv") 
 head(data_fdiver_sinpalmas)  
 dim(data_fdiver_sinpalmas)  
 str(data_fdiver_sinpalmas)  
