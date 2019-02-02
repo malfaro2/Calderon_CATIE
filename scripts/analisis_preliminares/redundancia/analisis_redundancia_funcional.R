@@ -16,16 +16,15 @@ rm(list = ls())
 
 #   -----------------------------------------------------------------------
 
-
 # Objetivo ----------------------------------------------------------------
 #El objetivo de este script es calcular el uniqueness y redundancy para los 
-#datos sin palmas de las 127 parcelas
+#datos completos de las 127 parcelas
 
 #LOS RASGOS UTILIZADOS PARA EL ANALISIS ES AFE,DM,CFMS,N,P
 
 # Cargar data -------------------------------------------------------------
 
-source("scripts/data_cleaning_for_loops.R")
+source("scripts/data_cleaning//data_cleaning_for_loops.R")
 xy_plot <- read.csv("data/raw/data_posicion_parcelas.csv")
 
 #Eliminar columnas 
@@ -36,13 +35,13 @@ xy_plot <- xy_plot %>%
 source("scripts/functions/function_functional_redundancy_original.R")
 
 #Eliminar data sets que no se van a utilizar
-rm(dabund_clean,dabund_relativa,deff_clean)
+rm(dabund_clean_sinpalmas,dabund_relativa_sinpalmas,deff_clean_sinpalmas)
 
 # comm --------------------------------------------------------------------
 #Data parcelas por especies
 #En las Columnas deben ir las especies y las parcelas en las filas 
 
-comm_sinpalmas<- dabund_clean_sinpalmas
+comm<- dabund_clean
 
 # dis ---------------------------------------------------------------------
 #Data rasgos: se deben convertir objeto dis
@@ -50,29 +49,25 @@ comm_sinpalmas<- dabund_clean_sinpalmas
 #species
 
 #Transformar traits a distancias
-dist_sinpalmas <- vegdist(deff_clean_sinpalmas, method = "euclidean") 
+dist <- vegdist(deff_clean, method = "euclidean") 
 
 #Transformar distancias a un rango de entre 0 y 1
-dist_sinpalmas_rescaled <- dist_sinpalmas / max(dist_sinpalmas)
-summary(dist_sinpalmas_rescaled)
+dist_rescaled <- dist / max(dist)
+summary(dist_rescaled)
 
 # Funcion -----------------------------------------------------------------
 
-unique_sinpalmas <- uniqueness(comm_sinpalmas, dist_sinpalmas_rescaled, abundance=TRUE)
+unique <- uniqueness(comm, dist_rescaled, abundance=TRUE)
 
 #Extraer medidas de comunidad
-(medidas_redundancia <- unique_sinpalmas$red)
+(medidas_redundancia <- unique$red)
 
 #Agregar medida de redundancia
 (medidas_redundancia <- medidas_redundancia %>% 
-  mutate(plot=row.names(medidas_redundancia)) %>% 
-  mutate(redundancy = 1- U))
+    mutate(plot=row.names(medidas_redundancia)) %>% 
+    mutate(redundancy = 1- U))
 
 #Data full con coordenadas de cada parcela
-data_redundancy_sinpalmas <- left_join(medidas_redundancia, xy_plot, by="plot")
+data_redundancy <- left_join(medidas_redundancia, xy_plot, by="plot")
 
-
-write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy_sinpalmas.csv")
-
-
-
+write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy.csv")
