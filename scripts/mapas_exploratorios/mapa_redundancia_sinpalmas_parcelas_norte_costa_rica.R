@@ -13,10 +13,10 @@ library(rworldxtra)
 library(ggthemes)
 
 #Cargar data
-data_fdiver_sinpalmas <- read.csv("data/clean/resultados_csv/data_redundancy_sinpalmas.csv") 
-head(data_fdiver_sinpalmas)  
-dim(data_fdiver_sinpalmas)  
-str(data_fdiver_sinpalmas)  
+data_redundancy_sinpalmas <- read.csv("data/clean/resultados_csv/data_redundancy_sinpalmas.csv") 
+head(data_redundancy_sinpalmas)  
+dim(data_redundancy_sinpalmas)  
+str(data_redundancy_sinpalmas)  
 
 ## Agregar mapa mundial
 world<-getMap(resolution = "high")
@@ -46,71 +46,76 @@ mapacostarica <- ggplot()+
                fill="grey",colour="black")
 
 
-# Mapa Fdis  ----------------------------------------------------
+# Mapa redundancy  ----------------------------------------------------
 
-(mapa_fdis_sinpalmas <-  mapacostarica + 
+(mapa_redundancy_sinpalmas <-  mapacostarica + 
    
    #Se agregan los parcelas
-   geom_point(data=data_fdiver_sinpalmas,
+   geom_point(data=data_redundancy_sinpalmas,
               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
               aes(x=longitude,y=latitude,
-                  colour=fdis,shape=forest_type))+
+                  colour=redundancy,shape=forest_type))+
    #Mapa
    theme_bw()+
    coord_quickmap()+
    ylim(8,11.3)+
    xlim(-86,-82.5)+
    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
-   labs(colour = "FDis sin palmas", shape = "Tipo de Bosque")+
+   labs(colour = "Redundancia sin palmas", shape = "Tipo de Bosque")+
    scale_color_gradient(low="yellow", high="red")+
-   labs(colour = "FDis sin palmas")+
+   labs(colour = "Redundancia sin palmas")+
    theme(panel.grid.major = element_line(linetype = "blank"), 
          panel.grid.minor = element_line(linetype = "blank") 
          
    ))
 
-# Mapa FDiv ---------------------------------------------------------------
+# Mapa uniqueness ---------------------------------------------------------------
 
 (mapa_fdiv_sinpalmas <- mapacostarica  +
    
    #Se agregan los parcelas
-   geom_point(data=data_fdiver_sinpalmas,
+   geom_point(data=data_redundancy_sinpalmas,
               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
               aes(x=longitude,y=latitude,
-                  colour=fdiv,shape=forest_type))+
+                  colour=U,shape=forest_type))+
    #Mapa
    theme_bw()+
    coord_quickmap()+
    ylim(8,11.3)+
    xlim(-86,-82.5)+
    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
-   labs(colour = "FDiv sin palmas", shape = "Tipo de Bosque")+
+   labs(colour = "Uniqueness sin palmas", shape = "Tipo de Bosque")+
    scale_color_gradient(low="yellow", high="red")+
-   labs(colour = "FDiv sin palmas")+
+   labs(colour = "Uniqueness sin palmas")+
    theme(panel.grid.major = element_line(linetype = "blank"), 
          panel.grid.minor = element_line(linetype = "blank") 
    ))
 
+# Mapa Rao ---------------------------------------------------------------
 
-# Mapa Feve ---------------------------------------------------------------
-
-(mapa_feve_sinpalmas <- mapacostarica  +
+(mapa_rao_sinpalmas <- mapacostarica  +
    
    #Se agregan los parcelas
-   geom_point(data=data_fdiver_sinpalmas,
+   geom_point(data=data_redundancy_sinpalmas,
               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
               aes(x=longitude,y=latitude,
-                  colour=feve,shape=forest_type))+
+                  colour=Q,shape=forest_type))+
    #Mapa
    theme_bw()+
    coord_quickmap()+
    ylim(8,11.3)+
    xlim(-86,-82.5)+
    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
-   labs(colour = "FEve sin palmas", shape = "Tipo de Bosque")+
-   scale_color_gradient(low="yellow",  high="red")+
-   labs(colour = "FEve sin palmas")+
+   labs(colour = "Rao sin palmas", shape = "Tipo de Bosque")+
+   scale_color_gradient(low="yellow", high="red")+
+   labs(colour = "Rao sin palmas")+
    theme(panel.grid.major = element_line(linetype = "blank"), 
          panel.grid.minor = element_line(linetype = "blank") 
    ))
+
+
+
+
+
+
 
