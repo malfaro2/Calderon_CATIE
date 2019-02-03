@@ -71,7 +71,7 @@ mapacostarica <- ggplot()+
 
 # Mapa uniqueness ---------------------------------------------------------------
 
-(mapa_fdiv_sinpalmas <- mapacostarica  +
+(mapa_uniq_sinpalmas <- mapacostarica  +
    
    #Se agregan los parcelas
    geom_point(data=data_redundancy_sinpalmas,
