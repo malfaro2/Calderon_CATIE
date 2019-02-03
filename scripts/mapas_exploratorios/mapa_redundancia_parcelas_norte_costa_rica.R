@@ -1,7 +1,7 @@
 rm(list = ls())
 
 # Objetivo ----------------------------------------------------------------
-#Mostrar los valores de uniqueness y redundancy a traves del paisaje sin palmas
+#Mostrar los valores de uniqueness y redundancy a traves del paisaje 
 
 #Cargar paquetes
 library(tidyverse)
