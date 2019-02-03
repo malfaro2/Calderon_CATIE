@@ -93,6 +93,9 @@ ggplot(rankabund_sinpalmas,aes(x=rank,y=relativa)) + geom_point()+theme_bw()+
 #  annotate("text", x = 200, y = .11, label = "Abundancia relativa,especies con mas de 61 individuos (58%)")
 
 
+
+# Datos con palmas --------------------------------------------------------
+
 #Especies con menos de 10 individuos
 esp10<- (rankabund[rankabund$abund<=10,])
 esp10
@@ -101,8 +104,7 @@ esp10
 sum(esp10$relativa)
 
 #Porcentaje,  especies con 10 o menos
-(length(row.names(esp10))/260)*100
-
+(length(row.names(esp10_sinpalmas))/260)*100
 
 #Porcentaje, Especies con mas de 10 individuos pero menos de 61
 esp_11_61 <- rankabund[rankabund$abund>10 & rankabund$abund<=61,]
@@ -114,14 +116,31 @@ sum(esp_11_61$relativa)
 #Especies que tienen mayor a 61
 esp_mayor_61 <- rankabund[rankabund$abund > 61,]
 
-#Abundancia relativa
-sum(esp_mayor_61$relativa)
-
-(5/260)*100
-
-#Total
-24.23077+73.84615+1.923077
 
 
-#Total2
-0.5740433 + 0.3036606 +  0.1222962
+# Data sin palmas ---------------------------------------------------------
+
+#Especies con menos de 10 individuos sin palmas
+esp10_sinpalmas<- (rankabund_sinpalmas[rankabund_sinpalmas$abund<=10,])
+esp10_sinpalmas
+
+#Todas las especies menor o igual a 10 tienen una abundancia relativa de 20%
+sum(esp10_sinpalmas$relativa)
+
+#75 % de de las especies tienen 10 o menos individuos 
+(length(row.names(esp10_sinpalmas))/256)*100
+
+
+#Porcentaje, Especies con mas de 10 individuos pero menos de 61
+esp_11_61_sinpalmas <- rankabund_sinpalmas[rankabund_sinpalmas$abund>10 & rankabund_sinpalmas$abund<=61,]
+(length(row.names(esp_11_61_sinpalmas))/256)*100
+
+#Abundancia relativa de las especies con 11 a 61
+sum(esp_11_61_sinpalmas$relativa)
+
+#Especies que tienen mayor a 61
+esp_mayor_61_sinpalmas <- rankabund_sinpalmas[rankabund_sinpalmas$abund > 61,]
+sum(esp_mayor_61_sinpalmas$relativa)
+
+
+
