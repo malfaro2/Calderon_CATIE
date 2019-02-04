@@ -2,7 +2,7 @@ rm(list=ls())
 
 
 # Objetivo -----------------------------------------------------------------
-#El objetivo de este script es ver si los valores de redundancia sin palmas 
+#El objetivo de este script es ver si los valores de redundancia  
 #de las 127 parcelas tienen alguna estructura de dependecia espacial
 
 #El codigo fue tomado de 
@@ -15,9 +15,9 @@ library(ape)
 
 
 # Cargar datos ------------------------------------------------------------
-data_redundancy_sinpalmas <- read.csv("data/resultados_csv/data_redundancy_sinpalmas.csv", 
+data_redundancy <- read.csv("data/resultados_csv/data_redundancy.csv", 
                                       header=T)
-head(data_redundancy_sinpalmas, n=10)
+head(data_redundancy, n=10)
 
 
 # Matrix of inverse distance weights --------------------------------------
@@ -25,8 +25,8 @@ head(data_redundancy_sinpalmas, n=10)
 #are higher than for pairs of points that are far apart
 
 #Se utiliza las variables latitude y longitude
-redundancy_dists <- as.matrix(dist(cbind(data_redundancy_sinpalmas$longitude, 
-                                         data_redundancy_sinpalmas$latitude)))
+redundancy_dists <- as.matrix(dist(cbind(data_redundancy$longitude, 
+                                         data_redundancy$latitude)))
 
 redundancy_dists_inv <- 1/redundancy_dists
 
@@ -40,13 +40,10 @@ redundancy_dists_inv[1:5, 1:5]
 #Null hypothesis <--- No spatial autocorrelation
 
 #Redundancy sin palmas
-Moran.I(data_redundancy_sinpalmas$redundancy, redundancy_dists_inv)
+Moran.I(data_redundancy$redundancy, redundancy_dists_inv)
 
 #Uniqueness sin palmas
-Moran.I(data_redundancy_sinpalmas$U,  redundancy_dists_inv)
+Moran.I(data_redundancy$U,  redundancy_dists_inv)
 
 #Rao sin palmas
-Moran.I(data_redundancy_sinpalmas$Q,  redundancy_dists_inv)
-
-
-
+Moran.I(data_redundancy$Q,  redundancy_dists_inv)
