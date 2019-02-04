@@ -2,8 +2,8 @@ rm(list=ls())
 
 
 # Objetivo -----------------------------------------------------------------
-#El objetivo de este script es ver si los valores de CWM de las 127 parcelas
-# tienen alguna estructura de dependecia espacial
+#El objetivo de este script es ver si los valores de redundancia de 
+#las 127 parcelas tienen alguna estructura de dependecia espacial
 
 #El codigo fue tomado de 
 #https://stats.idre.ucla.edu/r/faq/how-can-i-calculate-morans-i-in-r/
@@ -54,4 +54,3 @@ Moran.I(data_cwm$cwm_n, cwm_dists_inv)
 
 #CWM P
 Moran.I(data_cwm$cwm_p, cwm_dists_inv)
-
