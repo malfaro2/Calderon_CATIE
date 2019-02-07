@@ -1,6 +1,5 @@
 rm(list=ls())
 
-
 # Objetivo -----------------------------------------------------------------
 #El objetivo de este script es ver si los valores de redundancia  
 #de las 127 parcelas tienen alguna estructura de dependecia espacial
@@ -15,12 +14,12 @@ library(ape)
 
 
 # Cargar datos ------------------------------------------------------------
-data_redundancy <- read.csv("data/resultados_csv/data_redundancy.csv", 
-                                      header=T)
+data_redundancy <- read.csv("data/resultados_csv/data_redundancy.csv",header=T)
 head(data_redundancy, n=10)
 
 
 # Matrix of inverse distance weights --------------------------------------
+
 #In the matrix, entries for pairs of points that are close together 
 #are higher than for pairs of points that are far apart
 
@@ -39,11 +38,11 @@ redundancy_dists_inv[1:5, 1:5]
 # Moran´s I ---------------------------------------------------------------
 #Null hypothesis <--- No spatial autocorrelation
 
-#Redundancy sin palmas
+#Redundancy 
 Moran.I(data_redundancy$redundancy, redundancy_dists_inv)
 
-#Uniqueness sin palmas
+#Uniqueness 
 Moran.I(data_redundancy$U,  redundancy_dists_inv)
 
-#Rao sin palmas
+#Rao 
 Moran.I(data_redundancy$Q,  redundancy_dists_inv)
