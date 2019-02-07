@@ -85,7 +85,19 @@ plot(mite.xy)
 #This represent the spatial distributions of samples
 mite.pcnm <- as.data.frame(scores(pcnm(dist(mite.xy))))
 dim(mite.pcnm)
-ordistep(mite.pcnm)
+
+# Ordistep ----------------------------------------------------------------
+
+vare.rda <- rda(mite ~ ., data=mite.pcnm)
+# set up the null case with no predictors (be sure to include the
+# 'data' argument, even though no predictors)
+vare.pca <- rda(mite ~ 1, data=mite.pcnm)
+
+step.env <- ordistep(vare.pca, scope=formula(vare.rda))
+
+step.env
+anova(step.env)
+step.env$anova
 
 
 # set up a multipanel graphics window
@@ -127,3 +139,5 @@ mite.var <- varpart(mite,
 #for the number of explanatory variables in each partition (’adjusted R2’) 
 #and will be negative when the raw R2 is very small 
 #plot(mite.var, bg=1:3, Xnames=c('substrate', 'landscape', 'space'), id.size=0.75)
+
+
