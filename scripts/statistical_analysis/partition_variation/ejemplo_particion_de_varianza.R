@@ -13,51 +13,6 @@ rm(list = ls())
 library(vegan)
 
 
-# Data --------------------------------------------------------------------
-data(varechem)
-data(varespec)
-
-
-
-# Variation partitioning sin componente espacial --------------------------
-#Separar varechem
-#1- Soil chemistry
-#2- Soil exposure (Baresoil y Humdepth)
-
-#standardize: scale x to zero mean and unit variance (default MARGIN = 2)
-varechem.scld <- decostand(varechem, method='standardize')
-
-vare.var <- varpart(varespec,
-                    ~N + Al + Fe + Mn,
-                    ~Baresoil + Humdepth,
-                    data=varechem.scld, scale=T)
-
-vare.var
-
-plot(vare.var, bg=1:3, Xnames=c('chemistry', 'exposure'), id.size=0.75)
-
-
-# test significance of variation in partition 'X1' (chemistry)
-anova(rda(varespec ~ N + Al + Fe + Mn, data=varechem.scld, scale=T))
-
-# test significance of variation in partition 'X2' (exposure)
-anova(rda(varespec ~ Baresoil + Humdepth, data=varechem.scld, scale=T))
-
-# test significance of variation in both partitions
-anova(rda(varespec ~ N + Al + Fe + Mn + Baresoil + Humdepth,
-          data=varechem.scld, scale=T))
-
-# test significance of variation in partition 'X1' (chemistry) after
-# accounting for variation in 'X2'
-anova(rda(varespec ~ N + Al + Fe + Mn
-          + Condition(Baresoil + Humdepth), data=varechem.scld, scale=T))
-
-# test significance of variation in partition 'X2' (exposure) after
-# accounting for variation in 'X1'
-anova(rda(varespec ~ Baresoil + Humdepth
-          + Condition(N + Al + Fe + Mn), data=varechem.scld, scale=T))
-
-
 # Variation Partitioning - incorporating spatial processes ----------------
 
 #Data especies
@@ -83,15 +38,24 @@ plot(mite.xy)
 #containing variables that represent different spatial scales
 
 #This represent the spatial distributions of samples
+#las coordenadas geográficas (descompuestas en un análisis previo de PCNM 
+#con 21 descriptores espaciales - autovectores del PCNM - ).
+
 mite.pcnm <- as.data.frame(scores(pcnm(dist(mite.xy))))
 dim(mite.pcnm)
 
 # Ordistep ----------------------------------------------------------------
 
 vare.rda <- rda(mite ~ ., data=mite.pcnm)
+
 # set up the null case with no predictors (be sure to include the
 # 'data' argument, even though no predictors)
+
+install.packages("PCNM", repos="http://R-Forge.R-project.org")
 vare.pca <- rda(mite ~ 1, data=mite.pcnm)
+
+p1<- rda(mite, mite.xy)
+anova.cca(p1)
 
 step.env <- ordistep(vare.pca, scope=formula(vare.rda))
 
