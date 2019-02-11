@@ -17,18 +17,17 @@ library(tidyverse)
 
 # Data cwm  ---------------------------------------------------------------
 
-data_cwm <- read.csv("data/resultados_csv/data_cwm_coord.csv")
-head(data_cwm)
-dim(data_cwm)
+data_species<- read.csv("data/clean/data_abund_plot.csv",header = T,row.names = 1)
+head(data_species)
+dim(data_species)
+str(data_species)
 
 #Extraer data coordenadas y quitarlas del data set data_cwm
-data_coor_parcelas <- data_cwm %>% 
+data_coor_parcelas <- read.csv("data/resultados_csv/data_cwm_coord.csv")
+data_coor_parcelas <- data_coor_parcelas %>% 
   select(longitude,latitude)
 
-data_cwm <- data_cwm %>% 
-  select(-plot, -forest_type, -longitude, -latitude)
 
-head(data_cwm)
 
 # Data Coordenadas de las parcelas ----------------------------------------
 head(data_coor_parcelas)
@@ -60,11 +59,11 @@ dim(data_environmet)
 parcelas_pcnm <- pcnm(dist(data_coor_parcelas))
 
 
-# Seleccionar pcnm significativos af --------------------------------------
+# Seleccionar pcnm significativos  --------------------------------------
 
 # Model con all predictors af
 
-cwm_af_pcnm <- rda(data_cwm$cwm_af ~ ., data=as.data.frame(scores(parcelas_pcnm)))
+cwm_af_pcnm <- rda(data_species ~ ., data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors af
 
@@ -78,7 +77,7 @@ step_pcnm_af$anova
 
 # create pcnm table with only significant axes
 cwm_af_pcnm_sub <- scores(cwm_af_pcnm,
-                        choices=c(1,2,3,4,7,37))
+                        choices=c(1,2,3,4,7,9))
 
 
 # Seleccionar pcnm significativos afe -------------------------------------
@@ -179,36 +178,36 @@ cwm_p_pcnm_sub <- scores(cwm_p_pcnm,
                                choices=c(1:5,7,17,24))
 
 
-# Model -------------------------------------------------------------------
+
+# Modelos  ----------------------------------------------------------------
+
 
 # do predictor matrices explain community composition, and how much?
 
 # partition variation among three predictor tables:
 
-# 1) substrate ('Substrate', 'SubsDens', and 'WatrCont')
+# 1) Caracteristicas fisicas de la parcela
+#     (SAND, LIMO, CLAY, pH, acidicty, )
 
-# 2) landscape, i.e., shrub density adn microtopography 
-#    ('Shrub' and 'Topo')
+# 2) Caracteristicas fisicas de la parcela  quimicas de la parcela
+#    (Ca, Mg, K, organic matter)
 
-# 3) space ('mite.pcnm')
+# 3)   Topografia 
+#    (elevacion, pendiente )
 
+# 3) Clima: Precipitacion temperatura
 
-mite.var <- varpart(mite,
-                    ~ Substrate + SubsDens + WatrCont,
-                    ~ Shrub + Topo,
-                    mite.pcnm, 
-                    data=mite.env)
-
+# 4) space ('parcelas_pcnm')
 
 
-# Ejemplo de interpretacion -----------------------------------------------
 
+# Modelo af ---------------------------------------------------------------
 
-#The individual fraction associated with ’landscape’ is missing because 
-#this number is negative. These numbers represent R2 values after adjusting 
-#for the number of explanatory variables in each partition (’adjusted R2’) 
-#and will be negative when the raw R2 is very small 
-#plot(mite.var, bg=1:3, Xnames=c('substrate', 'landscape', 'space'), 
-#id.size=0.75)
+cwm_var <- varpart(as.matrix(data_cwm$af),
+                    ~ SAND + LIMO + CLAY + pH + ACIDITY , 
+                    ~ Ca + Mg + K + P + OrganicMatter ,
+                    ~ ELEV + SLOPE_PER ,
+                    ~ PRECDRIEST + PRECCV + TEMP + TEMPMIN + TEMPSD,
+                      endo.pcnm.sub,data=data_environmet)
 
 
