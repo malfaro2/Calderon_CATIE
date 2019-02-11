@@ -11,39 +11,25 @@ rm(list = ls())
 
 # Paquetes ----------------------------------------------------------------
 library(vegan)
-library(tidyverse)
+library(adespatial)
 
 # Cargar datos ------------------------------------------------------------
 
 # Data cwm  ---------------------------------------------------------------
 
-data_species<- read.csv("data/clean/data_abund_plot.csv",header = T,row.names = 1)
-head(data_species)
-dim(data_species)
-str(data_species)
-
-#Extraer data coordenadas y quitarlas del data set data_cwm
-data_coor_parcelas <- read.csv("data/resultados_csv/data_cwm_coord.csv")
-data_coor_parcelas <- data_coor_parcelas %>% 
-  select(longitude,latitude)
-
-
-
-# Data Coordenadas de las parcelas ----------------------------------------
-head(data_coor_parcelas)
-dim(data_coor_parcelas)
-plot(data_coor_parcelas$longitude, data_coor_parcelas$latitude)
+data_cwm <- read.csv("scripts/statistical_analysis/partition_variation/data/data_cwm.csv")
 
 # Data Variables ambientales ----------------------------------------------
-data_environmet <- read.csv("data/raw/data_enviroment_worldclim.csv")
-head(data_environmet)
+data_environmet_fisicas <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_suelos.csv")
+data_environmet_topo <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_topo.csv")
+data_environmet_quimicas <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_quimico.csv")
+data_environmet_clima <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_clima.csv")
 
-#Eliminar columnas innecesarias
-data_environmet <- data_environmet %>% 
-  select(-c(1:4))
-head(data_environmet)
+# Data Coordenadas de las parcelas ----------------------------------------
+#Extraer data coordenadas y quitarlas del data set data_cwm
+#Y transformarlas a log 10 usar CRTM
 
-dim(data_environmet)
+data_coor_parcelas <- read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas.csv")
 
 
 # Calcular PCNMs a partir de una matriz de distancia euclidea -------------
@@ -59,11 +45,11 @@ dim(data_environmet)
 parcelas_pcnm <- pcnm(dist(data_coor_parcelas))
 
 
-# Seleccionar pcnm significativos  --------------------------------------
+# Seleccionar pcnms significativos  --------------------------------------
 
 # Model con all predictors af
 
-cwm_af_pcnm <- rda(data_species ~ ., data=as.data.frame(scores(parcelas_pcnm)))
+cwm_af_pcnm <- rda(data_cwm$cwm_af ~ ., data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors af
 
@@ -76,8 +62,55 @@ step_pcnm_af <- ordistep(cwm_af0_pcnm, scope=formula(cwm_af_pcnm))
 step_pcnm_af$anova 
 
 # create pcnm table with only significant axes
-cwm_af_pcnm_sub <- scores(cwm_af_pcnm,
-                        choices=c(1,2,3,4,7,9))
+n_af<-paste('PCNM', c(1,4,8,15,10,3,13,40,5,42,35,6,24,7), sep='')
+n_af
+cwm_af_pcnm_sub <- parcelas_pcnm$vectors[,n_af]
+
+
+# Forward selection de variables ambientales ------------------------------
+
+#Variables caracteristicas suelo las variables que suman 100 pueden generar
+#error
+
+forward.sel(data_cwm$cwm_af, data_environmet_fisicas,
+              alpha = 0.01)
+
+forward.sel(data_cwm$cwm_af, data_environmet_clima,
+            alpha = 0.01)
+            
+forward.sel(data_cwm$cwm_af, data_environmet_quimicas,
+            alpha = 0.01)
+            
+forward.sel(data_cwm$cwm_af, data_environmet_topo,
+            alpha = 0.01)
+            
+
+
+# Modelo af ---------------------------------------------------------------
+
+# do predictor matrices explain community composition, and how much?
+
+# partition variation among three predictor tables:
+
+# 1) Caracteristicas fisicas de la parcela
+#     ( CLAY )
+
+# 2) Caracteristicas quimicas de la parcela
+#    (organic matter)
+
+# 3) Clima: TEMP, PRECDRIEST
+
+# 4) space ('parcelas_pcnm')
+
+
+cwm_var_af <- varpart(data_cwm$cwm_afe,
+                   data_environmet_fisicas[,c("CLAY")],
+                   data_environmet_quimicas[,c("OrganicMatter")],
+                   data_environmet_clima[,c("TEMP","PRECDRIEST")],
+                   cwm_af_pcnm_sub)
+
+plot(cwm_var_af)
+
 
 
 # Seleccionar pcnm significativos afe -------------------------------------
@@ -96,8 +129,8 @@ step_pcnm_afe <- ordistep(cwm_afe0_pcnm, scope=formula(cwm_afe_pcnm))
 step_pcnm_afe$anova 
 
 # create pcnm table with only significant axes
-cwm_afe_pcnm_sub <- scores(cwm_afe_pcnm,
-                               choices=c(1,2,3,4,8,23,28,37,43))
+n<-paste('PCNM', c(), sep='')
+cwm_afe_pcnm_sub <- parcelas_pcnm$vectors[,n]
 
 
 # Seleccionar pcnm significativos cfms ------------------------------------
@@ -116,8 +149,19 @@ step_pcnm_cfms <- ordistep(cwm_cfms0_pcnm, scope=formula(cwm_cfms_pcnm))
 step_pcnm_cfms$anova 
 
 # create pcnm table with only significant axes
-cwm_cfms_pcnm_sub <- scores(cwm_cfms_pcnm,
-                               choices=c(1,4,5,8,11,24,27,37))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Seleccionar pcnm significativos dm --------------------------------------
 
@@ -203,11 +247,9 @@ cwm_p_pcnm_sub <- scores(cwm_p_pcnm,
 
 # Modelo af ---------------------------------------------------------------
 
-cwm_var <- varpart(as.matrix(data_cwm$af),
-                    ~ SAND + LIMO + CLAY + pH + ACIDITY , 
-                    ~ Ca + Mg + K + P + OrganicMatter ,
-                    ~ ELEV + SLOPE_PER ,
-                    ~ PRECDRIEST + PRECCV + TEMP + TEMPMIN + TEMPSD,
-                      endo.pcnm.sub,data=data_environmet)
+cwm_var <- varpart(data_cwm$cwm_afe,
+                    data_environmet[,c("TEMP","Mg")], 
+                                        parcelas_pcnm$vectors[,n])
 
-
+varpart
+cwm_var
