@@ -82,7 +82,8 @@ endo.pcnm.sub <- scores(mite.pcnm,
 
 # 1) substrate ('Substrate', 'SubsDens', and 'WatrCont')
 
-# 2) landscape, i.e., shrub density adn microtopography ('Shrub' and 'Topo')
+# 2) landscape, i.e., shrub density adn microtopography 
+#    ('Shrub' and 'Topo')
 
 # 3) space ('mite.pcnm')
 
@@ -102,6 +103,7 @@ mite.var <- varpart(mite,
 #this number is negative. These numbers represent R2 values after adjusting 
 #for the number of explanatory variables in each partition (’adjusted R2’) 
 #and will be negative when the raw R2 is very small 
-#plot(mite.var, bg=1:3, Xnames=c('substrate', 'landscape', 'space'), id.size=0.75)
+#plot(mite.var, bg=1:3, Xnames=c('substrate', 'landscape', 'space'), 
+#id.size=0.75)
 
 
