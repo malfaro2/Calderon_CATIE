@@ -1,5 +1,6 @@
 rm(list = ls())
 
+# Variation Partitioning - incorporating spatial processes ----------------
 
 # Objetivo ----------------------------------------------------------------
 #En este ejemplo, se realizara el procedimiento de partition variation para
@@ -13,26 +14,34 @@ rm(list = ls())
 library(vegan)
 
 
-# Variation Partitioning - incorporating spatial processes ----------------
 
-#Data especies
+# Cargar datos ------------------------------------------------------------
+
+# Data especies ----------------------------------------------------------
+
+
 data(mite)
 dim(mite)
 head(mite)
 
-#Variables ambientales
+
+# Data Variables ambientales ----------------------------------------------
 data(mite.env)
 dim(mite.env)
 head(mite.env)
 
 
-#Coordenadas de las parcelas
+
+# Data Coordenadas de las parcelas ----------------------------------------
 data(mite.xy)
 dim(mite.xy)
 head(mite.xy)
 plot(mite.xy)
 
-#Calcular PCNMs a partir de una matriz de distancia euclidea 
+
+
+# Calcular PCNMs a partir de una matriz de distancia euclidea -------------
+
 
 #Principal Coordinates of Neighbour Matrices (PCNMs) generate a dataframe 
 #containing variables that represent different spatial scales
@@ -41,43 +50,31 @@ plot(mite.xy)
 #las coordenadas geográficas (descompuestas en un análisis previo de PCNM 
 #con 21 descriptores espaciales - autovectores del PCNM - ).
 
-mite.pcnm <- as.data.frame(scores(pcnm(dist(mite.xy))))
-dim(mite.pcnm)
 
-# Ordistep ----------------------------------------------------------------
-
-vare.rda <- rda(mite ~ ., data=mite.pcnm)
-
-# set up the null case with no predictors (be sure to include the
-# 'data' argument, even though no predictors)
-
-install.packages("PCNM", repos="http://R-Forge.R-project.org")
-vare.pca <- rda(mite ~ 1, data=mite.pcnm)
-
-p1<- rda(mite, mite.xy)
-anova.cca(p1)
-
-step.env <- ordistep(vare.pca, scope=formula(vare.rda))
-
-step.env
-anova(step.env)
-step.env$anova
+mite.pcnm <- pcnm(dist(mite.xy))
 
 
-# set up a multipanel graphics window
-par(mfrow=c(2, 3))
-# set colour palette with ten levels along a gradient from red to blue
-# from Chapter 4
-blueredfun <- colorRampPalette(c("blue","red"))
-palette(blueredfun(10))
+# Seleccionar pcnm significativos -----------------------------------------
 
-# for each of the first six PCNM axes, use colour to represent loadings
-plot(mite.xy, pch=16, col=cut(mite.pcnm[[1]], breaks=10), cex.lab=1.5, cex.axis=1.3, cex=2)
-plot(mite.xy, pch=16, col=cut(mite.pcnm[[2]], breaks=10), cex.lab=1.5, cex.axis=1.3, cex=2)
-plot(mite.xy, pch=16, col=cut(mite.pcnm[[3]], breaks=10), cex.lab=1.5, cex.axis=1.3, cex=2)
-plot(mite.xy, pch=16, col=cut(mite.pcnm[[4]], breaks=10), cex.lab=1.5, cex.axis=1.3, cex=2)
-plot(mite.xy, pch=16, col=cut(mite.pcnm[[5]], breaks=10), cex.lab=1.5, cex.axis=1.3, cex=2)
-plot(mite.xy, pch=16, col=cut(mite.pcnm[[43]], breaks=10), cex.lab=1.5, cex.axis=1.3, cex=2)
+# Model con all predictors
+miteall.pcnm <- rda(mite ~ ., data=as.data.frame(scores(mite.pcnm)))
+
+# Model con no predictors
+mite0.pcnm <- rda(mite ~ 1, data=as.data.frame(scores(mite.pcnm)))
+
+#Seleccionar variables significativas
+
+step.pcnm <- ordistep(mite0.pcnm, scope=formula(miteall.pcnm))
+
+#Ver pcnm significativos
+step.pcnm$anova 
+
+# create pcnm table with only significant axes
+endo.pcnm.sub <- scores(mite.pcnm,
+                        choices=c(2,3, 6, 10,12,27,39))
+
+
+# Model -------------------------------------------------------------------
 
 # do predictor matrices explain community composition, and how much?
 
@@ -93,10 +90,13 @@ plot(mite.xy, pch=16, col=cut(mite.pcnm[[43]], breaks=10), cex.lab=1.5, cex.axis
 mite.var <- varpart(mite,
                     ~ Substrate + SubsDens + WatrCont,
                     ~ Shrub + Topo,
-                    mite.pcnm, data=mite.env)
+                      mite.pcnm, 
+                    data=mite.env)
 
 
-#   -----------------------------------------------------------------------
+
+# Ejemplo de interpretacion -----------------------------------------------
+
 
 #The individual fraction associated with ’landscape’ is missing because 
 #this number is negative. These numbers represent R2 values after adjusting 
