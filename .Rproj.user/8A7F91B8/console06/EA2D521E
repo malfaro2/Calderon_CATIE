@@ -7,60 +7,12 @@ Your branch is up to date with 'origin/master'.[0K
 [0K
 Changes not staged for commit:[0K
   (use "git add <file>..." to update what will be committed)[0K
-  (use "git checkout -- <file>..." to discard changes in working[0K
-directory)[0K
+  (use "git checkout -- <file>..." to discard changes in working directory)[0K
 [0K
         [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
         [0;31mmodified:   .Rproj.user/8A7F91B8/console06/INDEX001[0m[0K
 [0K
-no changes added to commit (use "git add" and/or "git commit -a"[0K)
+no changes added to commit (use "git add" and/or "git commit -a")[0K
 [0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K.[0K[40G[39G[?25lC:\tesis_catie\Calderon_CATIE>git add[0K[?25h[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;Administrator:   - git  add .[?25l
-[0K[?25h]0;Administrator:  [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K@[0K@[0K[45G[46G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m@[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m[0K[?25h@[0K@[0K[?25lC:\tesis_catie\Calderon_CATIE>git commit -m@[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m[0K[?25h"[0K"[0K[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"c"[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"co"[0K[47G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"com"[0K[48G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"comm"[0K[49G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"commi"[0K[50G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"commit"[0K[51G[?25h]0;Administrator:   - git  commit -m"commit"[?25l
-[0K[?25h]0;Administrator:  [master 181c387] commit[0K[?25l
- 2 files changed, 21 insertions(+), 18 deletions(-)[0K
- rewrite .Rproj.user/8A7F91B8/console06/EA2D521E (98%)[0K
- rewrite .Rproj.user/8A7F91B8/console06/INDEX001 (100%)[0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;Administrator:   - git  push[?25l
-[0K[?25hCounting objects: 7, done.[0K[?25l
-Delta compression using up to 4 threads.[0K
-Compressing objects: 100% (7/7), done.[0K
-Writing objects: 100% (7/7), 1.32 KiB | 1.32 MiB/s, done.[0K
-Total 7 (delta 2), reused 0 (delta 0)[0K
-[0K[?25hremote: Resolving deltas:   0% (0/2)[0K[40G[?25lremote: Resolving deltas: 100% (2/2), completed with 2 local obj[0Ke
-cts.[0K
-[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
-   759b793..181c387  master -> master[0K
-[0K[?25h]0;Administrator:  [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;Administrator:   - git  status[?25l
-[0K[?25h]0;Administrator:  On branch master[0K[?25l
-Your branch is up to date with 'origin/master'.[0K
-[0K
-Changes not staged for commit:[0K
-  (use "git add <file>..." to update what will be committed)[0K
-  (use "git checkout -- <file>..." to discard changes in working[0K
-directory)[0K
-[0K
-        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
-[0K
-no changes added to commit (use "git add" and/or "git commit -a"[0K)
-[0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25hh[0Ke[0Kc[0Kk[0Ko[0Ku[0Kt[0K[44G[?25lC:\tesis_catie\Calderon_CATIE>git checkout T[0K[?25h5[0K[?25lC:\tesis_catie\Calderon_CATIE>git checkout T[0K[?25h6[0K]0;Administrator:   - git  checkout T6[?25l
-[0K[?25h]0;Administrator:  error: Your local changes to the following files would be overwr[0Ki[?25l
-tten by checkout:[0K
-        .Rproj.user/8A7F91B8/console06/EA2D521E[0K
-Please commit your changes or stash them before you switch branc[0Kh
-es.[0K
-Aborting[0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit checkout T6[0K[?25l
-[0K[?25h]0;Administrator:   - git  checkout T6]0;Administrator:  error: Your local changes to the following files would be overwritten by checkout:[0K[?25l
-        .Rproj.user/8A7F91B8/console06/EA2D521E[0K
-Please commit your changes or stash them before you switch branches.[0K
-Aborting[0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25h
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;Administrator:   - git  add .[?25l
+[0K[?25h
