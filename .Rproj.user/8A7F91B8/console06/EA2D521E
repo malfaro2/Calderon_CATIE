@@ -1,5 +1,5 @@
-[?25l
-[0K[?25h]0;  - git  status]0; On branch master[0K[?25l
+g[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;  - git  status[?25l
+[0K[?25hOn branch master[0K[?25l
 Your branch is up to date with 'origin/master'.[0K
 [0K
 Changes not staged for commit:[0K
@@ -8,10 +8,8 @@ Changes not staged for commit:[0K
 directory)[0K
 [0K
         [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
-        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/INDEX001[0m[0K
 [0K
 no changes added to commit (use "git add" and/or "git commit -a"[0K)
 [0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K.[0K[?25lC:\tesis_catie\Calderon_CATIE>git add[0K[?25h[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25h
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25h
