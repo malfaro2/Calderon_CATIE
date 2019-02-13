@@ -98,7 +98,6 @@ redundancy_var <- varpart(data_redundancy$redundancy,
                       redundancy_pcnm_sub)
 redundancy_var
 
-
 # Probando la significancia  ----------------------------------------------
 
 # significance of partition X1: CLAY
@@ -136,6 +135,8 @@ anova(rda(data_redundancy$redundancy ~  redundancy_pcnm_sub +
 
 
 
+rm(redundancy0_pcnm,redundancy_pcnm,redundancy_pcnm_sub,redundancy_var,
+   step_pcnm_redundnacy, n_redundancy)
 
 
 # Varpart Rao -------------------------------------------------------------
@@ -235,6 +236,8 @@ anova(rda(data_redundancy$Q ~  rao_pcnm_sub  +
             Condition(data_environmet_topo$ELEV)))
 
 
+rm(rao_pcnm,rao0_pcnm,rao_var,rao_pcnm_sub,step_pcnm_rao, 
+   n_rao)
 
 # Varpart Uniqueness ------------------------------------------------------
 # Seleccionar pcnms significativos  --------------------------------------
@@ -276,21 +279,19 @@ forward.sel(data_redundancy$U, data_environmet_topo,
 # do predictor matrices explain community composition, and how much?
 # partition variation among three predictor tables:
 
-# 1) Caracteristicas fisicas de la parcela: Clay P
-
+# 1) Caracteristicas fisicas de la parcela: Clay 
 
 # 2) Clima: PRECDRIEST TEMP
 
-#3) Topo:ELEV
+# 3) Topo:ELEV
 
 # 4) space ('parcelas_pcnm')
 
-
 uni_var <- varpart(data_redundancy$U,
-                   data_environmet_parcelas[,c("CLAY", "P")],
+                   data_environmet_parcelas[,c("CLAY")],
                    data_environmet_clima[,c("PRECDRIEST","TEMP")],
                    data_environmet_topo[,c("ELEV")],
-                   rao_pcnm_sub)
+                   uni_pcnm_sub)
 
 
 uni_var
@@ -336,5 +337,6 @@ anova(rda(data_redundancy$U ~ uni_pcnm_sub +
             Condition(data_environmet_topo$ELEV)))
 
 
-
+rm(uni_pcnm,uni0_pcnm,uni_var,uni_pcnm_sub,step_pcnm_uni, 
+   n_uni)
 
