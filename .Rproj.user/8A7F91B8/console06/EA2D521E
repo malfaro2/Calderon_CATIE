@@ -547,4 +547,55 @@ C:\tesis_catie\Calderon_CATIE>[0K[?25hgit push[0K]0;  - git  push[?25l
 [0K[?25hEverything up-to-date[0K[?25l
 [0K[?25h]0; [?25l
 C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git[0K[35G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25h
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8[0K/[?25l
+sources/prop/INDEX.[0K
+The file will have its original line endings in your working[0K
+directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/shared/n[0Ko
+tebooks/paths.[0K
+The file will have its original line endings in your working[0K
+directory.[0K
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8[0K/[?25l
+sources/prop/CD96E7BA.[0K
+The file will have its original line endings in your working[0K
+directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8[0K/
+sources/s-63FBD39A/B0F9A81C-contents.[0K
+The file will have its original line endings in your working[0K
+directory.[0K
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K"[0K"[0K[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"g"[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"gi"[0K[47G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git"[0K[48G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git "[0K[49G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git i"[0K[50G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ig"[0K[51G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ign"[0K[52G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git igno"[0K[53G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignor"[0K[54G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignore"[0K[55G[?25h]0;  - git  commit -m"git ignore"[?25l
+[0K[?25h]0; [master 21aa169] git ignore[0K[?25l
+ 5 files changed, 520 insertions(+), 1 deletion(-)[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/CD96E7[0KB
+A[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-63FBD39A/[0KB
+0F9A81C-contents[0K
+[0K[?25h[?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;  - git  push[?25l
+[0K[?25hCounting objects: 13, done.[0K[?25l
+Delta compression using up to 4 threads.[0K
+Compressing objects: 100% (12/12), done.[0K
+Writing objects: 100% (13/13), 3.42 KiB | 1.71 MiB/s, done.[0K
+Total 13 (delta 5), reused 0 (delta 0)[0K
+[0K[?25hremote: Resolving deltas: 100% (5/5), completed with 5 local[0K[?25l
+objects.[0K
+[0K[?25h]0; To https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+   4b9ac16..21aa169  master -> master[0K
+[0K
+[0K[?25hC:\tesis_catie\Calderon_CATIE>[0Kg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K[?25l
+[0K[?25h]0;  - git  status]0; On branch master[0K[?25l
+Your branch is up to date with 'origin/master'.[0K
+[0K
+Changes not staged for commit:[0K
+  (use "git add <file>..." to update what will be committed)[0K
+  (use "git checkout -- <file>..." to discard changes in wor[0Kk
+ing directory)[0K
+[0K
+        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
+        [0;31mmodified:   .Rproj.user/shared/notebooks/paths[0m[0K
+[0K
+no changes added to commit (use "git add" and/or "git commit[0K
+-a")[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h
