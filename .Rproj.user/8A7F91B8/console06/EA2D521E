@@ -1,36 +1,253 @@
-g[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;Administrator:   - git  add .[?25l
-[0K[?25h]0;Administrator:  [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K"[0K"[0K[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"."[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m".."[0K[47G[?25h[48G]0;Administrator:   - git  commit -m".."[?25l
-[0K[?25h]0;Administrator:  [master 444b8eb] ..[0K[?25l
- 1 file changed, 2 insertions(+), 18 deletions(-)[0K
- rewrite .Rproj.user/8A7F91B8/console06/EA2D521E (100%)[0K
+[?25l[4A[0;37;97;44m                                     Main nano help text[0K
+[0m[0K
 [0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;Administrator:   - git  push[?25l
-[0K[?25hCounting objects: 6, done.[0K[?25l
-Delta compression using up to 4 threads.[0K
-Compressing objects: 100% (6/6), done.[0K
-Writing objects: 100% (6/6), 517 bytes | 517.00 KiB/s, done.[0K
-Total 6 (delta 3), reused 0 (delta 0)[0K
-[0K[?25hremote: Resolving deltas: 100% (3/3), completed with 3 local objects.[0K[?25l
-[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
-   f6f307f..444b8eb  master -> master[0K
-[0K[?25h]0;Administrator:  [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;Administrator:   - git  status[?25l
-[0K[?25hOn branch master[0K[?25l
-Your branch is up to date with 'origin/master'.[0K
+[0;37;42m        [0m[0K
 [0K
-Changes not staged for commit:[0K
-  (use "git add <file>..." to update what will be committed)[0K
-  (use "git checkout -- <file>..." to discard changes in working directory)[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
 [0K
-        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
 [0K
-no changes added to commit (use "git add" and/or "git commit -a")[0K
-[0K[?25h]0;Administrator:  [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit status[0K[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m".."[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git status[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git checkout T6[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git checkout T6[0K[?25h]0;Administrator:   - git  checkout T6[?25l
-[0K[?25h]0;Administrator:  error: Your local changes to the following files would be overwritten by checkout:[0K[?25l
-        .Rproj.user/8A7F91B8/console06/EA2D521E[0K
-Please commit your changes or stash them before you switch branches.[0K
-Aborting[0K
 [0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25h
+[0;36m^L[0m [0;32mRefresh[0m        [0;36m^W[0m [0;32mWhere Is[0m       [0;36m^P[0m [0;32mPrev Line[0m      [0;36m^Y[0m [0;32mPrev Page[0m      [0;36mM-\[0m [0;32mFirst Line[0m[0K
+[0;36m^X[0m [0;32mClose[0m          [0;36mM-W[0m [0;32mWhereIs Next[0m  [0;36m^N[0m [0;32mNext Line[0m      [0;36m^V[0m [0;32mNext Page[0m      [0;36mM-/[0m [0;32mLast Line[0m[0K[18A[92G[?25h[?25l
+
+ The nano editor is designed to emulate the functionality and ease-of-use[0K
+ of the UW Pico text editor.  There are four main sections of the editor.[0K
+ The top line shows the program version, the current filename being[0K
+ edited, and whether or not the file has been modified.  Next is the main[0K
+ editor window showing the file being edited.  The status line is the[0K
+ third line from the bottom and shows important messages.  The bottom two[0K
+ lines show the most commonly used shortcuts in the editor.[0K
+[0K
+ Shortcuts are written as follows: Control-key sequences are notated with[0K
+ a [0;31;91m'^'[0m and can be entered either by using the Ctrl key or pressing the Esc[0K
+ key twice.  Meta-key sequences are notated with [0;31;91m'M-'[0m and can be entered[0K
+ using either the Alt, Cmd, or Esc key, depending on your keyboard setup.[0K
+ Also, pressing Esc twice and then typing a three-digit decimal number[0K
+ from 000 to 255 will enter the character with the corresponding value.[0K
+[0K
+[0;36m^L[0m [0;32mRefresh[0m        [0;36m^W[0m [0;32mWhere Is[0m       [0;36m^P[0m [0;32mPrev Line[0m      [0;36m^Y[0m [0;32mPrev Page[0m      [0;36mM-\[0m [0;32mFirst Line[0m[0K
+[0;36m^X[0m [0;32mClose[0m          [0;36mM-W[0m [0;32mWhereIs Next[0m  [0;36m^N[0m [0;32mNext Line[0m      [0;36m^V[0m [0;32mNext Page[0m      [0;36mM-/[0m [0;32mLast Line[0m[0K[16A[?25h[6n[?25l
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                     [0;37;97;42m[ Unbound key: ^M ][0m[0K
+[0;36m^L[0m [0;32mRefresh[0m        [0;36m^W[0m [0;32mWhere Is[0m       [0;36m^P[0m [0;32mPrev Line[0m      [0;36m^Y[0m [0;32mPrev Page[0m      [0;36mM-\[0m [0;32mFirst Line[0m[0K
+[0;36m^X[0m [0;32mClose[0m          [0;36mM-W[0m [0;32mWhereIs Next[0m  [0;36m^N[0m [0;32mNext Line[0m      [0;36m^V[0m [0;32mNext Page[0m      [0;36mM-/[0m [0;32mLast Line[0m[0K[16A[?25h[?25l
+
+
+
+
+
+
+
+
+
+
+
+[0K
+[0K
+[0K
+[0K
+[0K[5A[?25h[?25l[13A[0;37;97;44m  GNU nano 2.9.3         C:/tesis_catie/Calderon_CATIE/.git/COMMIT_EDITMSG         Modified[0K
+[0m[0K
+[0K
+[0;37;42m        [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[14A[?25h[?25l[1A[?25h[?25l[0;33m&[0;37;42m       [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[15A[2G[?25h[?25l[0;37;42m        [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[15A[?25h[?25l[0;33m^[0;37;42m       [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[15A[2G[?25h[3G[2G[?25l[0;33m^x[0;37;42m      [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[15A[3G[?25h[4G[3G[?25l[0;33m^[0;37;42m       [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[15A[2G[?25h[?25l[0;33m^X[0;37;42m      [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[15A[3G[?25h[?25l[0;33m^X[0m[0K
+[0;33m^X[0;37;42m      [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K[15A[?25h[?25l
+[0;37;42m        [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K[14A[?25h[?25l[1A[?25h[0K[?25l
+[0;33m^X[0m[0K
+[0;37;42m        [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K[14A[?25h[?25l[1A[0;33m^X[0m[0K
+[0;37;42m        [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K[15A[?25h[?25l[1A[0;33m^X[0m[0K
+[0;37;42m        [0m[0K
+[0K
+[0;37;90m# Please enter the commit message for your changes. Lines starting[0m[0K
+[0;37;90m# with '#' will be ignored, and an empty message aborts the commit.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m# On branch[0;1m master[0m[0K
+[0;37;90m# Your branch is up to date with 'origin/master'.[0m[0K
+[0;37;90m#[0m[0K
+[0;37;90m#[0;35;95m Changes to be committed:[0m[0K
+[0;37;90m#[0;32m       modified:[0m   .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+[0;37;90m#[0m[0K
+[0K
+[0K
+[0K
+[0K
+[0K[16A[?25h
