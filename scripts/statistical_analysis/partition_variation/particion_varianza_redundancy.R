@@ -16,17 +16,24 @@ library(adespatial)
 
 # Data redundancy-Rao-Uniqueness ------------------------------------------
 
-data_redundancy <- read.csv("scripts/statistical_analysis/partition_variation/data/data_redundancy.csv")
+data_redundancy <- 
+read.csv("scripts/statistical_analysis/partition_variation/data/data_redundancy.csv")
 
 # Data Variables ambientales ----------------------------------------------
-data_environmet_topo <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_topo.csv")
-data_environmet_parcelas <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_quimico.csv")
-data_environmet_clima <- read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_clima.csv")
+data_environmet_topo <- 
+read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_topo.csv")
+
+data_environmet_parcelas <- 
+read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_quimico.csv")
+
+data_environmet_clima <- 
+read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_clima.csv")
 
 
 # Data log coordenadas de las parcelas  -----------------------------------
 
-data_coor_parcelas <- read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas.csv")
+data_coor_parcelas <- 
+read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas.csv")
 
 
 # Calcular PCNMs a partir de una matriz de distancia euclidea -------------
