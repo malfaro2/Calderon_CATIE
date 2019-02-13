@@ -1,0 +1,36 @@
+g[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K"#[0K[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"[0K[?25hc[0Ko[0Km[0Km[0Ki[0Kt[0K"[0K]0;  - git  commit -m"commit"[?25l
+[0K[?25h]0; On branch master[0K[?25l
+Your branch is up to date with 'origin/master'.[0K
+[0K
+Changes not staged for commit:[0K
+        [0;31mmodified:   data/.gitignore[0m[0K
+[0K
+no changes added to commit[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;  - git  push[?25l
+[0K[?25h]0; Everything up-to-date[0K[?25l
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K"[0K"[0K[45G[44G[?25lC:\tesis_catie\Calderon_CATIE>git commit -mg""[0K[45G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -mgi""[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -mgit""[0K[47G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -mgi""[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -mg""[0K[45G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m""[0K[44G[?25h[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"[0K[44G[?25h[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"g[0K[?25hi[0Kt[0K[49G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git i[0K[?25hg[0Kn[0Ko[0Kr[0Ke[0K"[0K]0;  - git  commit -m"git ignore"[?25l
+[0K[?25h[master 9481156] git ignore[0K[?25l
+ 1 file changed, 1 insertion(+), 1 deletion(-)[0K
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;  - git  push[?25l
+[0K[?25hCounting objects: 4, done.[0K[?25l
+[0K[?25hDelta compression using up to 4 threads.[0K[?25l
+Compressing objects: 100% (3/3), done.[0K
+Writing objects: 100% (4/4), 399 bytes | 399.00 KiB/s, done.[0K
+Total 4 (delta 1), reused 0 (delta 0)[0K
+[0K[?25hremote: Resolving deltas: 100% (1/1), completed with 1 local[0K[?25l
+object.[0K
+[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+   ed74fb2..9481156  master -> master[0K
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;  - git  status[?25l
+[0K[?25h]0; On branch master[0K[?25l
+Your branch is up to date with 'origin/master'.[0K
+[0K
+nothing to commit, working tree clean[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit status[0K[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignore"[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h
