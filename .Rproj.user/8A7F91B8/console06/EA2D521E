@@ -1,37 +1,17 @@
-[?25l[6A  (use "git checkout -- <file>..." to discard changes in working directo[0Kr
-[0K
-        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
-[0K
-no changes added to commit (use "git add" and/or "git commit -a")[0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit status[0K[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git pusj[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignore"[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25h]0; [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit add .[0K[?25lC:\tesis_catie\Calderon_CATIE>git status[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignore"[0K[?25h]0;  - git  commit -m"git ignore"[?25l
-[0K[?25h]0; [master 73ed869] git ignore[0K[?25l
- 3 files changed, 10 insertions(+), 603 deletions(-)[0K
- rewrite .Rproj.user/8A7F91B8/console06/EA2D521E (99%)[0K
-[0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit commit -m"git ignore"[0K[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git status[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h]0;  - git  push[?25l
-[0K[?25hCounting objects: 8, done.[0K[?25l
-Delta compression using up to 4 threads.[0K
-Compressing objects: 100% (7/7), done.[0K
-Writing objects: 100% (8/8), 870 bytes | 870.00 KiB/s, done.[0K
-Total 8 (delta 3), reused 0 (delta 0)[0K
-[0K[?25hremote: Resolving deltas:   0% (0/3)[0K[40G[?25lremote: Resolving deltas: 100% (3/3), completed with 3 local objects.[0K
-[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
-   1a3845b..73ed869  master -> master[0K
-[0K[?25h]0; [?25l
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit push[0K[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignore"[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"git ignore"[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git status[0K[?25h]0;  - git  status[?25l
-[0K[?25h]0; On branch master[0K[?25l
+[?25l
+[0K[?25h]0;  - git  status]0; On branch master[0K[?25l
 Your branch is up to date with 'origin/master'.[0K
 [0K
 Changes not staged for commit:[0K
   (use "git add <file>..." to update what will be committed)[0K
-  (use "git checkout -- <file>..." to discard changes in working directo[0Kr
-y)[0K
+  (use "git checkout -- <file>..." to discard changes in working[0K
+directory)[0K
 [0K
         [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
+        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/INDEX001[0m[0K
 [0K
-no changes added to commit (use "git add" and/or "git commit -a")[0K
+no changes added to commit (use "git add" and/or "git commit -a"[0K)
 [0K
-C:\tesis_catie\Calderon_CATIE>[0K[?25hgit status[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K.[0K[?25lC:\tesis_catie\Calderon_CATIE>git add[0K[?25h[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
+[0K[?25h
