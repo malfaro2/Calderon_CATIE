@@ -1,2 +1,36 @@
 g[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;Administrator:   - git  add .[?25l
-[0K[?25h
+[0K[?25h]0;Administrator:  [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K"[0K"[0K[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"."[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m".."[0K[47G[?25h[48G]0;Administrator:   - git  commit -m".."[?25l
+[0K[?25h]0;Administrator:  [master 444b8eb] ..[0K[?25l
+ 1 file changed, 2 insertions(+), 18 deletions(-)[0K
+ rewrite .Rproj.user/8A7F91B8/console06/EA2D521E (100%)[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;Administrator:   - git  push[?25l
+[0K[?25hCounting objects: 6, done.[0K[?25l
+Delta compression using up to 4 threads.[0K
+Compressing objects: 100% (6/6), done.[0K
+Writing objects: 100% (6/6), 517 bytes | 517.00 KiB/s, done.[0K
+Total 6 (delta 3), reused 0 (delta 0)[0K
+[0K[?25hremote: Resolving deltas: 100% (3/3), completed with 3 local objects.[0K[?25l
+[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+   f6f307f..444b8eb  master -> master[0K
+[0K[?25h]0;Administrator:  [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;Administrator:   - git  status[?25l
+[0K[?25hOn branch master[0K[?25l
+Your branch is up to date with 'origin/master'.[0K
+[0K
+Changes not staged for commit:[0K
+  (use "git add <file>..." to update what will be committed)[0K
+  (use "git checkout -- <file>..." to discard changes in working directory)[0K
+[0K
+        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/EA2D521E[0m[0K
+[0K
+no changes added to commit (use "git add" and/or "git commit -a")[0K
+[0K[?25h]0;Administrator:  [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit status[0K[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m".."[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git status[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git checkout T6[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git push[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git checkout T6[0K[?25h]0;Administrator:   - git  checkout T6[?25l
+[0K[?25h]0;Administrator:  error: Your local changes to the following files would be overwritten by checkout:[0K[?25l
+        .Rproj.user/8A7F91B8/console06/EA2D521E[0K
+Please commit your changes or stash them before you switch branches.[0K
+Aborting[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25h
