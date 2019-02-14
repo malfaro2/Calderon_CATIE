@@ -291,16 +291,3 @@ anova(rda(data_redundancy_sinpalmas$U ~ uni_pcnm_sub_sp +
 
 rm(uni_pcnm_sp,uni0_pcnm_sp,uni_var_sp,uni_pcnm_sub_sp,step_pcnm_uni_sp, 
    n_uni_sp)
-
-
-
-
-
-
-
-
-
-
-
-
-
