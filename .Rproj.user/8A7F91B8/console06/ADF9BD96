@@ -1,0 +1,130 @@
+g[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25h-[0K[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25h"[0K"[0K[44G[?25lC:\tesis_catie\Calderon_CATIE>git commit -"B"[0K[45G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Br"[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Bra"[0K[47G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Bran"[0K[48G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branc"[0K[49G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch"[0K[50G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch "[0K[51G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch m"[0K[52G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch me"[0K[53G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch mer"[0K[54G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch merg[0K"
+[0K[1A[55G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -"Branch merg[0Ke
+"[0K[1G[?25h]0;  - git  commit -"Branch merge"[?25l
+[0K[?25herror: unknown switch `B'[0K[?25l
+usage: git commit [<options>] [--] <pathspec>...[0K
+[0K
+    -q, --quiet           suppress summary after succe[0Ks
+sful commit[0K
+    -v, --verbose         show diff in commit message [0Kt
+emplate[0K
+[0K
+Commit message options[0K
+    -F, --file <file>     read message from file[0K
+    --author <author>     override author for commit[0K
+    --date <date>         override date for commit[0K
+    -m, --message <message>[0K
+                          commit message[0K
+    -c, --reedit-message <commit>[0K
+                          reuse and edit message from [0Ks
+pecified commit[0K
+    -C, --reuse-message <commit>[0K
+                          reuse message from specified[0K
+commit[0K
+    --fixup <commit>      use autosquash formatted mes[0Ks
+age to fixup specified commit[0K
+    --squash <commit>     use autosquash formatted mes[0Ks
+age to squash specified commit[0K
+    --reset-author        the commit is authored by me[0K
+now (used with -C/-c/--amend)[0K
+    -s, --signoff         add Signed-off-by:[0K
+    -t, --template <file>[0K
+                          use specified template file[0K
+    -e, --edit            force edit of commit[0K
+    --cleanup <default>   how to strip spaces and #com[0Km
+ents from message[0K
+    --status              include status in commit mes[0Ks
+age template[0K
+    -S, --gpg-sign[=<key-id>][0K
+                          GPG sign commit[0K
+[0K
+Commit contents options[0K
+    -a, --all             commit all changed files[0K
+    -i, --include         add specified files to index[0K
+for commit[0K
+    --interactive         interactively add files[0K
+    -p, --patch           interactively add changes[0K
+    -o, --only            commit only specified files[0K
+    -n, --no-verify       bypass pre-commit and commit[0K-
+msg hooks[0K
+    --dry-run             show what would be committed[0K
+    --short[0K[?25h]0;                show status concisely[0K[?25l
+    --branch              show branch information[0K
+    --ahead-behind        compute full ahead/behind va[0Kl
+ues[0K
+    --porcelain           machine-readable output[0K
+    --long                show status in long format ([0Kd
+efault)[0K
+    -z, --null            terminate entries with NUL[0K
+    --amend               amend previous commit[0K
+    --no-post-rewrite     bypass post-rewrite hook[0K
+    -u, --untracked-files[=<mode>][0K
+                          show untracked files, option[0Ka
+l modes: all, normal, no. (Default: all)[0K
+[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit commit -"Branch merg[0Ke[?25l
+"[0K[?25h[1G[?25l[1A[55G[?25h[54G[53G[52G[51G[50G[49G[48G[47G[46G[45G[44G[43G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch mer[0Kg
+e"[0K[1A[44G[?25h]0;  - git  commit -m"Branch merge"[?25l
+
+[0K[?25h]0; [master 6e7c8ff] Branch merge[0K[?25l
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;  - git  push[?25l
+[0K[?25h]0; To https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+ [0;31m! [rejected]       [0m master -> master (non-fast-forwar[0Kd
+)[0K
+[0;31merror: failed to push some refs to 'https://github.com[0K/
+malfaro2/Calderon_CATIE'[0m[0K
+[0;33mhint: Updates were rejected because the tip of your cu[0Kr
+rent branch is behind[0m[0K
+[0;33mhint: its remote counterpart. Integrate the remote cha[0Kn
+ges (e.g.[0m[0K
+[0;33mhint: 'git pull ...') before pushing again.[0m[0K
+[0;33mhint: See the 'Note about fast-forwards' in 'git push [0K-
+-help' for details.[0m[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit push[0K]0;  - git  push[?25l
+[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+ [0;31m! [rejected]       [0m master -> master (non-fast-forward)[0K
+[0;31merror: failed to push some refs to 'https://github.com/malfaro2/Calderon_CATIE'[0m[0K
+[0K[?25h]0; [0;33mhint: Updates were rejected because the tip of your current branch is behind[0m[0K[?25l
+[0;33mhint: its remote counterpart. Integrate the remote changes (e.g.[0m[0K
+[0;33mhint: 'git pull ...') before pushing again.[0m[0K
+[0;33mhint: See the 'Note about fast-forwards' in 'git push --help' for details.[0m[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit push[0K[?25l
+[0K[?25h]0;  - git  pushCounting objects: 25, done.[0K[?25l
+Delta compression using up to 4 threads.[0K
+Compressing objects: 100% (22/22), done.[0K
+Writing objects: 100% (25/25), 2.62 KiB | 671.00 KiB/s, done.[0K
+Total 25 (delta 10), reused 0 (delta 0)[0K
+[0K[?25hremote: Resolving deltas: 100% (10/10), completed with 4 local objects.[0K[?25l
+[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+   d727c3b..2a6c331  master -> master[0K
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git s[0K[?25ht[0Ka[0Kt[0Ku[0Ks[0K]0;  - git  status[?25l
+[0K[?25h]0; On branch master[0K[?25l
+Your branch is up to date with 'origin/master'.[0K
+[0K
+Changes not staged for commit:[0K
+  (use "git add <file>..." to update what will be committed)[0K
+  (use "git checkout -- <file>..." to discard changes in working directory)[0K
+[0K
+        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/INDEX001[0m[0K
+[0K
+Untracked files:[0K
+  (use "git add <file>..." to include in what will be committed)[0K
+[0K
+        [0;31m.Rproj.user/8A7F91B8/console06/ADF9BD96[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/prop/127E2629[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/prop/78593BB7[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/prop/7A08AD0B[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/prop/9589116E[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/prop/96BE9E21[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/prop/FD5004D4[0m[0K
+        [0;31m.Rproj.user/8A7F91B8/sources/s-C27A6990/[0m[0K
+[0K
+no changes added to commit (use "git add" and/or "git commit -a")[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
+[0K[?25h
