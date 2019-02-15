@@ -127,4 +127,89 @@ Untracked files:[0K
 no changes added to commit (use "git add" and/or "git commit -a")[0K
 [0K
 C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git a[0K[?25hd[0Kd[0K[39G[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h]0;  - git  add .[?25l
-[0K[?25h
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/prop/127E26[0K2[?25l
+9.[0K
+The file will have its original line endings in your working directory.[0K
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/prop/78593B[0KB[?25l
+7.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/prop/7A08AD[0K0
+B.[0K
+The file will have its original line endings in your working directory.[0K
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/prop/958911[0K6[?25l
+E.[0K
+The file will have its original line endings in your working directory.[0K
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/prop/96BE9E[0K2[?25l
+1.[0K
+The file will have its original line endings in your working directory.[0K
+[0K[?25hwarning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/prop/FD5004[0KD[?25l
+4.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0K2
+052172C-contents.[0K
+The file will have its original line endings in your working directory.[0K
+[0K[?25h]0; warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0K5[?25l
+6B93A8D-contents.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0K9
+76C7B82-contents.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0KE
+B80788E-contents.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0KF
+150844A-contents.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0KF
+2A235EA-contents.[0K
+The file will have its original line endings in your working directory.[0K
+warning: LF will be replaced by CRLF in .Rproj.user/8A7F91B8/sources/s-C27A6990/[0KF
+3DD9D30-contents.[0K
+The file will have its original line endings in your working directory.[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git c[0K[?25ho[0Km[0Km[0Ki[0Kt[0K[42G[?25lC:\tesis_catie\Calderon_CATIE>git commit -[0K[?25hm[0K"[0K"[0K[45G[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"B"[0K[46G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Br"[0K[47G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Brn"[0K[48G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Br"[0K[47G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Bra"[0K[48G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Bran"[0K[49G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branc"[0K[50G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch"[0K[51G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch "[0K[52G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch m"[0K[53G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch me"[0K[54G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch mer"[0K[55G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch merg"[0K[56G[?25h[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch merge"[0K[57G[?25h]0;  - git  commit -m"Branch merge"[?25l
+[0K[?25h]0; [master 0c7b9d8] Branch merge[0K[?25l
+ 16 files changed, 1930 insertions(+), 5 deletions(-)[0K
+ create mode 100644 .Rproj.user/8A7F91B8/console06/ADF9BD96[0K
+ rewrite .Rproj.user/8A7F91B8/console06/INDEX001 (61%)[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/127E2629[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/78593BB7[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/7A08AD0B[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/9589116E[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/96BE9E21[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/prop/FD5004D4[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/2052172C-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/56B93A8D-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/976C7B82-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/EB80788E-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/F150844A-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/F2A235EA-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/F3DD9D30-contents[0K
+ create mode 100644 .Rproj.user/8A7F91B8/sources/s-C27A6990/lock_file[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25hg[0Ki[0Kt[0K[35G[?25lC:\tesis_catie\Calderon_CATIE>git p[0K[?25hu[0Ks[0Kh[0K]0;  - git  push[?25l
+[0K[?25hCounting objects: 16, done.[0K[?25l
+Delta compression using up to 4 threads.[0K
+Compressing objects: 100% (16/16), done.[0K
+Writing objects:  43% (7/16)[0K[1G[?25hWriting objects: 100% (16/16), 3.65 KiB | 1.22 MiB/s, done.[0K[?25l
+Total 16 (delta 4), reused 0 (delta 0)[0K
+[0K[?25h[?25lremote: Resolving deltas:  75% (3/4)[0K[1G[?25hremote: Resolving deltas: 100% (4/4), completed with 4 local objects.[0K[?25l
+[0K[?25hTo https://github.com/malfaro2/Calderon_CATIE[0K[?25l
+   2a6c331..0c7b9d8  master -> master[0K
+[0K[?25h]0; [?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit push[0K[?25l
+[0K[?25h]0;  - git  push]0; Everything up-to-date[0K[?25l
+[0K[?25h[?25l
+C:\tesis_catie\Calderon_CATIE>[0K[?25hgit push[0K[?25lC:\tesis_catie\Calderon_CATIE>git commit -m"Branch merge"[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git add .[0K[?25h[?25lC:\tesis_catie\Calderon_CATIE>git status[0K[?25h]0;  - git  status[?25l
+[0K[?25h]0; On branch master[0K[?25l
+Your branch is up to date with 'origin/master'.[0K
+[0K
+Changes not staged for commit:[0K
+  (use "git add <file>..." to update what will be committed)[0K
+  (use "git checkout -- <file>..." to discard changes in working directory)[0K
+[0K
+        [0;31mmodified:   .Rproj.user/8A7F91B8/console06/ADF9BD96[0m[0K
+[0K
+no changes added to commit (use "git add" and/or "git commit -a")[0K
+[0K
+C:\tesis_catie\Calderon_CATIE>[0K[?25h
