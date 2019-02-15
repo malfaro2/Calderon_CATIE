@@ -306,9 +306,8 @@ uni_var
 
 # Probando la significancia  ----------------------------------------------
 
-# significance of partition X1: CLAY P
+# significance of partition X1: CLAY 
 anova(rda(data_redundancy$U ~ data_environmet_parcelas$CLAY +
-            data_environmet_parcelas$P+
             
             Condition(data_environmet_clima$PRECDRIEST) + 
             Condition(data_environmet_clima$TEMP) +
@@ -321,7 +320,6 @@ anova(rda(data_redundancy$U ~ data_environmet_clima$PRECDRIEST +
             data_environmet_clima$TEMP +
             
             Condition(data_environmet_parcelas$CLAY) + 
-            Condition(data_environmet_parcelas$P) +
             Condition(data_environmet_topo$ELEV) + 
             Condition(uni_pcnm_sub)))
 
@@ -329,7 +327,6 @@ anova(rda(data_redundancy$U ~ data_environmet_clima$PRECDRIEST +
 anova(rda(data_redundancy$U ~ data_environmet_topo$ELEV +
             
             Condition(data_environmet_parcelas$CLAY) + 
-            Condition(data_environmet_parcelas$P) +
             Condition(data_environmet_clima$PRECDRIEST) + 
             Condition(data_environmet_clima$TEMP) +
             Condition(uni_pcnm_sub)))
@@ -338,7 +335,6 @@ anova(rda(data_redundancy$U ~ data_environmet_topo$ELEV +
 anova(rda(data_redundancy$U ~ uni_pcnm_sub +
             
             Condition(data_environmet_parcelas$CLAY) + 
-            Condition(data_environmet_parcelas$P) +
             Condition(data_environmet_clima$PRECDRIEST) + 
             Condition(data_environmet_clima$TEMP) +
             Condition(data_environmet_topo$ELEV)))

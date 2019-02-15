@@ -113,7 +113,7 @@ fdiv_var_sp
 anova(rda(data_fdiver_sp$fdiv ~ data_environmet_parcelas$Mg +
             
             Condition(data_environmet_clima$TEMPSD) + 
-            Condition(fdiv_pcnm_sub)))
+            Condition(fdiv_pcnm_sub_sp)))
 
 
 # significance of partition X2: TEMPSD 
@@ -209,7 +209,7 @@ anova(rda(data_fdiver_sp$feve ~ data_environmet_clima$PRECCV  +
             
             Condition(data_environmet_parcelas$SAND) + 
             Condition(data_environmet_topo$ELEV) +
-            Condition(feve_pcnm_sub)))
+            Condition(feve_pcnm_sub_sp)))
 
 # significance of partition X3: ELEV
 anova(rda(data_fdiver_sp$feve ~ data_environmet_topo$ELEV +

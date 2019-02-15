@@ -108,12 +108,12 @@ redundancy_sinpalmas_var
 
 # Probando la significancia  ----------------------------------------------
 
-# significance of partition X1: CLAY
+# significance of partition X1: PRECCV
 anova(rda(data_redundancy_sinpalmas$redundancy ~data_environmet_clima$PRECCV +
             Condition(redundancy_pcnm_sub_sp)))
 
 
-# significance of partition X2: PRECDRIEST, TEMP
+# significance of partition X2: Espacial
 anova(rda(data_redundancy_sinpalmas$redundancy ~ redundancy_pcnm_sub_sp +
             Condition(data_environmet_clima$PRECCV)))
 
@@ -214,7 +214,6 @@ anova(rda(data_redundancy_sinpalmas$Q ~ rao_pcnm_sub_sp   +
 
 rm(rao_pcnm_sp,rao0_pcnm_sp,rao_var_sp,rao_pcnm_sub_sp,step_pcnm_rao_sp, 
    n_rao_sp)
-
 
 
 # Varpart Uniqueness SIN PALMAS -------------------------------------------
