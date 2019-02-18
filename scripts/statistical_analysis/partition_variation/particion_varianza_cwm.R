@@ -23,9 +23,15 @@ read.csv("scripts/statistical_analysis/partition_variation/data/data_cwm.csv")
 #eliminar af
 data_cwm <- data_cwm[,-1]
 
+
+# Scale variables ---------------------------------------------------------
+data_cwm <- scale(data_cwm)
+
+
 # Data Variables ambientales ----------------------------------------------
 data_environmet_topo <- 
 read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_topo.csv")
+
 
 data_environmet_parcelas <- 
 read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_quimico.csv")
