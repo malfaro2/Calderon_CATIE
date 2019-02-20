@@ -1,0 +1,32 @@
+---
+title: "Relaciones lineales entre variables"
+output: html_document
+---
+#Redundancia
++ redundancia ~ precipitación 
++ redundancia ~ temperatura
++ redundancia ~ características químicas de las parcelas
++ redundancia ~ Biomasa de los árboles 
+
++ uniquenees ~ precipitación 
++ uniquenees ~ temperatura
++ uniquenees ~ características químicas de las parcelas
++ uniquenees ~ Biomasa de los árboles 
+
+
+#Diversidad funcional
+
++ rao ~ precipitación 
++ rao ~ temperatura
++ rao ~ características químicas de las parcelas
++ rao ~ Biomasa de los árboles 
+
++ fdis ~ precipitación 
++ fdis ~ temperatura
++ fdis ~ características químicas de las parcelas
++ fdis ~ Biomasa de los árboles 
+
++ feve ~ precipitación 
++ feve ~ temperatura
++ feve ~ características químicas de las parcelas
++ feve ~ Biomasa de los árboles 
