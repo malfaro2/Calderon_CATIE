@@ -1,4 +1,5 @@
 rm(list = ls())
+set.seed(123)
 
 # Variation Partitioning - incorporating spatial processes ----------------
 
@@ -13,7 +14,6 @@ library(vegan)
 library(adespatial)
 
 # Cargar datos ------------------------------------------------------------
-
 
 # Data Fiv-Feve-fdis ------------------------------------------------------
 
@@ -37,7 +37,13 @@ data_environmet_clima <-
 # Data log coordenadas de las parcelas  -----------------------------------
 
 data_coor_parcelas <- 
-  read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas.csv")
+  read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas_log.csv")
+
+# Scale variables ---------------------------------------------------------
+data_fdiver_sp <- data.frame(scale(data_fdiver_sp))
+data_environmet_topo <- data.frame(scale(data_environmet_topo))
+data_environmet_parcelas <- data.frame(scale(data_environmet_parcelas))
+data_environmet_clima <- data.frame(scale(data_environmet_clima))
 
 # Calcular PCNMs a partir de una matriz de distancia euclidea -------------
 #Principal Coordinates of Neighbour Matrices (PCNMs) generate a dataframe 
@@ -49,6 +55,8 @@ data_coor_parcelas <-
 
 parcelas_pcnm <- pcnm(dist(data_coor_parcelas))
 
+#Sacar pcnm 1
+parcelas_pcnm$vectors <- parcelas_pcnm$vectors[,-(1)]
 
 # Varpart Fdiv sin palmas -------------------------------------------------
 # Seleccionar pcnms significativos  ---------------------------------------
@@ -64,13 +72,14 @@ fdiv0_pcnm_sp <- rda(data_fdiver_sp$fdiv ~ 1,
 
 #Seleccionar variables significativas para fdiv
 fdiv_step_pcnm_sp <- ordistep(fdiv0_pcnm_sp, 
-                           scope=formula(fdiv_pcnm_sp))
+                           scope=formula(fdiv_pcnm_sp),
+                           permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 fdiv_step_pcnm_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_fdiv_sp <- paste('PCNM', c(10,5,46,7,36,8), sep='')
+n_fdiv_sp <- paste('PCNM', c(10,5,46,36,7,8,4), sep='')
 n_fdiv_sp
 fdiv_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_fdiv_sp]
 
@@ -78,14 +87,28 @@ fdiv_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_fdiv_sp]
 # Forward selection de variables ambientales redundancy -------------------
 
 forward.sel(data_fdiver_sp$fdiv, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_fdiver_sp$fdiv, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_fdiver_sp$fdiv, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
+# Data para qeco ----------------------------------------------------------
 
+data_espacio_qeco <- fdiv_pcnm_sub_sp
+Mg <- data_environmet_parcelas[,c("Mg")]
+data_clima_qeco <- data_environmet_clima[,c("TEMPSD")]
+fdiv_sp <- data_fdiver_sp$fdiv
+
+data_fdiv_sp_qeco <- cbind(data_espacio_qeco,
+                        data_clima_qeco, 
+                        Mg,
+                        fdiv_sp)
+
+View(data_fdiv_sp_qeco)
+
+write.csv(data_fdiv_sp_qeco,"data/resultados_csv/varpart/data_fdiv_sp_qeco.csv")
 
 # Modelo fdiv ---------------------------------------------------------------
 
@@ -148,13 +171,14 @@ feve0_pcnm_sp <- rda(data_fdiver_sp$feve ~ 1,
 
 #Seleccionar variables significativas para feve
 feve_step_pcnm_sp <- ordistep(feve0_pcnm_sp, 
-                           scope=formula(feve_pcnm_sp))
+                           scope=formula(feve_pcnm_sp),
+                           permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 feve_step_pcnm_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_feve_sp <- paste('PCNM', c(5,3,10,7,36,49), sep='')
+n_feve_sp <- paste('PCNM', c(5,10,3,7,36,49,51), sep='')
 n_feve_sp
 feve_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_feve_sp]
 
@@ -162,13 +186,31 @@ feve_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_feve_sp]
 # Forward selection de variables ambientales feve -------------------
 
 forward.sel(data_fdiver_sp$feve, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_fdiver_sp$feve, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_fdiver_sp$feve, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
+
+# Data para qeco ----------------------------------------------------------
+
+data_espacio_qeco <- feve_pcnm_sub_sp 
+SAND <- data_environmet_parcelas[,c("SAND")]
+data_clima_qeco <- data_environmet_clima[,c("TEMPSD","PRECCV")]
+ELEV <- data_environmet_topo[,c("ELEV")]
+feve_sp <- data_fdiver_sp$feve
+
+data_feve_sp_qeco <- cbind(data_espacio_qeco,
+                        SAND,
+                        data_clima_qeco, 
+                        ELEV,
+                        feve_sp)
+
+View(data_feve_sp_qeco)
+
+write.csv(data_feve_sp_qeco,"data/resultados_csv/varpart/data_feve_sp_qeco.csv")
 
 
 # Modelo feve ---------------------------------------------------------------
@@ -246,27 +288,44 @@ fdis0_pcnm_sp <- rda(data_fdiver_sp$fdis ~ 1,
 
 #Seleccionar variables significativas para fdis
 fdis_step_pcnm_sp <- ordistep(fdis0_pcnm_sp, 
-                           scope=formula(fdis_pcnm_sp))
+                           scope=formula(fdis_pcnm_sp),
+                           permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 fdis_step_pcnm_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_fdis_sp <- paste('PCNM', c(5,9,7,3,35,11,13,32,10), sep='')
+n_fdis_sp <- paste('PCNM', c(5,7,9,3,13,35,11,10), sep='')
 n_fdis_sp
 fdis_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_fdis_sp]
 
 # Forward selection de variables ambientales fdis -------------------
 
 forward.sel(data_fdiver_sp$fdis, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_fdiver_sp$fdis, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_fdiver_sp$fdis, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
+# Data para qeco ----------------------------------------------------------
 
+data_espacio_qeco <- fdis_pcnm_sub_sp 
+SAND <- data_environmet_parcelas[,c("SAND")]
+TEMPSD <- data_environmet_clima[,c("TEMPSD")]
+ELEV <- data_environmet_topo[,c("ELEV")]
+fdis_sp <- data_fdiver_sp$fdis
+
+data_fdis_sp_qeco <- cbind(data_espacio_qeco,
+                        SAND, 
+                        TEMPSD,
+                        ELEV,
+                        fdis_sp)
+
+#View(data_fdis_sp_qeco)
+
+#write.csv(data_fdis_sp_qeco,"data/resultados_csv/varpart/data_fdis_sp_qeco.csv")
 
 # Modelo fdis ---------------------------------------------------------------
 
