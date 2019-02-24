@@ -115,6 +115,7 @@ data_cwm_qeco <- cbind(data_espacio_qeco,
 
 View(data_cwm_qeco)
 
+write.csv(data_cwm_qeco,"data/resultados_csv/varpart/data_cwm_qeco.csv")
 
 # Modelo CWM --------------------------------------------------------------
 
