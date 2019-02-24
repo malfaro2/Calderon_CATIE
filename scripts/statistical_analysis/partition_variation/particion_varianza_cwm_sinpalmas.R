@@ -72,6 +72,7 @@ cwm_step_pcnm_sp$anova
 n_cwm_sp<-paste('PCNM', c(7,10,8,4,5), sep='')
 n_cwm_sp
 cwm_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_cwm_sp]
+write.csv(cwm_pcnm_sub_sp, "scripts/statistical_analysis/partition_variation/data/cwm_pcmn_sinpalmas.csv")
 
 
 # Forward selection de variables ambientales redundancy -------------------
@@ -105,7 +106,7 @@ cwm_var_sp <- varpart(data_cwm_sp,
                    data_environmet_clima[,c("TEMP")],
                    data_environmet_topo[,c("ELEV")],
                    cwm_pcnm_sub_sp)
-cwm_var_sp
+cwm_var_sp$
 
 # Probando la significancia  ----------------------------------------------
 
