@@ -1,4 +1,5 @@
 rm(list = ls())
+set.seed(123)
 
 # Variation Partitioning - incorporating spatial processes ----------------
 
@@ -17,7 +18,11 @@ library(adespatial)
 # Data redundancy-Rao-Uniqueness ------------------------------------------
 
 data_redundancy <- 
-read.csv("scripts/statistical_analysis/partition_variation/data/data_redundancy.csv")
+read.csv("data/resultados_csv/data_redundancy.csv")
+
+#Cleanig data redundancy
+head(data_redundancy)
+data_redundancy <- data_redundancy[,c(3,4,6)]
 
 # Data Variables ambientales ----------------------------------------------
 data_environmet_topo <- 
@@ -33,8 +38,13 @@ read.csv("scripts/statistical_analysis/partition_variation/data/data_carac_clima
 # Data log coordenadas de las parcelas  -----------------------------------
 
 data_coor_parcelas <- 
-read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas.csv")
+read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas_log.csv")
 
+# Scale variables ---------------------------------------------------------
+data_redundancy <- data.frame(scale(data_redundancy))
+data_environmet_topo <- data.frame(scale(data_environmet_topo))
+data_environmet_parcelas <- data.frame(scale(data_environmet_parcelas))
+data_environmet_clima <- data.frame(scale(data_environmet_clima))
 
 # Calcular PCNMs a partir de una matriz de distancia euclidea -------------
 #Principal Coordinates of Neighbour Matrices (PCNMs) generate a dataframe 
@@ -46,6 +56,8 @@ read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcel
 
 parcelas_pcnm <- pcnm(dist(data_coor_parcelas))
 
+#Sacar pcnm 1
+parcelas_pcnm$vectors <- parcelas_pcnm$vectors[,-(1)]
 
 # Varpart Redundancia funcional -------------------------------------------
 # Seleccionar pcnms significativos  ---------------------------------------
@@ -61,13 +73,14 @@ redundancy0_pcnm <- rda(data_redundancy$redundancy ~ 1,
 
 #Seleccionar variables significativas para redundancy
 step_pcnm_redundnacy <- ordistep(redundancy0_pcnm, 
-                                 scope=formula(redundancy_pcnm))
+                                 scope=formula(redundancy_pcnm),
+                                 permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 step_pcnm_redundnacy$anova 
 
-# create pcnm table with only significant axes y se quita el 1
-n_redundancy<-paste('PCNM', c(8,7,6,5,40,4,15,35,16,10,24,54,13), sep='')
+# create pcnm table with only significant axes 
+n_redundancy<-paste('PCNM', c(8,7,5,6,40,4), sep='')
 n_redundancy
 redundancy_pcnm_sub <- parcelas_pcnm$vectors[,n_redundancy]
 
@@ -75,14 +88,31 @@ redundancy_pcnm_sub <- parcelas_pcnm$vectors[,n_redundancy]
 # Forward selection de variables ambientales redundancy -------------------
 
 forward.sel(data_redundancy$redundancy, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_redundancy$redundancy, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_redundancy$redundancy, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
+# Data para qeco ----------------------------------------------------------
+
+data_espacio_qeco <- redundancy_pcnm_sub 
+CLAY <- data_environmet_parcelas[,c("CLAY")]
+data_clima_qeco <- data_environmet_clima[,c("TEMP", "PRECDRIEST")]
+ELEV <- data_environmet_topo[,c("ELEV")]
+redundancy <- data_redundancy$redundancy
+
+data_redundancy_qeco <- cbind(data_espacio_qeco,
+                       CLAY,
+                       data_clima_qeco, 
+                       ELEV,
+                       redundancy)
+
+#View(data_redundancy_qeco)
+
+#write.csv(data_redundancy_qeco,"data/resultados_csv/varpart/data_redundancy_qeco.csv")
 
 # Modelo redundancy ---------------------------------------------------------------
 
@@ -151,20 +181,23 @@ rm(redundancy0_pcnm,redundancy_pcnm,redundancy_pcnm_sub,redundancy_var,
 
 # Model con all predictors RAO
 
-rao_pcnm <- rda(data_redundancy$Q ~ ., data=as.data.frame(scores(parcelas_pcnm)))
+rao_pcnm <- rda(data_redundancy$Q ~ ., 
+                data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors RAO
 
-rao0_pcnm <- rda(data_redundancy$Q ~ 1, data=as.data.frame(scores(parcelas_pcnm)))
+rao0_pcnm <- rda(data_redundancy$Q ~ 1, 
+                 data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para RAO
-step_pcnm_rao <- ordistep(rao0_pcnm, scope=formula(rao_pcnm))
+step_pcnm_rao <- ordistep(rao0_pcnm, scope=formula(rao_pcnm),
+                          permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 step_pcnm_rao$anova 
 
 # create pcnm table with only significant axes sin el 1
-n_rao<-paste('PCNM', c(8,4,35,15,10,5,6,40,7,13,16), sep='')
+n_rao<-paste('PCNM', c(8,4,35,10,6,40,15,5,7), sep='')
 n_rao
 rao_pcnm_sub <- parcelas_pcnm$vectors[,n_rao]
 
@@ -172,13 +205,29 @@ rao_pcnm_sub <- parcelas_pcnm$vectors[,n_rao]
 # Forward selection de variables ambientales ------------------------------
 
 forward.sel(data_redundancy$Q, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_redundancy$Q, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_redundancy$Q, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
+# Data para qeco ----------------------------------------------------------
+
+data_espacio_qeco <- rao_pcnm_sub 
+data_parcelas_qeco <- data_environmet_parcelas[,c("CLAY","Mg","Ca")]
+data_clima_qeco <- data_environmet_clima[,c("TEMP","PRECDRIEST")]
+ELEV <- data_environmet_topo[,c("ELEV")]
+rao <- data_redundancy$Q
+
+data_rao_qeco <- cbind(data_espacio_qeco,
+                       data_parcelas_qeco,
+                       data_clima_qeco, 
+                       ELEV,
+                       rao)
+#View(data_rao_qeco)
+
+#write.csv(data_rao_qeco,"data/resultados_csv/varpart/data_rao_qeco.csv")
 
 # Modelo rao---------------------------------------------------------------
 
@@ -186,16 +235,16 @@ forward.sel(data_redundancy$Q, data_environmet_topo,
 
 # partition variation among three predictor tables:
 
-# 1) Caracteristicas fisicas de la parcela: CLAY Mg
+# 1) Caracteristicas fisicas de la parcela: CLAY Mg Ca
 
-# 2) Clima: PRECDRIEST TEMP
+# 2) Clima: TEMP PRECDRIEST 
 
 # 3) Topo:ELEV
 
 # 4) space ('parcelas_pcnm')
 
 rao_var <- varpart(data_redundancy$Q,
-                          data_environmet_parcelas[,c("CLAY","Mg")],
+                          data_environmet_parcelas[,c("CLAY","Mg","Ca")],
                           data_environmet_clima[,c("PRECDRIEST","TEMP")],
                           data_environmet_topo[,c("ELEV")],
                           rao_pcnm_sub)
@@ -251,34 +300,54 @@ rm(rao_pcnm,rao0_pcnm,rao_var,rao_pcnm_sub,step_pcnm_rao,
 
 # Model con all predictors uniqueness
 
-uni_pcnm <- rda(data_redundancy$U ~ ., data=as.data.frame(scores(parcelas_pcnm)))
+uni_pcnm <- rda(data_redundancy$U ~ ., 
+                data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors uniqueness
 
-uni0_pcnm <- rda(data_redundancy$U ~ 1, data=as.data.frame(scores(parcelas_pcnm)))
+uni0_pcnm <- rda(data_redundancy$U ~ 1, 
+                 data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para uniqueness
-step_pcnm_uni <- ordistep(uni0_pcnm, scope=formula(uni_pcnm))
+step_pcnm_uni <- ordistep(uni0_pcnm, scope=formula(uni_pcnm),
+                          permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 step_pcnm_uni$anova 
 
 # create pcnm table with only significant axes
-n_uni<-paste('PCNM', c(8,7,5,6,15,40,4,16,35,10,24,13), sep='')
+n_uni<-paste('PCNM', c(8,7,5,6,40,4,35), sep='')
 n_uni
 uni_pcnm_sub <- parcelas_pcnm$vectors[,n_uni]
-
 
 # Forward selection de variables ambientales ------------------------------
 
 forward.sel(data_redundancy$U, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_redundancy$U, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_redundancy$U, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
+
+# Data para qeco ----------------------------------------------------------
+
+data_espacio_qeco <- uni_pcnm_sub 
+CLAY <- data_environmet_parcelas[,c("CLAY")]
+data_clima_qeco <- data_environmet_clima[,c("TEMP","PRECDRIEST")]
+ELEV <- data_environmet_topo[,c("ELEV")]
+uniqueness <- data_redundancy$U
+
+data_uniq_qeco <- cbind(data_espacio_qeco,
+                       CLAY,
+                       data_clima_qeco, 
+                       ELEV,
+                       uniqueness)
+
+#View(data_uniq_qeco)
+
+#write.csv(data_uniq_qeco,"data/resultados_csv/varpart/data_uniq_qeco.csv")
 
 
 # Modelo Uniqueness -------------------------------------------------------
