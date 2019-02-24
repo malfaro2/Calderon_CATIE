@@ -1,4 +1,5 @@
 rm(list = ls())
+set.seed(123)
 
 # Variation Partitioning - incorporating spatial processes ----------------
 
@@ -36,8 +37,13 @@ data_environmet_clima <-
 # Data log coordenadas de las parcelas  -----------------------------------
 
 data_coor_parcelas <- 
-  read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas.csv")
+  read.csv("scripts/statistical_analysis/partition_variation/data/data_coor_parcelas_log.csv")
 
+# Scale variables ---------------------------------------------------------
+data_cwm_sp <- data.frame(scale(data_cwm_sp))
+data_environmet_topo <- data.frame(scale(data_environmet_topo))
+data_environmet_parcelas <- data.frame(scale(data_environmet_parcelas))
+data_environmet_clima <- data.frame(scale(data_environmet_clima))
 
 # Calcular PCNMs a partir de una matriz de distancia euclidea -------------
 #Principal Coordinates of Neighbour Matrices (PCNMs) generate a dataframe 
@@ -48,6 +54,10 @@ data_coor_parcelas <-
 #con 21 descriptores espaciales - autovectores del PCNM - ).
 
 parcelas_pcnm <- pcnm(dist(data_coor_parcelas))
+
+#Sacar pcnm 1
+parcelas_pcnm$vectors <- parcelas_pcnm$vectors[,-(1)]
+
 
 # Varpart CWM -------------------------------------------------------------
 # Seleccionar pcnms significativos  ---------------------------------------
@@ -63,29 +73,44 @@ cwm0_pcnm_sp <- rda(data_cwm_sp ~ 1,
 
 #Seleccionar variables significativas para redundancy
 cwm_step_pcnm_sp <- ordistep(cwm0_pcnm_sp, 
-                          scope=formula(cwm_pcnm_sp))
+                          scope=formula(cwm_pcnm_sp),
+                          permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
 cwm_step_pcnm_sp$anova 
 
-# create pcnm table with only significant axes y se quita el 1
-n_cwm_sp<-paste('PCNM', c(7,10,8,4,5), sep='')
+# create pcnm table with only significant axes 
+n_cwm_sp<-paste('PCNM', c(7,4,5,8,16,10), sep='')
 n_cwm_sp
 cwm_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_cwm_sp]
-write.csv(cwm_pcnm_sub_sp, "scripts/statistical_analysis/partition_variation/data/cwm_pcmn_sinpalmas.csv")
-
 
 # Forward selection de variables ambientales redundancy -------------------
 
 forward.sel(data_cwm_sp, data_environmet_parcelas,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_cwm_sp, data_environmet_clima,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
 forward.sel(data_cwm_sp, data_environmet_topo,
-            alpha = 0.01)
+            alpha = 0.01,nperm = 2000)
 
+# Data para qeco ----------------------------------------------------------
+
+data_espacio_qeco <- cwm_pcnm_sub_sp 
+data_parcelas_qeco <- data_environmet_parcelas[,c("CLAY")]
+data_clima_qeco <- data_environmet_clima[,c("TEMPMIN","TEMPSD","PRECDRIEST","PREC")]
+ELEV <- data_environmet_topo[,c("ELEV")]
+data_cwm_qeco <- data_cwm_sp
+
+data_cwm_sp_qeco <- cbind(data_espacio_qeco,
+                       data_clima_qeco, 
+                       data_parcelas_qeco,
+                       ELEV,
+                       data_cwm_qeco)
+
+
+#write.csv(data_cwm_sp_qeco,"data/resultados_csv/varpart/data_cwm_sp_qeco.csv")
 
 # Modelo CWM sin palmas ---------------------------------------------------
 
@@ -95,7 +120,7 @@ forward.sel(data_cwm_sp, data_environmet_topo,
 
 # 1) Caracteristicas fisicas de la parcela: CLAY 
 
-# 2) Clima: TEMP
+# 2) Clima: TEMPMIN TEMPSD PRECDRIEST PREC
 
 #3) Topo:ELEV
 
