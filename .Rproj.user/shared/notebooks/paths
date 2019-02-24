@@ -1,13 +1,4 @@
-C:/Calderon_CATIE/scripts/mapas_exploratorios/mapa_fdiver_para_cada_trait_FALTA_CORRER.R="53451F40"
-C:/Calderon_CATIE/scripts/statistical_analysis/Morans_I/moran_test_spatial_dependency_cwm.R="9A7F17D4"
-C:/Calderon_CATIE/scripts/statistical_analysis/partition_variation/particion_varianza_cwm.R="E800566D"
-C:/Calderon_CATIE/scripts/statistical_analysis/partition_variation/particion_varianza_cwm_sinpalmas.R="890CC88F"
-C:/Calderon_CATIE/scripts/statistical_analysis/partition_variation/particion_varianza_fdiver.R="9CE8910A"
-C:/Calderon_CATIE/scripts/table_response_effect_traits.R="5B4DA473"
-C:/Calderon_CATIE/write_up/relaciones_de_interes/relaciones_de_interes.Rmd="72194154"
 C:/Program Files (x86)/QEco/RScripts_eng/Community/3  Ordinations/1 Unconstrained/3 Principal Coordinates of Neighbourhood Matrix/MyMainRScript.R="F4493625"
-<<<<<<< HEAD
-=======
 C:/Program Files (x86)/QEco/RScripts_eng/Community/3  Ordinations/2 Constrained/6 Partition the Variation of Community/Rda_based/MyMainRScript.R="FDD6B6A0"
 C:/Users/ErickCalderonM/Desktop/multivariate_analisys/NEwR-2ed_code_data/InitialPackageInstall_R341.R="4323D9A8"
 C:/Users/ErickCalderonM/Desktop/multivariate_analisys/NEwR-2ed_code_data/NEwR2-Scripts/chap6.R="CF9F06A3"
@@ -32,6 +23,6 @@ C:/tesis_catie/Calderon_CATIE/scripts/mapas_exploratorios/mapa_fdiver_sinpalmas_
 C:/tesis_catie/Calderon_CATIE/scripts/mapas_exploratorios/mapa_redundancia_parcelas_norte_costa_rica.R="905620D9"
 C:/tesis_catie/Calderon_CATIE/scripts/mapas_exploratorios/mapa_redundancia_sinpalmas_parcelas_norte_costa_rica.R="BCB6E0E7"
 C:/tesis_catie/Calderon_CATIE/scripts/statistical_analysis/partition_variation/particion_varianza_cwm.R="72F7CBA5"
+C:/tesis_catie/Calderon_CATIE/scripts/statistical_analysis/partition_variation/particion_varianza_cwm_sinpalmas.R="1567563E"
 C:/tesis_catie/Calderon_CATIE/scripts/table_response_effect_traits.R="DDAE3031"
 C:/tesis_catie/Calderon_CATIE/write_up/relaciones_de_interes/relaciones_de_interes.Rmd="AD90F5BD"
->>>>>>> 83dff00d3885a6f8d28615d0026b894611013a73
