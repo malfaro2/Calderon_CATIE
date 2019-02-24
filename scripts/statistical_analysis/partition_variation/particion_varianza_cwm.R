@@ -45,7 +45,6 @@ data_cwm <- data.frame(scale(data_cwm))
 data_environmet_topo <- data.frame(scale(data_environmet_topo))
 data_environmet_parcelas <- data.frame(scale(data_environmet_parcelas))
 data_environmet_clima <- data.frame(scale(data_environmet_clima))
-data_coor_parcelas <- data.frame(scale(data_coor_parcelas))
 
 
 # Calcular PCNMs a partir de una matriz de distancia euclidea -------------
@@ -113,9 +112,9 @@ data_cwm_qeco <- cbind(data_espacio_qeco,
                        ELEV,
                        data_cwm_qeco)
 
-View(data_cwm_qeco)
+#View(data_cwm_qeco)
 
-write.csv(data_cwm_qeco,"data/resultados_csv/varpart/data_cwm_qeco.csv")
+#write.csv(data_cwm_qeco,"data/resultados_csv/varpart/data_cwm_qeco.csv")
 
 # Modelo CWM --------------------------------------------------------------
 
@@ -137,7 +136,7 @@ cwm_var <- varpart(data_cwm,
                     data_environmet_topo[,c("ELEV")],
                     cwm_pcnm_sub)
 
-
+cwm_var
 # Probando la significancia  ----------------------------------------------
 
 #Fractions
