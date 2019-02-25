@@ -13,14 +13,13 @@ library(corrplot)
 #http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram
 
 # Load data ---------------------------------------------------------------
-data_cwm <- read.csv("data/resultados_csv/data_cwm_coord.csv",header = T)
-data_cwm <- data_cwm %>% 
-  select(-cwm_af)
+data_cwm_sp <- read.csv("data/resultados_csv/data_cwm_sinpalmas_coord.csv",
+                     header = T)
 
-data_redundancy <- read.csv("data/resultados_csv/data_redundancy.csv",
+data_redundancy_sp <- read.csv("data/resultados_csv/data_redundancy_sinpalmas.csv",
                             header = T)
 
-data_fdiver <- read.csv("data/resultados_csv/data_fdiversity_coord.csv",
+data_fdiver_sp <- read.csv("data/resultados_csv/data_fdiversity_sinpalmas_coord.csv",
                         header = T)
 
 data_env <- read.csv("data/raw/data_enviroment_worldclim.csv",header=T)
@@ -31,16 +30,16 @@ data_env <- data_env %>%
   select(-c(CRTM_90_X,CRTM_90_Y))
 
 # Juntar data sets en unos solo -------------------------------------------
-data_full <- left_join(data_cwm,data_redundancy,data_fdiver,
+data_full_sp <- left_join(data_cwm_sp,data_redundancy_sp,data_fdiver_sp   ,
                        by = c("plot","forest_type", "longitude","latitude"))
 
-data_full <- left_join(data_full, data_env,by=c("plot","forest_type")) %>% 
+data_full_sp <- left_join(data_full_sp, data_env,by=c("plot","forest_type")) %>% 
   select(-c(plot,forest_type))
 
 # Plot --------------------------------------------------------------------
 
 #Matriz de correlacion
-M <- cor(data_full)
+M <- cor(data_full_sp)
 
 #Funcion
 # matrix of the p-value of the correlation
@@ -62,7 +61,7 @@ cor.mtest <- function(mat, ...) {
 }
 
 #Matriz de p-values
-p.mat <- cor.mtest(data_full)
+p.mat <- cor.mtest(data_full_sp)
 
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 corrplot(M, method="color", col=col(200),  
