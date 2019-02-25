@@ -6,7 +6,9 @@ library(tidyverse)
 library(corrplot)
 
 # Objetivo ----------------------------------------------------------------
-#Mostrar el grado de correlacion de todas las variables de interes
+#Mostrar el grado de correlacion de todas las variables de interes con los
+#datos sin palmas
+
 #El codigo para realizar este grafico fue tomado de
 #http://www.sthda.com/english/wiki/visualize-correlation-matrix-using-correlogram
 
@@ -74,10 +76,3 @@ corrplot(M, method="color", col=col(200),
          # hide correlation coefficient on the principal diagonal
          diag=FALSE 
 )
-
-
-
-
-
-
-
