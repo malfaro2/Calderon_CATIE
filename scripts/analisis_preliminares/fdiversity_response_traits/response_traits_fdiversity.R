@@ -13,8 +13,10 @@ library(FD)
 library(tidyverse)
 
 
-# Cargar paquetes ---------------------------------------------------------
+
+# Cargar datos ------------------------------------------------------------
 #Response traits
+
 dresp <- read.csv("data/raw/response_traits/data_respose_traits_final.csv", 
                   header = T,row.names = 1)
 
@@ -41,10 +43,7 @@ n2 <- data.frame(as.factor(dresp$coespec))
 colnames(n2) <- "especie" 
 class(n2)
 
-eliminar <- (anti_join(n1,n2, by="especie"))
-
-dim(dresp)
-
+#Eliminar especies
 dabund_rela_clean <- dabund_relativa %>% 
   select(-c(ABARAD ,APEIME ,BALIEL ,BROSGU ,BROSLA,
              CASEAR ,CECRIN ,CECROB ,COJOCO ,COUMMA,
@@ -55,11 +54,7 @@ dabund_rela_clean <- dabund_relativa %>%
              PACHAQ ,PODOGU ,POURBI ,POURMI ,POUTBE,
              POUTCU ,POUTDU ,PSYCPA ,TAPIGU ,TOVOWE))
 
-dim(dabund_rela_clean)
-dim(dresp)
-
-#View(dresp$coespec)
-#View(colnames(dabund_rela_clean))
+#Ordenar los nombres 
 target <- colnames(dabund_rela_clean) 
 dresp <- dresp[match(target, row.names(dresp)),]
 #View(dresp$coespec)
