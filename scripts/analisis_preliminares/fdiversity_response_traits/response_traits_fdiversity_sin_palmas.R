@@ -76,6 +76,16 @@ dim(dresp_sp)
 
 indices_sp <- dbFD(dresp_sp[colnames(dabund_rela_clean_sp),],
                 dabund_rela_clean_sp, w.abun = T,stand.x = F,corr="cailliez")
+# Extraer indices ---------------------------------------------------------
+fdis_sp <- data.frame(indices_sp$FDis)
+feve_sp <- data.frame(indices_sp$FEve)
+fdiv_sp <- data.frame(indices_sp$FDiv)
+
+fdiver_resp_traits_sp <- cbind(fdis_sp,feve_sp,fdiv_sp)
+colnames(fdiver_resp_traits_sp) <- c("fdis_sp","feve_sp","fdiv_sp")
+fdiver_resp_traits_sp
+
+#write.csv(fdiver_resp_traits_sp,"data/resultados_csv/data_fdiversity_resptraits_sinpalmas.csv")
 
 
 

@@ -22,26 +22,60 @@ rm(list = ls())
 
 #LOS RASGOS UTILIZADOS PARA EL ANALISIS ES AFE,DM,CFMS,N,P
 
+
+# Paquetes ----------------------------------------------------------------
+library(tidyverse)
+
 # Cargar data -------------------------------------------------------------
 
-source("scripts/data_cleaning//data_cleaning_for_loops.R")
-xy_plot <- read.csv("data/raw/data_posicion_parcelas.csv")
+#Response traits
 
-#Eliminar columnas 
-xy_plot <- xy_plot %>% 
-  select(-c(CRTM_90_X,CRTM_90_Y))
+dresp <- read.csv("data/raw/response_traits/data_respose_traits_final.csv", 
+                  header = T)
+str(dresp)
+head(dresp)
+
+dresp <- dresp %>% 
+  select(-c(familia,especie)) %>% 
+  column_to_rownames("X")
+
+head(dresp)
+
+
+# Data abundancia ---------------------------------------------------------
+
+dabund_relativa <- read.csv("data/clean/dabund_relativa.csv", 
+                               row.names = 1, header = T)
+head(dabund_relativa)
 
 # cargar funcion uniqueness -----------------------------------------------
 source("scripts/functions/function_functional_redundancy_original.R")
 
-#Eliminar data sets que no se van a utilizar
-rm(dabund_clean_sinpalmas,dabund_relativa_sinpalmas,deff_clean_sinpalmas)
+
+#Eliminar especies en abundancia relativa
+dabund_rela_clean <- dabund_relativa %>% 
+  select(-c(ABARAD ,APEIME ,BALIEL ,BROSGU ,BROSLA,
+            CASEAR ,CECRIN ,CECROB ,COJOCO ,COUMMA,
+            CYNORE ,DIALGU ,ENTESC ,GRIACA ,GUETSP,
+            INGAAC ,INGAAE ,INGAAL ,INGACH ,INGAJI,
+            INGALE ,INGAMO ,INGAPE ,INGASE ,LICNAF,
+            LICNKA ,LICNSA ,LICNSP ,MICRME ,OCHRPY,
+            PACHAQ ,PODOGU ,POURBI ,POURMI ,POUTBE,
+            POUTCU ,POUTDU ,PSYCPA ,TAPIGU ,TOVOWE))
+
+#Ordenar los nombres 
+target <- colnames(dabund_rela_clean) 
+dresp <- dresp[match(target, row.names(dresp)),]
+
+dim(dabund_rela_clean)
+dim(dresp)
+
 
 # comm --------------------------------------------------------------------
 #Data parcelas por especies
 #En las Columnas deben ir las especies y las parcelas en las filas 
 
-comm<- dabund_clean
+comm <- dabund_rela_clean
 
 # dis ---------------------------------------------------------------------
 #Data rasgos: se deben convertir objeto dis
@@ -49,7 +83,7 @@ comm<- dabund_clean
 #species
 
 #Transformar traits a distancias
-dist <- vegdist(deff_clean, method = "euclidean") 
+dist <- gowdis(dresp) 
 
 #Transformar distancias a un rango de entre 0 y 1
 dist_rescaled <- dist / max(dist)
@@ -57,17 +91,15 @@ summary(dist_rescaled)
 
 # Funcion -----------------------------------------------------------------
 
-unique <- uniqueness(comm, dist_rescaled, abundance=TRUE)
+unique_resptraits <- uniqueness(comm, dist_rescaled, abundance=TRUE)
 
 #Extraer medidas de comunidad
-(medidas_redundancia <- unique$red)
+(medidas_redundancia_resptraits <- unique_resptraits$red)
 
 #Agregar medida de redundancia
-(medidas_redundancia <- medidas_redundancia %>% 
-    mutate(plot=row.names(medidas_redundancia)) %>% 
+(medidas_redundancia_resptraits <- medidas_redundancia_resptraits %>% 
+    rownames_to_column("plot") %>% 
     mutate(redundancy = 1- U))
+  
 
-#Data full con coordenadas de cada parcela
-data_redundancy <- left_join(medidas_redundancia, xy_plot, by="plot")
-
-write.csv(data_redundancy,"data/clean/resultados_csv/data_redundancy.csv")
+#write.csv(medidas_redundancia_resptraits,"data/resultados_csv/data_redundancy_resptraits.csv")

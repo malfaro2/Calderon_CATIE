@@ -13,7 +13,6 @@ library(FD)
 library(tidyverse)
 
 
-
 # Cargar datos ------------------------------------------------------------
 #Response traits
 
@@ -69,8 +68,14 @@ indices <- dbFD(dresp[colnames(dabund_rela_clean),],
                 dabund_rela_clean, w.abun = T,stand.x = F,corr="cailliez")
 
 
+# Extraer indices ---------------------------------------------------------
+fdis <- data.frame(indices$FDis)
+feve <- data.frame(indices$FEve)
+fdiv <- data.frame(indices$FDiv)
 
+fdiver_resp_traits <- cbind(fdis,feve,fdiv)
+colnames(fdiver_resp_traits) <- c("fdis","feve","fdiv")
+fdiver_resp_traits
 
-
-
+#write.csv(fdiver_resp_traits,"data/resultados_csv/data_fdiversity_resptraits.csv")
 
