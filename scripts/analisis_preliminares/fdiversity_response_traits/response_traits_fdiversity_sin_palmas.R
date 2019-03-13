@@ -15,78 +15,81 @@ library(tidyverse)
 # Cargar datos ------------------------------------------------------------
 #Response traits
 
-dresp <- read.csv("data/raw/response_traits/data_respose_traits_final.csv", 
-                  header = T)
-
-head(dresp)
-#Se elimina columnas inncesarias y las palmas
-
-dresp_sp <- dresp %>% 
-  select(-c(familia,especie)) %>% 
-  filter(!X %in%  c("EUTEPR","IRIADE","SOCREX","WELFRE") ) %>% 
-  tibble::column_to_rownames(var= "X")
+dresp_sp <- read.csv("data/clean/dresp_clean_sinpalmas.csv", 
+                  header = T, row.names = 1)
 
 head(dresp_sp)
-dim(dresp)
+#Se elimina columnas inncesarias y las palmas
+
+dresp_sp <- dresp_sp %>% 
+ select(-c(familia,especie))  
+#  filter(!X %in%  c("EUTEPR","IRIADE","SOCREX","WELFRE") ) %>% 
+#  tibble::column_to_rownames(var= "X")
+
 dim(dresp_sp)
 
-str(dresp)
-head(dresp)
+str(dresp_sp)
+head(dresp_sp)
 
 #Data abundancia
 dabund_relativa_sp <- read.csv("data/clean/dabund_relativa_sinpalmas.csv", 
                             row.names = 1, header = T)
 dim(dabund_relativa_sp)
+
+#Data area basal
+darea_basal_sp <- read.csv("data/clean/dareabasal_sp_sinpalmas.csv", 
+                               row.names = 1, header = T)
+
+dim(darea_basal_sp)
+
+darea_basal_sp <- darea_basal_sp  %>% 
+  select(-c(MAYTGU,QUETOC,RUPTCA))
+dim(darea_basal_sp)
+
+
 # Cleaning data sets ------------------------------------------------------
 #Las especies en abundancias y rasgos tienen que tener el mismo orden para
 # que la funcion dbFD corra
 
-#Ver que las especies sean las mismas en ambos data sets
-n1 <- data.frame(as.factor(colnames(dabund_relativa_sp)))
-colnames(n1) <- "especie" 
-class(n1)
-
-n2 <- data.frame(row.names (dresp_sp))
-colnames(n2) <- "especie" 
-class(n2)
-
-anti_join(n1,n2, by="especie")
-
-#Eliminar especies
-dabund_rela_clean_sp <- dabund_relativa_sp %>% 
-  select(-c(ABARAD ,APEIME ,BALIEL ,BROSGU ,BROSLA,
-            CASEAR ,CECRIN ,CECROB ,COJOCO ,COUMMA,
-            CYNORE ,DIALGU ,ENTESC ,GRIACA ,GUETSP,
-            INGAAC ,INGAAE ,INGAAL ,INGACH ,INGAJI,
-            INGALE ,INGAMO ,INGAPE ,INGASE ,LICNAF,
-            LICNKA ,LICNSA ,LICNSP ,MICRME ,OCHRPY,
-            PACHAQ ,PODOGU ,POURBI ,POURMI ,POUTBE,
-            POUTCU ,POUTDU ,PSYCPA ,TAPIGU ,TOVOWE))
 
 #Ordenar los nombres 
-target <- colnames(dabund_rela_clean_sp) 
-dresp_sp <- dresp_sp[match(target, row.names(dresp_sp)),]
+#target <- colnames(dabund_rela_clean_sp) 
+#dresp_sp <- dresp_sp[match(target, row.names(dresp_sp)),]
 #View(dresp$coespec)
 
 # Indices de diversidad ---------------------------------------------------
 
 #Calcular indices de diversidad
-dim(dabund_rela_clean_sp)
+dim(dabund_relativa_sp)
 dim(dresp_sp)
 
-indices_sp <- dbFD(dresp_sp[colnames(dabund_rela_clean_sp),],
-                dabund_rela_clean_sp, w.abun = T,stand.x = F,corr="cailliez")
+indices_abundrela_sp <- dbFD(dresp_sp[colnames(dabund_relativa_sp),],
+                   dabund_relativa_sp, w.abun = T,stand.x = F,corr="cailliez")
+
+indices_areabasal_sp <- dbFD(dresp_sp[colnames(dabund_relativa_sp),],
+                             darea_basal_sp,stand.x = F,corr="cailliez")
+
+
 # Extraer indices ---------------------------------------------------------
-fdis_sp <- data.frame(indices_sp$FDis)
-feve_sp <- data.frame(indices_sp$FEve)
-fdiv_sp <- data.frame(indices_sp$FDiv)
 
-fdiver_resp_traits_sp <- cbind(fdis_sp,feve_sp,fdiv_sp)
-colnames(fdiver_resp_traits_sp) <- c("fdis_sp","feve_sp","fdiv_sp")
-fdiver_resp_traits_sp
+#Ponderados por abunancia relativa
+fdis_abundrela_sp <- data.frame(indices_abundrela_sp$FDis)
+feve_abundrela_sp <- data.frame(indices_abundrela_sp$FEve)
+fdiv_abundrela_sp <- data.frame(indices_abundrela_sp$FDiv)
 
-#write.csv(fdiver_resp_traits_sp,"data/resultados_csv/data_fdiversity_resptraits_sinpalmas.csv")
+fdiver_resptrait_abunrela_sp <- cbind(fdis_abundrela_sp,feve_abundrela_sp,fdiv_abundrela_sp)
+colnames(fdiver_resptrait_abunrela_sp) <- c("fdis_abundrela_sp","feve_abundrela_sp","fdiv_abundrela_sp")
+fdiver_resptrait_abunrela_sp
 
+write.csv(fdiver_resptrait_abunrela_sp,"data/resultados_csv/data_fdiver_resptrait_abunrela_sp.csv")
 
+#Ponderados por area basal
+fdis_areabasal_sp <- data.frame(indices_areabasal_sp$FDis)
+feve_areabasal_sp <- data.frame(indices_areabasal_sp$FEve)
+fdiv_areabasal_sp <- data.frame(indices_areabasal_sp$FDiv)
 
+fdiver_resptrait_areabas_sp <- cbind(fdis_areabasal_sp,feve_areabasal_sp,fdiv_areabasal_sp)
+colnames(fdiver_resptrait_areabas_sp) <- c("fdis_areabasal_sp","feve_areabasal_sp","fdiv_areabasal_sp")
+fdiver_resptrait_areabas_sp
 
+write.csv(fdiver_resptrait_areabas_sp,"data/resultados_csv/data_fdiver_resptrait_areabas_sp.csv")
