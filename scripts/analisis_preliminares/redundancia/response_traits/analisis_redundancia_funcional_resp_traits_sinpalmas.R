@@ -31,19 +31,14 @@ library(FD)
 
 #Response traits
 
-dresp <- read.csv("data/raw/response_traits/data_respose_traits_final.csv", 
-                  header = T)
-str(dresp)
-head(dresp)
-
-
+dresp_sp <- read.csv("data/clean/dresp_clean_sinpalmas.csv", 
+                  header = T, row.names = 1)
+str(dresp_sp)
 #Se elimina columnas inncesarias y las palmas
-names(dresp)
+names(dresp_sp)
 
-dresp_sp <- dresp %>% 
-  filter(!X %in%  c("EUTEPR","IRIADE","SOCREX","WELFRE"))%>%
-  select(-c(familia,especie))  %>% 
-  column_to_rownames("X")
+dresp_sp <- dresp_sp %>%
+  select(-c(familia,especie)) 
 
 head(dresp_sp)
 dim(dresp_sp)
@@ -59,31 +54,12 @@ dim(dabund_relativa_sp)
 source("scripts/functions/function_functional_redundancy_original.R")
 
 
-#Eliminar especies en abundancia relativa
-dabund_rela_clean_sp <- dabund_relativa_sp %>% 
-  select(-c(ABARAD ,APEIME ,BALIEL ,BROSGU ,BROSLA,
-            CASEAR ,CECRIN ,CECROB ,COJOCO ,COUMMA,
-            CYNORE ,DIALGU ,ENTESC ,GRIACA ,GUETSP,
-            INGAAC ,INGAAE ,INGAAL ,INGACH ,INGAJI,
-            INGALE ,INGAMO ,INGAPE ,INGASE ,LICNAF,
-            LICNKA ,LICNSA ,LICNSP ,MICRME ,OCHRPY,
-            PACHAQ ,PODOGU ,POURBI ,POURMI ,POUTBE,
-            POUTCU ,POUTDU ,PSYCPA ,TAPIGU ,TOVOWE))
-
-#Ordenar los nombres 
-target <- colnames(dabund_rela_clean_sp) 
-dresp_sp <- dresp_sp[match(target, row.names(dresp_sp)),]
-
-dim(dabund_rela_clean_sp)
-dim(dresp_sp)
-
-
 
 # comm --------------------------------------------------------------------
 #Data parcelas por especies
 #En las Columnas deben ir las especies y las parcelas en las filas 
 
-comm <- dabund_rela_clean_sp
+comm <- dabund_relativa_sp
 
 # dis ---------------------------------------------------------------------
 #Data rasgos: se deben convertir objeto dis

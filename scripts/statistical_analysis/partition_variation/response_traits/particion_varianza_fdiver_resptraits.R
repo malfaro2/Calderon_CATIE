@@ -11,14 +11,14 @@ set.seed(123)
 
 # Paquetes ----------------------------------------------------------------
 library(vegan)
-library(adespatial)
+library("adespatial")
 
 # Cargar datos ------------------------------------------------------------
 
 # Data Fiv-Feve-fdis ------------------------------------------------------
 
 data_fdiver <- 
-read.csv("data/resultados_csv/data_fdiversity_resptraits.csv")
+read.csv("data/resultados_csv/data_fdiver_resptrait_abunrela.csv")
 head(data_fdiver)
 
 #Eliminar columnas
@@ -81,7 +81,7 @@ fdiv_step_pcnm <- ordistep(fdiv0_pcnm,
 fdiv_step_pcnm$anova 
 
 # create pcnm table with only significant axes 
-n_fdiv <- paste('PCNM', c(5,20,29,24,19), sep='')
+n_fdiv <- paste('PCNM', c(4,40,53,9,13,44), sep='')
 n_fdiv
 fdiv_pcnm_sub <- parcelas_pcnm$vectors[,n_fdiv]
 

@@ -30,52 +30,49 @@ library(tidyverse)
 
 #Response traits
 
-dresp <- read.csv("data/raw/response_traits/data_respose_traits_final.csv", 
-                  header = T)
+dresp <- read.csv("data/clean/dresp_clean.csv", 
+                  header = T, row.names = 1)
 str(dresp)
 head(dresp)
 
 dresp <- dresp %>% 
-  select(-c(familia,especie)) %>% 
-  column_to_rownames("X")
+  select(-c(familia,especie))
 
 head(dresp)
-
+dim(dresp)
 
 # Data abundancia ---------------------------------------------------------
 
 dabund_relativa <- read.csv("data/clean/dabund_relativa.csv", 
                                row.names = 1, header = T)
 head(dabund_relativa)
+dim(dabund_relativa)
+
+#Data area basal
+darea_basal <- read.csv("data/clean/dareabasal_sp.csv", 
+                        row.names = 1, header = T)
+dim(darea_basal)
+
+darea_basal <- darea_basal  %>% 
+  select(-c(MAYTGU,QUETOC,RUPTCA))
+
 
 # cargar funcion uniqueness -----------------------------------------------
 source("scripts/functions/function_functional_redundancy_original.R")
 
 
-#Eliminar especies en abundancia relativa
-dabund_rela_clean <- dabund_relativa %>% 
-  select(-c(ABARAD ,APEIME ,BALIEL ,BROSGU ,BROSLA,
-            CASEAR ,CECRIN ,CECROB ,COJOCO ,COUMMA,
-            CYNORE ,DIALGU ,ENTESC ,GRIACA ,GUETSP,
-            INGAAC ,INGAAE ,INGAAL ,INGACH ,INGAJI,
-            INGALE ,INGAMO ,INGAPE ,INGASE ,LICNAF,
-            LICNKA ,LICNSA ,LICNSP ,MICRME ,OCHRPY,
-            PACHAQ ,PODOGU ,POURBI ,POURMI ,POUTBE,
-            POUTCU ,POUTDU ,PSYCPA ,TAPIGU ,TOVOWE))
-
 #Ordenar los nombres 
-target <- colnames(dabund_rela_clean) 
-dresp <- dresp[match(target, row.names(dresp)),]
-
-dim(dabund_rela_clean)
-dim(dresp)
+#target <- colnames(dabund_rela_clean) 
+#dresp <- dresp[match(target, row.names(dresp)),]
 
 
 # comm --------------------------------------------------------------------
 #Data parcelas por especies
 #En las Columnas deben ir las especies y las parcelas en las filas 
 
-comm <- dabund_rela_clean
+comm <- dabund_relativa
+#comm2 <- darea_basal
+
 
 # dis ---------------------------------------------------------------------
 #Data rasgos: se deben convertir objeto dis
@@ -87,14 +84,18 @@ dist <- gowdis(dresp)
 
 #Transformar distancias a un rango de entre 0 y 1
 dist_rescaled <- dist / max(dist)
-summary(dist_rescaled)
+#summary(dist_rescaled)
 
 # Funcion -----------------------------------------------------------------
 
-unique_resptraits <- uniqueness(comm, dist_rescaled, abundance=TRUE)
+unique_resptraits_abundrela <- uniqueness(comm, dist_rescaled, abundance=TRUE)
+
+unique_resptraits_areabasal <- uniqueness(comm2, dist_rescaled, abundance=TRUE)
+
 
 #Extraer medidas de comunidad
-(medidas_redundancia_resptraits <- unique_resptraits$red)
+(medidas_redundancia_resptraits <- unique_resptraits_abundrela$red)
+#(medidas_redundancia_resptraits_areabasal <- unique_resptraits_areabasal$red)
 
 #Agregar medida de redundancia
 (medidas_redundancia_resptraits <- medidas_redundancia_resptraits %>% 
