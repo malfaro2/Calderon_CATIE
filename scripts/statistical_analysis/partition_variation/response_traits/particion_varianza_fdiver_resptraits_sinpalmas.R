@@ -18,7 +18,7 @@ library(adespatial)
 # Data Fiv-Feve-fdis ------------------------------------------------------
 
 data_fdiver_sp <- 
-  read.csv("data/resultados_csv/data_fdiversity_resptraits_sinpalmas.csv")
+  read.csv("data/resultados_csv/data_fdiver_resptrait_abunrela_sp.csv")
 head(data_fdiver_sp)
 
 #Eliminar columnas
@@ -65,12 +65,12 @@ parcelas_pcnm$vectors <- parcelas_pcnm$vectors[,-(1)]
 # Seleccionar pcnms significativos  ---------------------------------------
 # Model con all predictors para fdiv
 
-fdiv_pcnm_sp <- rda(data_fdiver_sp$fdiv ~ ., 
+fdiv_pcnm_sp <- rda(data_fdiver_sp$fdiv_abundrela_sp ~ ., 
                  data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors para fdiv
 
-fdiv0_pcnm_sp <- rda(data_fdiver_sp$fdiv ~ 1, 
+fdiv0_pcnm_sp <- rda(data_fdiver_sp$fdiv_abundrela_sp ~ 1, 
                   data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para fdiv
@@ -82,7 +82,7 @@ fdiv_step_pcnm_sp <- ordistep(fdiv0_pcnm_sp,
 fdiv_step_pcnm_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_fdiv_sp <- paste('PCNM', c(15,29,5,19,54,4,25), sep='')
+n_fdiv_sp <- paste('PCNM', c(9,33,34,15), sep='')
 n_fdiv_sp
 fdiv_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_fdiv_sp]
 
@@ -100,15 +100,9 @@ forward.sel(data_fdiver_sp$fdiv, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- fdiv_pcnm_sub_sp
-SAND <- data_environmet_parcelas[,c("SAND")]
-TEMPMIN <- data_environmet_clima[,c("TEMPMIN")]
-elevation <- data_environmet_topo[,"ELEV"]
 fdiv_sp <- data_fdiver_sp$fdiv
 
 data_fdiv_sp_qeco <- cbind(data_espacio_qeco,
-                        SAND, 
-                        TEMPMIN,
-                        elevation,
                         fdiv_sp)
 
 
@@ -165,12 +159,12 @@ rm(fdiv0_pcnm_sp,fdiv_pcnm_sp,fdiv_pcnm_sub_sp,fdiv_var_sp,
 # Seleccionar pcnms significativos  ---------------------------------------
 # Model con all predictors para feve
 
-feve_pcnm_sp <- rda(data_fdiver_sp$feve ~ ., 
+feve_pcnm_sp <- rda(data_fdiver_sp$feve_abundrela_sp ~ ., 
                  data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors para feve
 
-feve0_pcnm_sp <- rda(data_fdiver_sp$feve ~ 1, 
+feve0_pcnm_sp <- rda(data_fdiver_sp$feve_abundrela_sp ~ 1, 
                   data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para feve
@@ -182,7 +176,7 @@ feve_step_pcnm_sp <- ordistep(feve0_pcnm_sp,
 feve_step_pcnm_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_feve_sp <- paste('PCNM', c(47,9,6,24,25), sep='')
+n_feve_sp <- paste('PCNM', c(5,35,24,14,12), sep='')
 n_feve_sp
 feve_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_feve_sp]
 
@@ -201,11 +195,11 @@ forward.sel(data_fdiver_sp$feve, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- feve_pcnm_sub_sp 
-P <- data_environmet_parcelas[,c("P")]
-feve_sp <- data_fdiver_sp$feve
+PRECCV_TEMPSD <- data_environmet_clima[,c("PRECCV","TEMPSD")]
+feve_sp <- data_fdiver_sp$feve_abundrela_sp
 
 data_feve_sp_qeco <- cbind(data_espacio_qeco,
-                        P,
+                           PRECCV_TEMPSD,
                         feve_sp)
 
 write.csv(data_feve_sp_qeco,"data/resultados_csv/varpart/response_traits/data_feve_sp_qeco.csv")
@@ -276,12 +270,12 @@ rm(feve0_pcnm_sp,feve_pcnm_sp,feve_pcnm_sub_sp,feve_var_sp,
 # Seleccionar pcnms significativos  ---------------------------------------
 # Model con all predictors para fdis
 
-fdis_pcnm_sp <- rda(data_fdiver_sp$fdis ~ ., 
+fdis_pcnm_sp <- rda(data_fdiver_sp$fdis_abundrela_sp ~ ., 
                  data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors para fdis
 
-fdis0_pcnm_sp <- rda(data_fdiver_sp$fdis ~ 1, 
+fdis0_pcnm_sp <- rda(data_fdiver_sp$fdis_abundrela_sp ~ 1, 
                   data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para fdis
@@ -293,7 +287,7 @@ fdis_step_pcnm_sp <- ordistep(fdis0_pcnm_sp,
 fdis_step_pcnm_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_fdis_sp <- paste('PCNM', c(10,38), sep='')
+n_fdis_sp <- paste('PCNM', c(29,7,34,32,43), sep='')
 n_fdis_sp
 fdis_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_fdis_sp]
 
@@ -373,26 +367,4 @@ anova(rda(data_fdiver_sp$fdis ~ fdis_pcnm_sub_sp +
 
 rm(fdis0_pcnm_sp,fdis_pcnm_sp,fdis_pcnm_sub_sp,fdis_var_sp,
    fdis_step_pcnm_sp, n_fdis_sp)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

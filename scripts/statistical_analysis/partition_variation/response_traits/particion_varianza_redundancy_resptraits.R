@@ -80,7 +80,7 @@ step_pcnm_redundnacy <- ordistep(redundancy0_pcnm,
 step_pcnm_redundnacy$anova 
 
 # create pcnm table with only significant axes 
-n_redundancy<-paste('PCNM', c(3,4,48,7,5,10), sep='')
+n_redundancy<-paste('PCNM', c(7,3,8,15,10,4,48,34,), sep='')
 n_redundancy
 redundancy_pcnm_sub <- parcelas_pcnm$vectors[,n_redundancy]
 
@@ -193,9 +193,9 @@ step_pcnm_rao <- ordistep(rao0_pcnm, scope=formula(rao_pcnm),
 step_pcnm_rao$anova 
 
 # create pcnm table with only significant axes sin el 1
-#n_rao<-paste('PCNM', c(8,4,35,10,6,40,15,5,7), sep='')
-#n_rao
-#rao_pcnm_sub <- parcelas_pcnm$vectors[,n_rao]
+n_rao<-paste('PCNM', c(7,48,29,3,15,34), sep='')
+n_rao
+rao_pcnm_sub <- parcelas_pcnm$vectors[,n_rao]
 
 
 # Forward selection de variables ambientales ------------------------------
@@ -213,13 +213,15 @@ forward.sel(data_redundancy$Q, data_environmet_topo,
 pH <- data_environmet_parcelas[,c("pH")]
 PRECDRIEST_PREC <- data_environmet_clima[,c("PREC","PRECDRIEST")]
 rao <- data_redundancy$Q
+data_espacio_qeco <- rao_pcnm_sub
 
-data_rao_qeco <- cbind(pH,
+data_rao_qeco <- cbind(data_espacio_qeco,
+                       pH,
                        PRECDRIEST_PREC,
                        rao)
 #View(data_rao_qeco)
 
-#write.csv(data_rao_qeco,"data/resultados_csv/varpart/data_rao_qeco.csv")
+write.csv(data_rao_qeco,"data/resultados_csv/varpart/response_traits/data_rao_qeco.csv")
 
 # Modelo rao---------------------------------------------------------------
 
@@ -305,10 +307,10 @@ step_pcnm_uni <- ordistep(uni0_pcnm, scope=formula(uni_pcnm),
                           permutations = how(nperm = 2000))
 
 #Ver pcnm significativos
-step_pcnm_uni$anova 
+ step_pcnm_uni$anova 
 
 # create pcnm table with only significant axes
-n_uni<-paste('PCNM', c(3,4,7,48,5,10,15), sep='')
+n_uni<-paste('PCNM', c(7,3,8,15,48,10,4,34,5), sep='')
 n_uni
 uni_pcnm_sub <- parcelas_pcnm$vectors[,n_uni]
 
