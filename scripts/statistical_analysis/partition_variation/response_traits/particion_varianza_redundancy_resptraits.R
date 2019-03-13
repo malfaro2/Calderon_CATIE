@@ -18,11 +18,11 @@ library(adespatial)
 # Data redundancy-Rao-Uniqueness ------------------------------------------
 
 data_redundancy <- 
-read.csv("data/resultados_csv/data_redundancy.csv")
+read.csv("data/resultados_csv/data_redundancy_resptraits.csv")
 
 #Cleanig data redundancy
 head(data_redundancy)
-data_redundancy <- data_redundancy[,c(3,4,6)]
+data_redundancy <- data_redundancy[,-c(1)]
 
 # Data Variables ambientales ----------------------------------------------
 data_environmet_topo <- 
@@ -80,7 +80,7 @@ step_pcnm_redundnacy <- ordistep(redundancy0_pcnm,
 step_pcnm_redundnacy$anova 
 
 # create pcnm table with only significant axes 
-n_redundancy<-paste('PCNM', c(8,7,5,6,40,4), sep='')
+n_redundancy<-paste('PCNM', c(3,4,48,7,5,10), sep='')
 n_redundancy
 redundancy_pcnm_sub <- parcelas_pcnm$vectors[,n_redundancy]
 
@@ -99,20 +99,16 @@ forward.sel(data_redundancy$redundancy, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- redundancy_pcnm_sub 
-CLAY <- data_environmet_parcelas[,c("CLAY")]
-data_clima_qeco <- data_environmet_clima[,c("TEMP", "PRECDRIEST")]
-ELEV <- data_environmet_topo[,c("ELEV")]
+TEMPSD <- data_environmet_clima[,c("TEMPSD")]
 redundancy <- data_redundancy$redundancy
 
 data_redundancy_qeco <- cbind(data_espacio_qeco,
-                       CLAY,
-                       data_clima_qeco, 
-                       ELEV,
-                       redundancy)
+                        TEMPSD,
+                        redundancy)
 
 #View(data_redundancy_qeco)
 
-#write.csv(data_redundancy_qeco,"data/resultados_csv/varpart/data_redundancy_qeco.csv")
+write.csv(data_redundancy_qeco,"data/resultados_csv/varpart/response_traits/data_redundancy_qeco.csv")
 
 # Modelo redundancy ---------------------------------------------------------------
 
@@ -197,9 +193,9 @@ step_pcnm_rao <- ordistep(rao0_pcnm, scope=formula(rao_pcnm),
 step_pcnm_rao$anova 
 
 # create pcnm table with only significant axes sin el 1
-n_rao<-paste('PCNM', c(8,4,35,10,6,40,15,5,7), sep='')
-n_rao
-rao_pcnm_sub <- parcelas_pcnm$vectors[,n_rao]
+#n_rao<-paste('PCNM', c(8,4,35,10,6,40,15,5,7), sep='')
+#n_rao
+#rao_pcnm_sub <- parcelas_pcnm$vectors[,n_rao]
 
 
 # Forward selection de variables ambientales ------------------------------
@@ -214,16 +210,12 @@ forward.sel(data_redundancy$Q, data_environmet_topo,
             alpha = 0.01,nperm = 2000)
 # Data para qeco ----------------------------------------------------------
 
-data_espacio_qeco <- rao_pcnm_sub 
-data_parcelas_qeco <- data_environmet_parcelas[,c("CLAY","Mg","Ca")]
-data_clima_qeco <- data_environmet_clima[,c("TEMP","PRECDRIEST")]
-ELEV <- data_environmet_topo[,c("ELEV")]
+pH <- data_environmet_parcelas[,c("pH")]
+PRECDRIEST_PREC <- data_environmet_clima[,c("PREC","PRECDRIEST")]
 rao <- data_redundancy$Q
 
-data_rao_qeco <- cbind(data_espacio_qeco,
-                       data_parcelas_qeco,
-                       data_clima_qeco, 
-                       ELEV,
+data_rao_qeco <- cbind(pH,
+                       PRECDRIEST_PREC,
                        rao)
 #View(data_rao_qeco)
 
@@ -316,7 +308,7 @@ step_pcnm_uni <- ordistep(uni0_pcnm, scope=formula(uni_pcnm),
 step_pcnm_uni$anova 
 
 # create pcnm table with only significant axes
-n_uni<-paste('PCNM', c(8,7,5,6,40,4,35), sep='')
+n_uni<-paste('PCNM', c(3,4,7,48,5,10,15), sep='')
 n_uni
 uni_pcnm_sub <- parcelas_pcnm$vectors[,n_uni]
 
@@ -334,20 +326,16 @@ forward.sel(data_redundancy$U, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- uni_pcnm_sub 
-CLAY <- data_environmet_parcelas[,c("CLAY")]
-data_clima_qeco <- data_environmet_clima[,c("TEMP","PRECDRIEST")]
-ELEV <- data_environmet_topo[,c("ELEV")]
+TEMPSD <- data_environmet_clima[,c("TEMPSD")]
 uniqueness <- data_redundancy$U
 
 data_uniq_qeco <- cbind(data_espacio_qeco,
-                       CLAY,
-                       data_clima_qeco, 
-                       ELEV,
+                       TEMPSD,
                        uniqueness)
 
 #View(data_uniq_qeco)
 
-#write.csv(data_uniq_qeco,"data/resultados_csv/varpart/data_uniq_qeco.csv")
+write.csv(data_uniq_qeco,"data/resultados_csv/varpart/response_traits/data_uniq_qeco.csv")
 
 
 # Modelo Uniqueness -------------------------------------------------------

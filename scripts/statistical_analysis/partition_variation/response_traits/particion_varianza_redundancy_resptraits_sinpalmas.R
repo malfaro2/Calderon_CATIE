@@ -18,10 +18,11 @@ library(adespatial)
 # Data redundancy-Rao-Uniqueness ------------------------------------------
 
 data_redundancy_sinpalmas <- 
-  read.csv("data/resultados_csv/data_redundancy_sinpalmas.csv")
+  read.csv("data/resultados_csv/data_redundancy_resptraits_sinpalmas.csv")
 
 #Eliminar columnas
-data_redundancy_sinpalmas <- data_redundancy_sinpalmas[,-c(1:4,8,9)]
+data_redundancy_sinpalmas <- data_redundancy_sinpalmas[,-c(1)]
+head(data_redundancy_sinpalmas)
 
 
 # Data Variables ambientales ----------------------------------------------
@@ -80,7 +81,7 @@ step_pcnm_redundnacy_sp <- ordistep(redundancy0_pcnm_sp,
 step_pcnm_redundnacy_sp$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_redundancy_sp<-paste('PCNM', c(16,4,18,23), sep='')
+n_redundancy_sp<-paste('PCNM', c(38,7), sep='')
 n_redundancy_sp
 redundancy_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_redundancy_sp]
 
@@ -98,16 +99,19 @@ forward.sel(data_redundancy_sinpalmas$redundancy, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- redundancy_pcnm_sub_sp
-PRECCV <- data_environmet_clima[,c("PRECCV")]
+
+OrganicMatter <- data_environmet_parcelas[,c("OrganicMatter")]
+TEMPSD <- data_environmet_clima[,c("TEMPSD")]
 redundancy_sp <- data_redundancy_sinpalmas$redundancy
 
 data_redundancy_sp_qeco <- cbind(data_espacio_qeco,
-                              PRECCV,
+                              OrganicMatter,
+                              TEMPSD,
                               redundancy_sp)
 
 #View(data_redundancy_sp_qeco)
 
-write.csv(data_redundancy_sp_qeco,"data/resultados_csv/varpart/data_redundancy_sp_qeco.csv")
+#write.csv(data_redundancy_sp_qeco,"data/resultados_csv/varpart/response_traits/data_redundancy_sp_qeco.csv")
 
 
 # Modelo redundancy ---------------------------------------------------------------
@@ -168,7 +172,7 @@ step_pcnm_rao_sp <- ordistep(rao0_pcnm_sp, scope=formula(rao_pcnm_sp),
 step_pcnm_rao_sp$anova 
 
 # create pcnm table with only significant axes sin el 1
-n_rao_sp<-paste('PCNM', c(16,7,3,18), sep='')
+n_rao_sp<-paste('PCNM', c(10,38,7), sep='')
 n_rao_sp
 rao_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_rao_sp]
 
@@ -188,18 +192,18 @@ forward.sel(data_redundancy_sinpalmas$Q, data_environmet_topo,
 
 data_espacio_qeco <- rao_pcnm_sub_sp
 CLAY <- data_environmet_parcelas[,c("CLAY")]
-TEMPSD <- data_environmet_clima[,c("TEMPSD")]
+TEMPMIN_PREC <- data_environmet_clima[,c("TEMPMIN","PREC")]
 ELEV <- data_environmet_topo[,c("ELEV")]
 rao_sp <- data_redundancy_sinpalmas$Q
 
 data_rao_sp_qeco <- cbind(data_espacio_qeco,
                        CLAY,
-                       TEMPSD, 
+                       TEMPMIN_PREC, 
                        ELEV,
                        rao_sp)
 #View(data_rao_sp_qeco)
 
-#write.csv(data_rao_sp_qeco,"data/resultados_csv/varpart/data_rao_sp_qeco.csv")
+write.csv(data_rao_sp_qeco,"data/resultados_csv/varpart/response_traits/data_rao_sp_qeco.csv")
 
 
 # Modelo rao---------------------------------------------------------------
@@ -210,7 +214,7 @@ data_rao_sp_qeco <- cbind(data_espacio_qeco,
 
 # 1) Caracteristicas fisicas de la parcela: SAND
 
-# 2) Clima: TEMPSD
+# 2) Clima: TEMPMIN PREC
 
 # 3) Topo:ELEV
 
@@ -281,7 +285,7 @@ step_pcnm_uni_sp <- ordistep(uni0_pcnm_sp, scope=formula(uni_pcnm_sp),
 step_pcnm_uni_sp$anova 
 
 # create pcnm table with only significant axes
-n_uni_sp<-paste('PCNM', c(16,4,18,23), sep='')
+n_uni_sp<-paste('PCNM', c(38,7), sep='')
 n_uni_sp
 uni_pcnm_sub_sp <- parcelas_pcnm$vectors[,n_uni_sp]
 
@@ -300,16 +304,17 @@ forward.sel(data_redundancy_sinpalmas$U, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- uni_pcnm_sub_sp 
-PRECCV <- data_environmet_clima[,c("PRECCV")]
+OrganicMatter <- data_environmet_parcelas[,c("OrganicMatter")]
+TEMPSD <- data_environmet_clima[,c("TEMPSD")]
 uniqueness_sp <- data_redundancy_sinpalmas$U
 
 data_uniq_sp_qeco <- cbind(data_espacio_qeco,
-                        PRECCV,
+                        OrganicMatter,   
+                        TEMPSD,
                         uniqueness_sp)
 
-View(data_uniq_sp_qeco)
 
-write.csv(data_uniq_sp_qeco,"data/resultados_csv/varpart/data_uniq_sp_qeco.csv")
+write.csv(data_uniq_sp_qeco,"data/resultados_csv/varpart/response_traits/data_uniq_sp_qeco.csv")
 # Modelo Uniqueness -------------------------------------------------------
 
 # do predictor matrices explain community composition, and how much?
