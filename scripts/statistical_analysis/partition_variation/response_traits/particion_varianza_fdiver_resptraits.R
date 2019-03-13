@@ -18,10 +18,13 @@ library(adespatial)
 # Data Fiv-Feve-fdis ------------------------------------------------------
 
 data_fdiver <- 
-read.csv("data/resultados_csv/data_fdiversity_coord.csv")
+read.csv("data/resultados_csv/data_fdiversity_resptraits.csv")
+head(data_fdiver)
 
 #Eliminar columnas
-data_fdiver <- data_fdiver[,-c(1:4)]
+data_fdiver <- data_fdiver[,-c(1)]
+head(data_fdiver)
+
 
 # Data Variables ambientales ----------------------------------------------
 data_environmet_topo <- 
@@ -78,7 +81,7 @@ fdiv_step_pcnm <- ordistep(fdiv0_pcnm,
 fdiv_step_pcnm$anova 
 
 # create pcnm table with only significant axes 
-n_fdiv <- paste('PCNM', c(10,8,3,4,13,15,35,9), sep='')
+n_fdiv <- paste('PCNM', c(5,20,29,24,19), sep='')
 n_fdiv
 fdiv_pcnm_sub <- parcelas_pcnm$vectors[,n_fdiv]
 
@@ -97,18 +100,18 @@ forward.sel(data_fdiver$fdiv, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- fdiv_pcnm_sub
-Mg <- data_environmet_parcelas[,c("Mg")]
-data_clima_qeco <- data_environmet_clima[,c("TEMPSD","TEMPMIN")]
+SAND <- data_environmet_parcelas[,c("SAND")]
+TEMP <- data_environmet_clima[,c("TEMP")]
 fdiv <- data_fdiver$fdiv
 
 data_fdiv_qeco <- cbind(data_espacio_qeco,
-                       data_clima_qeco, 
-                       Mg,
+                       SAND, 
+                       TEMP,
                        fdiv)
 
-View(data_fdiv_qeco)
+#View(data_fdiv_qeco)
 
-write.csv(data_fdiv_qeco,"data/resultados_csv/varpart/data_fdiv_qeco.csv")
+write.csv(data_fdiv_qeco,"data/resultados_csv/varpart/response_traits/data_fdiv_qeco.csv")
 
 
 # Modelo fdiv ---------------------------------------------------------------
@@ -182,7 +185,7 @@ feve_step_pcnm <- ordistep(feve0_pcnm,
 feve_step_pcnm$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_feve <- paste('PCNM', c(10,5,7,15), sep='')
+n_feve <- paste('PCNM', c(4,25,10,9,7,5), sep='')
 n_feve
 feve_pcnm_sub <- parcelas_pcnm$vectors[,n_feve]
 
@@ -201,20 +204,18 @@ forward.sel(data_fdiver$feve, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- feve_pcnm_sub 
-data_parcelas_qeco <- data_environmet_parcelas[,c("Ca","CLAY")]
-data_clima_qeco <- data_environmet_clima[,c("TEMPSD","PRECCV")]
-ELEV <- data_environmet_topo[,c("ELEV")]
+SAND <- data_environmet_parcelas[,c("SAND")]
+TEMPMIN_PRECCV <- data_environmet_clima[,c("TEMPMIN","PRECCV")]
 feve <- data_fdiver$feve
 
 data_feve_qeco <- cbind(data_espacio_qeco,
-                       data_clima_qeco, 
-                       data_parcelas_qeco,
-                       ELEV,
+                       SAND,
+                       TEMPMIN_PRECCV,
                        feve)
 
 #View(data_feve_qeco)
 
-#write.csv(data_feve_qeco,"data/resultados_csv/varpart/data_feve_qeco.csv")
+write.csv(data_feve_qeco,"data/resultados_csv/varpart/response_traits/data_feve_qeco.csv")
 
 # Modelo feve ---------------------------------------------------------------
 
@@ -300,7 +301,7 @@ fdis_step_pcnm <- ordistep(fdis0_pcnm,
 fdis_step_pcnm$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_fdis <- paste('PCNM', c(8,35,9,6,10,15,13,7,3), sep='')
+n_fdis <- paste('PCNM', c(7,48,34), sep='')
 n_fdis
 fdis_pcnm_sub <- parcelas_pcnm$vectors[,n_fdis]
 
@@ -319,20 +320,18 @@ forward.sel(data_fdiver$fdis, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- fdis_pcnm_sub 
-data_parcelas_qeco <- data_environmet_parcelas[,c("Mg","CLAY")]
-data_clima_qeco <- data_environmet_clima[,c("TEMP","TEMPSD")]
-ELEV <- data_environmet_topo[,c("ELEV")]
+pH <- data_environmet_parcelas[,c("pH")]
+TEMPSD<- data_environmet_clima[,c("TEMPSD")]
 fdis <- data_fdiver$fdis
 
 data_fdis_qeco <- cbind(data_espacio_qeco,
-                       data_clima_qeco, 
-                       data_parcelas_qeco,
-                       ELEV,
+                       pH,
+                       TEMPSD,
                        fdis)
 
 #View(data_fdis_qeco)
 
-#write.csv(data_fdis_qeco,"data/resultados_csv/varpart/data_fdis_qeco.csv")
+#write.csv(data_fdis_qeco,"data/resultados_csv/varpart/response_traits/data_fdis_qeco.csv")
 
 
 # Modelo fdis ---------------------------------------------------------------
