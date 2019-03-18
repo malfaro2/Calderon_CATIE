@@ -64,12 +64,12 @@ parcelas_pcnm$vectors <- parcelas_pcnm$vectors[,-(1)]
 # Seleccionar pcnms significativos  ---------------------------------------
 # Model con all predictors para fdiv
 
-fdiv_pcnm <- rda(data_fdiver$fdiv ~ ., 
+fdiv_pcnm <- rda(data_fdiver$fdiv_abundrela ~ ., 
                        data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors para fdiv
 
-fdiv0_pcnm <- rda(data_fdiver$fdiv ~ 1, 
+fdiv0_pcnm <- rda(data_fdiver$fdiv_abundrela ~ 1, 
                         data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para fdiv
@@ -100,13 +100,13 @@ forward.sel(data_fdiver$fdiv, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- fdiv_pcnm_sub
-SAND <- data_environmet_parcelas[,c("SAND")]
-TEMP <- data_environmet_clima[,c("TEMP")]
+CLAY <- data_environmet_parcelas[,c("CLAY")]
+TEMP_TEMPSD <- data_environmet_clima[,c("TEMP","TEMPSD")]
 fdiv <- data_fdiver$fdiv
 
 data_fdiv_qeco <- cbind(data_espacio_qeco,
-                       SAND, 
-                       TEMP,
+                       CLAY, 
+                       TEMP_TEMPSD,
                        fdiv)
 
 #View(data_fdiv_qeco)
@@ -168,12 +168,12 @@ rm(fdiv0_pcnm,fdiv_pcnm,fdiv_pcnm_sub,fdiv_var,
 # Seleccionar pcnms significativos  ---------------------------------------
 # Model con all predictors para feve
 
-feve_pcnm <- rda(data_fdiver$feve ~ ., 
+feve_pcnm <- rda(data_fdiver$feve_abundrela ~ ., 
                  data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors para feve
 
-feve0_pcnm <- rda(data_fdiver$feve ~ 1, 
+feve0_pcnm <- rda(data_fdiver$feve_abundrela ~ 1, 
                   data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para feve
@@ -185,7 +185,7 @@ feve_step_pcnm <- ordistep(feve0_pcnm,
 feve_step_pcnm$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_feve <- paste('PCNM', c(4,25,10,9,7,5), sep='')
+n_feve <- paste('PCNM', c(4,10,5), sep='')
 n_feve
 feve_pcnm_sub <- parcelas_pcnm$vectors[,n_feve]
 
@@ -204,13 +204,13 @@ forward.sel(data_fdiver$feve, data_environmet_topo,
 # Data para qeco ----------------------------------------------------------
 
 data_espacio_qeco <- feve_pcnm_sub 
-SAND <- data_environmet_parcelas[,c("SAND")]
-TEMPMIN_PRECCV <- data_environmet_clima[,c("TEMPMIN","PRECCV")]
-feve <- data_fdiver$feve
+CLAY_OrganicMatter <- data_environmet_parcelas[,c("CLAY","OrganicMatter")]
+TEMPMIN_PRECDRIEST <- data_environmet_clima[,c("PRECDRIEST","TEMPMIN")]
+feve <- data_fdiver$feve_abundrela
 
 data_feve_qeco <- cbind(data_espacio_qeco,
-                       SAND,
-                       TEMPMIN_PRECCV,
+                        CLAY_OrganicMatter,
+                        TEMPMIN_PRECDRIEST,
                        feve)
 
 #View(data_feve_qeco)
@@ -284,12 +284,12 @@ rm(feve0_pcnm,feve_pcnm,feve_pcnm_sub,feve_var,
 # Seleccionar pcnms significativos  ---------------------------------------
 # Model con all predictors para fdis
 
-fdis_pcnm <- rda(data_fdiver$fdis ~ ., 
+fdis_pcnm <- rda(data_fdiver$fdis_abundrela ~ ., 
                  data=as.data.frame(scores(parcelas_pcnm)))
 
 # Model con no predictors para fdis
 
-fdis0_pcnm <- rda(data_fdiver$fdis ~ 1, 
+fdis0_pcnm <- rda(data_fdiver$fdis_abundrela ~ 1, 
                   data=as.data.frame(scores(parcelas_pcnm)))
 
 #Seleccionar variables significativas para fdis
@@ -301,7 +301,7 @@ fdis_step_pcnm <- ordistep(fdis0_pcnm,
 fdis_step_pcnm$anova 
 
 # create pcnm table with only significant axes y se quita el 1
-n_fdis <- paste('PCNM', c(7,48,34), sep='')
+n_fdis <- paste('PCNM', c(7,48,3,34,29,15), sep='')
 n_fdis
 fdis_pcnm_sub <- parcelas_pcnm$vectors[,n_fdis]
 
@@ -322,7 +322,7 @@ forward.sel(data_fdiver$fdis, data_environmet_topo,
 data_espacio_qeco <- fdis_pcnm_sub 
 pH <- data_environmet_parcelas[,c("pH")]
 TEMPSD<- data_environmet_clima[,c("TEMPSD")]
-fdis <- data_fdiver$fdis
+fdis <- data_fdiver$fdis_abundrela
 
 data_fdis_qeco <- cbind(data_espacio_qeco,
                        pH,
@@ -331,7 +331,7 @@ data_fdis_qeco <- cbind(data_espacio_qeco,
 
 #View(data_fdis_qeco)
 
-#write.csv(data_fdis_qeco,"data/resultados_csv/varpart/response_traits/data_fdis_qeco.csv")
+write.csv(data_fdis_qeco,"data/resultados_csv/varpart/response_traits/data_fdis_qeco.csv")
 
 
 # Modelo fdis ---------------------------------------------------------------
@@ -392,10 +392,5 @@ anova(rda(data_fdiver$fdis ~ fdis_pcnm_sub +
 
 rm(fdis0_pcnm,fdis_pcnm,fdis_pcnm_sub,fdis_var,
    fdis_step_pcnm, n_fdis)
-
-
-
-
-
 
 
