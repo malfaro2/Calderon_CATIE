@@ -1,0 +1,125 @@
+---
+title: "Analisis exploratorio rasgos funcionales efecto sin palmas"
+author: "Erick Calderón-Morales"
+date: "March 18, 2019"
+output: 
+  html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Paquetes
+library(lattice)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(GGally)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+```
+
+
+#Objetivo
+
+El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales efecto sin palmas 
+
+#Rasgos efecto
+
+###Significado de las variables 
+
+```{r echo=FALSE}
+Rasgo <- c("AFE","CFMS","DM","N","P")
+Significado <- c("Area foliar especifica","Contenido foliar de materia seca","Densidad de madera","Concentracion foliar de nitrogeno","Concentracion foliar de fosforo")
+Unidades_de_medida <- c("mm2/Mg","Mg/g","g/cm3","Mg/g","Mg/g")
+
+d1 <- data.frame(Rasgo,Significado,Unidades_de_medida)
+
+kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
+
+```{r}
+#Load data
+deff_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean_sin_palmas.csv",header = T)
+dim(deff_sp)
+```
+
+##Rasgos efecto sin palmas
+
+##Medidas de resumen
+
+```{r}
+
+deff_sp %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>%
+  group_by(rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+  
+```
+
+
+
+##Correlaciones entre rasgos funcionales efecto sin palmas
+
+```{r}
+#CORRER ESTE POR TIPO DE BOSQUE
+#p_ <- GGally::print_if_interactive
+#data(flea)
+#flea
+#ggpairs(flea, columns = 2:4)
+#pm <- ggpairs(flea, columns = 2:4, ggplot2::aes(colour=species))
+#p_(pm)
+```
+
+```{r}
+ggpairs(deff_sp[,4:8], lower=list(continuous="smooth"))
+```
+
+##Outliers
+Cleveland plot:  row number of an observation is plotted vs. the observation value,
+```{r}
+Mydotplot(deff_sp[,4:8])
+```
+
+
+
+###Posibles outliers
+
+### Grafico N
+```{r}
+kable(deff_sp[deff_sp$n < 10,]) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% 
+  column_spec(8, background = "yellow")
+```
+
+### Grafico de afe
+```{r}
+
+kable(deff_sp[deff_sp$afe > 40,]) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% 
+  column_spec(5, background = "yellow")
+```
+
+###Grafico de cfms
+```{r}
+kable(deff_sp[deff_sp$cfms > 550,]) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% 
+  column_spec(6, background = "yellow")
+
+```
+
+###Grafico de DM
+```{r}
+kable(deff_sp[deff_sp$dm <0.2,]) %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% 
+  column_spec(7, background = "yellow")
+
+```
+
+##Collinearidad entre rasgos efecto 
+```{r}
+corvif(deff_sp[,4:8])
+```
