@@ -1,6 +1,8 @@
 rm(list = ls())
 # Cargar data -------------------------------------------------------------
- source("scripts/data_cleaning_for_loops.R")
+source("scripts/data_cleaning//data_cleaning_for_loops.R")
+ls()
+dim(dabund_clean)
 
 # Loop --------------------------------------------------------------------
 
@@ -47,10 +49,11 @@ for (i in seq_along(names(list))) {
 str(sp_comp)
 
 #Composicion de la parcela numeo 
-sp_comp[[12]]
+sp_comp[[1]]
+sp_comp
 
+especies_por_parcela <- do.call(rbind, sp_comp)
 
-
-
+write.csv(especies_por_parcela,"data/clean/despecies_por_parcela.csv")
 
 

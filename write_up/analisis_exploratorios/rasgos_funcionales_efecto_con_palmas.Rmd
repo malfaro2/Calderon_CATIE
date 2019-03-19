@@ -47,6 +47,19 @@ kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c(
 ```{r}
 #Load data
 deff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean.csv",header = T)
+despecies <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
+despecies <- rename(despecies, coespec=code)
+```
+
+```{r}
+#Dimensiones de los datos
+dim(deff)
+
+#Especies
+length(unique(despecies$coespec))
+
+#Parcelas
+length(unique(despecies$plot))
 ```
 
 ##Rasgos efecto incluyendo palmas
@@ -59,6 +72,13 @@ deff %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del
   select(-af) %>% 
   group_by(rasgo) %>% 
   summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+#Medidas de resumen de cantidad de especies por parcela
+despecies %>%  group_by(plot) %>% 
+  summarize(especies=n()) %>% 
+  arrange(desc(especies)) %>% 
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
   
