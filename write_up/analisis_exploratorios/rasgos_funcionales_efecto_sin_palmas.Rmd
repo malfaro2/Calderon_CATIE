@@ -28,7 +28,7 @@ source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
 
 El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales efecto sin palmas 
 
-#Rasgos efecto
+#Rasgos efecto sin palmas
 
 ###Significado de las variables 
 
@@ -47,23 +47,44 @@ kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c(
 ```{r}
 #Load data
 deff_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean_sin_palmas.csv",header = T)
+despecies_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
+despecies_sp <- rename(despecies_sp, coespec=code) %>% filter(!coespec %in% c("EUTEPR","IRIADE","SOCREX","WELFRE"))
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv",header = T)
+
+length(unique(despecies_sp$coespec))
 dim(deff_sp)
+dim(dparcelas)
 ```
 
-##Rasgos efecto sin palmas
 
-##Medidas de resumen
 
+##Medidas de resumen sin palmas
+
+###Medidas de resumen por rasgo
 ```{r}
 
-deff_sp %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>%
+deff_sp %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>% 
   group_by(rasgo) %>% 
   summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
   
 ```
+###Medidas de resumen para cada rasgo por tipo de bosque
+```{r}
 
+dfull <- left_join(despecies_sp, dparcelas, by="plot" )
+dfull <- left_join(dfull, deff_sp, by="coespec" ) %>% select(-c(CRTM_90_X,CRTM_90_Y))
+
+dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
 
 
 ##Correlaciones entre rasgos funcionales efecto sin palmas

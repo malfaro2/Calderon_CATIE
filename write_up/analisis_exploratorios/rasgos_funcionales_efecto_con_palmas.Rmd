@@ -28,7 +28,7 @@ source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
 
 El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales efecto con palmas 
 
-#Rasgos efecto
+#Rasgos efecto incluyendo palmas
 
 ###Significado de las variables 
 
@@ -49,12 +49,12 @@ kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c(
 deff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean.csv",header = T)
 despecies <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
 despecies <- rename(despecies, coespec=code)
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv",header = T)
 ```
 
 ```{r}
 #Dimensiones de los datos
 dim(deff)
-
 #Especies
 length(unique(despecies$coespec))
 
@@ -62,10 +62,9 @@ length(unique(despecies$coespec))
 length(unique(despecies$plot))
 ```
 
-##Rasgos efecto incluyendo palmas
-
 ##Medidas de resumen
 
+###Medidas de resumen por rasgo
 ```{r}
 
 deff %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>% 
@@ -76,14 +75,28 @@ deff %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 
 #Medidas de resumen de cantidad de especies por parcela
-despecies %>%  group_by(plot) %>% 
-  summarize(especies=n()) %>% 
-  arrange(desc(especies)) %>% 
-  kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
-  
+#despecies %>%  group_by(plot) %>% 
+# summarize(especies=n()) %>% 
+#  arrange(especies) %>% 
+#  kable() %>% 
+#  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
 ```
 
+###Medidas de resumen para cada rasgo por tipo de bosque
+```{r}
+
+dfull <- left_join(despecies, dparcelas, by="plot" )
+dfull <- left_join(dfull, deff, by="coespec" ) %>% select(-c(CRTM_90_X,CRTM_90_Y))
+
+dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
 
 
 ##Correlaciones entre rasgos funcionales efecto

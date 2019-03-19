@@ -20,7 +20,7 @@ output:
 
 El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales efecto con palmas 
 
-#Rasgos efecto
+#Rasgos efecto incluyendo palmas
 
 ###Significado de las variables 
 
@@ -69,7 +69,12 @@ El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de
 deff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean.csv",header = T)
 despecies <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
 despecies <- rename(despecies, coespec=code)
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv",header = T)
+```
 
+
+```r
+#Dimensiones de los datos
 dim(deff)
 ```
 
@@ -95,10 +100,9 @@ length(unique(despecies$plot))
 ## [1] 127
 ```
 
-##Rasgos efecto incluyendo palmas
-
 ##Medidas de resumen
 
+###Medidas de resumen por rasgo
 
 ```r
 deff %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>% 
@@ -160,9 +164,23 @@ deff %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del
 
 ```r
 #Medidas de resumen de cantidad de especies por parcela
-despecies %>%  group_by(plot) %>% 
-  summarize(especies=n()) %>% 
-  arrange(desc(especies)) %>% 
+#despecies %>%  group_by(plot) %>% 
+# summarize(especies=n()) %>% 
+#  arrange(especies) %>% 
+#  kable() %>% 
+#  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+###Medidas de resumen para cada rasgo por tipo de bosque
+
+```r
+dfull <- left_join(despecies, dparcelas, by="plot" )
+dfull <- left_join(dfull, deff, by="coespec" ) %>% select(-c(CRTM_90_X,CRTM_90_Y))
+
+dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 ```
@@ -170,522 +188,137 @@ despecies %>%  group_by(plot) %>%
 <table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
-   <th style="text-align:left;"> plot </th>
-   <th style="text-align:right;"> especies </th>
+   <th style="text-align:left;"> forest_type </th>
+   <th style="text-align:left;"> rasgo </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> max </th>
+   <th style="text-align:right;"> min </th>
   </tr>
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> F13P2 </td>
-   <td style="text-align:right;"> 25 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F54P6 </td>
-   <td style="text-align:right;"> 23 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F30P4 </td>
-   <td style="text-align:right;"> 22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F38P2 </td>
-   <td style="text-align:right;"> 22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F40P2 </td>
-   <td style="text-align:right;"> 22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F43P2 </td>
-   <td style="text-align:right;"> 22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F51P1 </td>
-   <td style="text-align:right;"> 22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P2 </td>
-   <td style="text-align:right;"> 22 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F11P1 </td>
-   <td style="text-align:right;"> 21 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F30P1 </td>
-   <td style="text-align:right;"> 21 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F38P4 </td>
-   <td style="text-align:right;"> 21 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F45P2 </td>
-   <td style="text-align:right;"> 21 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P5 </td>
-   <td style="text-align:right;"> 21 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P6 </td>
-   <td style="text-align:right;"> 21 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F11P2 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F31P1 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F36P1 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F43P3 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F48P2 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F51P3 </td>
-   <td style="text-align:right;"> 20 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F10P2 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F13P3 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F31P2 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F34P1 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F39P2 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F41P3 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F42P4 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F43P1 </td>
-   <td style="text-align:right;"> 19 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F34P4 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F38P1 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F39P1 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F45P1 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F50P3 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P3 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F6P2 </td>
-   <td style="text-align:right;"> 18 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F11P3 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F33P1 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F34P3 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F3P4 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F41P1 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F44P1 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F44P2 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F47P2 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F54P2 </td>
-   <td style="text-align:right;"> 17 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F12P3 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F13P1 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F35P2 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F36P2 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F37P1 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F37P2 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F37P3 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F37P4 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F3P1 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F40P3 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F41P5 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F49P2 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F50P1 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P1 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P4 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F54P1 </td>
-   <td style="text-align:right;"> 16 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F10P4 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F12P1 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F12P4 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F13P4 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F33P3 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F34P2 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F35P1 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F42P3 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F44P3 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F47P1 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F47P3 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F50P2 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F51P2 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F52P7 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F53P1 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F54P5 </td>
-   <td style="text-align:right;"> 15 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F2P1 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F2P3 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F30P3 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F3P2 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F44P4 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F46P1 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F46P2 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F48P1 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F49P3 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F4P2 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F7P2 </td>
-   <td style="text-align:right;"> 14 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F10P3 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F12P2 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F32P1 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F32P2 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F33P4 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F40P1 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F41P2 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F41P4 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F41P6 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F42P1 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F49P1 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F54P3 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F7P1 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F8P1 </td>
-   <td style="text-align:right;"> 13 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F10P1 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F30P2 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F5P1 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F5P3 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F6P3 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F9P2 </td>
-   <td style="text-align:right;"> 12 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F32P3 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F3P3 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F42P2 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F4P1 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F53P2 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F54P4 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F5P2 </td>
-   <td style="text-align:right;"> 11 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F38P3 </td>
-   <td style="text-align:right;"> 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F40P4 </td>
-   <td style="text-align:right;"> 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F2P2 </td>
-   <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F33P2 </td>
-   <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F50P4 </td>
-   <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F6P1 </td>
-   <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F8P2 </td>
-   <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F9P1 </td>
-   <td style="text-align:right;"> 9 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F1P2 </td>
-   <td style="text-align:right;"> 8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F9P3 </td>
-   <td style="text-align:right;"> 8 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F1P3 </td>
-   <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F1P4 </td>
-   <td style="text-align:right;"> 7 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> F1P1 </td>
-   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:left;"> Foothills </td>
+   <td style="text-align:left;"> afe </td>
+   <td style="text-align:right;"> 14.9888200 </td>
+   <td style="text-align:right;"> 5.3079987 </td>
+   <td style="text-align:right;"> 46.75 </td>
+   <td style="text-align:right;"> 5.69 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> afe </td>
+   <td style="text-align:right;"> 13.5927447 </td>
+   <td style="text-align:right;"> 5.1211327 </td>
+   <td style="text-align:right;"> 46.75 </td>
+   <td style="text-align:right;"> 5.69 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> afe </td>
+   <td style="text-align:right;"> 12.1317913 </td>
+   <td style="text-align:right;"> 4.3904606 </td>
+   <td style="text-align:right;"> 46.75 </td>
+   <td style="text-align:right;"> 5.69 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Foothills </td>
+   <td style="text-align:left;"> cfms </td>
+   <td style="text-align:right;"> 387.6232600 </td>
+   <td style="text-align:right;"> 65.7150176 </td>
+   <td style="text-align:right;"> 531.27 </td>
+   <td style="text-align:right;"> 190.00 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> cfms </td>
+   <td style="text-align:right;"> 406.8757872 </td>
+   <td style="text-align:right;"> 63.2703305 </td>
+   <td style="text-align:right;"> 645.35 </td>
+   <td style="text-align:right;"> 210.00 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> cfms </td>
+   <td style="text-align:right;"> 418.4602362 </td>
+   <td style="text-align:right;"> 62.4360420 </td>
+   <td style="text-align:right;"> 593.45 </td>
+   <td style="text-align:right;"> 252.61 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Foothills </td>
+   <td style="text-align:left;"> dm </td>
+   <td style="text-align:right;"> 0.5037000 </td>
+   <td style="text-align:right;"> 0.1650994 </td>
+   <td style="text-align:right;"> 0.87 </td>
+   <td style="text-align:right;"> 0.12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> dm </td>
+   <td style="text-align:right;"> 0.5121489 </td>
+   <td style="text-align:right;"> 0.2010983 </td>
+   <td style="text-align:right;"> 0.87 </td>
+   <td style="text-align:right;"> 0.07 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> dm </td>
+   <td style="text-align:right;"> 0.5658661 </td>
+   <td style="text-align:right;"> 0.2040938 </td>
+   <td style="text-align:right;"> 0.87 </td>
+   <td style="text-align:right;"> 0.12 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Foothills </td>
+   <td style="text-align:left;"> n </td>
+   <td style="text-align:right;"> 24.2283000 </td>
+   <td style="text-align:right;"> 7.7596970 </td>
+   <td style="text-align:right;"> 40.90 </td>
+   <td style="text-align:right;"> 2.30 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> n </td>
+   <td style="text-align:right;"> 23.5659468 </td>
+   <td style="text-align:right;"> 5.8067995 </td>
+   <td style="text-align:right;"> 40.90 </td>
+   <td style="text-align:right;"> 2.30 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> n </td>
+   <td style="text-align:right;"> 21.8619488 </td>
+   <td style="text-align:right;"> 5.6278853 </td>
+   <td style="text-align:right;"> 40.90 </td>
+   <td style="text-align:right;"> 2.30 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Foothills </td>
+   <td style="text-align:left;"> p </td>
+   <td style="text-align:right;"> 1.1554000 </td>
+   <td style="text-align:right;"> 0.3769411 </td>
+   <td style="text-align:right;"> 2.30 </td>
+   <td style="text-align:right;"> 0.47 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> p </td>
+   <td style="text-align:right;"> 1.0348511 </td>
+   <td style="text-align:right;"> 0.3108079 </td>
+   <td style="text-align:right;"> 2.30 </td>
+   <td style="text-align:right;"> 0.40 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> p </td>
+   <td style="text-align:right;"> 0.9345669 </td>
+   <td style="text-align:right;"> 0.2789852 </td>
+   <td style="text-align:right;"> 2.30 </td>
+   <td style="text-align:right;"> 0.40 </td>
   </tr>
 </tbody>
 </table>
-
 
 
 ##Correlaciones entre rasgos funcionales efecto
@@ -706,7 +339,7 @@ despecies %>%  group_by(plot) %>%
 ggpairs(deff[,5:9], lower=list(continuous="smooth"))
 ```
 
-![](rasgos_funcionales_efecto_con_palmas_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](rasgos_funcionales_efecto_con_palmas_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 ##Outliers
 Cleveland plot:  row number of an observation is plotted vs. the observation value,
@@ -715,7 +348,7 @@ Cleveland plot:  row number of an observation is plotted vs. the observation val
 Mydotplot(deff[,5:9])
 ```
 
-![](rasgos_funcionales_efecto_con_palmas_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](rasgos_funcionales_efecto_con_palmas_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 
 
