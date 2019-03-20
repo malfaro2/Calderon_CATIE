@@ -1,0 +1,114 @@
+---
+title: "Analisis exploratorio rasgos funcionales respuesta sin palmas"
+author: "Erick Calderón-Morales"
+date: "March 18, 2019"
+output: 
+  html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Paquetes
+library(lattice)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(GGally)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+```
+
+
+#Objetivo
+
+El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales respuesta con palmas 
+
+
+##Significado de las variables 
+
+```{r echo=FALSE}
+Categorias <- c("Anemocoria","Hidrocoria","Zoocoria","Dos o mas tipos de dispersion","Autocoria",
+                 "Dioico","Monoico","Hermafrodita","Poligama",
+                "Viento","Insectos","Aves","Dos o mas tipos de polinizacion","Mamiferos")
+
+Abreviaturas <- c("DW","DH","DANI","DVAR","DA",
+                  "D","M","H","P",
+                   "PW","PI","PAV","PVAR","PMA")
+
+d1 <- data.frame(Categorias, Abreviaturas, row.names = 1)
+
+kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% pack_rows("Tipo de dispersion", 1, 5) %>% 
+    pack_rows("Sistema sexual", 6, 9) %>%
+    pack_rows("Tipo de polinizacion ", 10, 14)
+```
+
+
+```{r echo=FALSE}
+#Load data
+dresp_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean_sinpalmas.csv",header = T)
+dresp_sp <- rename(dresp_sp, coespec=X) %>% select(-c(familia, especie))
+
+despecies_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
+despecies_sp <- rename(despecies_sp, coespec=code) %>% filter(!coespec %in% c("EUTEPR","IRIADE","SOCREX","WELFRE"))
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv",header = T)
+```
+
+```{r}
+#Dimensiones de los datos
+dim(dresp_sp)
+str(dresp_sp)
+
+#Especies
+length(unique(despecies_sp$coespec))
+
+#Parcelas
+length(unique(dparcelas$plot))
+```
+
+#Medidas de resumen para los rasgos de respuesta 
+
+##Medidas de resumen por rasgo
+```{r}
+
+dresp_sp %>% gather(colnames(dresp_sp[,-1])  , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo,valor_del_rasgo) %>% 
+  summarise(n=n())  %>% 
+  mutate(porcentaje= round((n/sum(n))*100, 3)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
+##Cantidad de especies por tipo de bosque
+```{r}
+
+dfull <- left_join(despecies_sp, dparcelas, by="plot" )
+dfull %>%  group_by(forest_type) %>% 
+ summarize(especies = n_distinct(coespec)) %>% 
+  arrange(especies) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+
+##Medidas de resumen para cada rasgo por tipo de bosque
+```{r}
+dfull <- left_join(dfull, dresp_sp, by="coespec" ) %>% select(-c(CRTM_90_X,CRTM_90_Y))
+
+dfull %>% gather(colnames(dresp_sp[,-1])  , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo,valor_del_rasgo, forest_type) %>% 
+  summarise(n=n_distinct(coespec))  %>%
+  
+  group_by(forest_type, rasgo) %>% 
+   
+  mutate(porcentaje= round((n/sum(n))*100, 3)) %>%
+  arrange(forest_type) %>% 
+  
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```

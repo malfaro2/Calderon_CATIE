@@ -1,0 +1,98 @@
+---
+title: "Indices diversidad funcional rasgos efecto"
+author: "Erick Calderón-Morales"
+date: "March 19, 2019"
+output:   
+    html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Paquetes
+library(lattice)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(GGally)
+library(FD)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+```
+
+```{r echo=FALSE}
+#Load data
+#Rasgos funcionales
+deff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean.csv",header = T)
+deff <- deff %>% select(-c(af, familia, especie)) %>% column_to_rownames("coespec")
+
+#Data parcelas
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- dparcelas %>% select(-c(CRTM_90_X,CRTM_90_Y))
+
+#Data abundancia
+dabund <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_plot.csv", header = T)
+dim(dabund)
+
+dabund_relativa <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_relativa.csv", header = T, row.names = 1)
+
+dim(dabund_relativa)
+dim(dparcelas)
+dim(deff)
+
+```
+
+
+#Calculo de los indices de diversidad funcional 
+
+```{r}
+#Ordenar los nombres 
+#target <- colnames(dabund_relativa) 
+#deff <- deff[match(target, row.names(dresp)),]
+
+```
+
+Indices diversidad funcional calculados ponderados por la 
+
+Los datos de abundancia relativa estan mal!!!!
+
+```{r}
+indices1 <- dbFD(deff[colnames(dabund_relativa),],
+     dabund_relativa, w.abun = T,stand.x = T)
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
