@@ -1,0 +1,156 @@
+---
+title: "Indices diversidad funcional rasgos efecto sin palmas"
+author: "Erick Calderón-Morales"
+date: "March 19, 2019"
+output:   
+ html_document:
+   code_folding: hide
+   fig_height: 8
+   fig_width: 10
+   keep_md: yes
+   toc: yes
+   toc_depth: 2
+   toc_float: yes
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Paquetes
+library(lattice)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(GGally)
+library(FD)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+```
+
+```{r echo=FALSE}
+#Load data
+#Rasgos funcionales
+deff_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean_sin_palmas.csv",header = T)
+deff_sp <- deff_sp %>% select(-c(familia, especie)) %>% column_to_rownames("coespec")
+
+#Data parcelas
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- dparcelas %>% select(-c(CRTM_90_X,CRTM_90_Y))
+
+#Data abundancia
+dabund_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_clean.csv", header = T, row.names = 1)
+dabund_sp <- dabund_sp %>% select(-c(WELFRE,SOCREX,EUTEPR, IRIADE))
+
+
+dabund_relativa_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_relativa_clean.csv", header = T, row.names = 1)
+dabund_relativa_sp <- dabund_relativa_sp %>% select(-c(WELFRE,SOCREX,EUTEPR, IRIADE))
+
+
+#Ver cantidad de especies y parcelas
+dim(dabund_sp)
+dim(dabund_relativa_sp)
+dim(dparcelas)
+dim(deff_sp)
+
+```
+
+
+#Calculo de los indices de diversidad funcional exluyendo las palmas 
+
+```{r}
+#Ordenar los nombres 
+#target <- colnames(dabund_relativa) 
+#deff <- deff[match(target, row.names(dresp)),]
+```
+
+__Indices diversidad funcional ponderados por la abundancia relativa(w.abund=T) de las especies presentes (total de individuos presentes 4801) y los rasgos estan estandarizados con media 0 y misma varianza.__
+
+
+```{r echo=FALSE}
+Rasgo <- c("AFE","CFMS","DM","N","P")
+Significado <- c("Area foliar especifica","Contenido foliar de materia seca","Densidad de madera","Concentracion foliar de nitrogeno","Concentracion foliar de fosforo")
+Unidades_de_medida <- c("mm2/Mg","Mg/g","g/cm3","Mg/g","Mg/g")
+
+d1 <- data.frame(Rasgo,Significado,Unidades_de_medida)
+
+kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
+
+```{r}
+indices_abunrelativa_sp <- dbFD(deff_sp[colnames(dabund_relativa_sp),],
+     dabund_relativa_sp, w.abun = T,stand.x = T)
+```
+
+
+```{r}
+#Obtener indices Feve, Fdis, Fdiv
+indices_sp <-   data.frame(indices_abunrelativa_sp$FEve) %>% 
+  data.frame(indices_abunrelativa_sp$FRic) %>% 
+  data.frame(indices_abunrelativa_sp$FDis) %>% 
+  rownames_to_column("plot") %>% 
+  cbind() %>% 
+  rename(feve_sp= indices_abunrelativa_sp.FEve,fric_sp = indices_abunrelativa_sp.FRic, fdis_sp = indices_abunrelativa_sp.FDis )
+
+#Obtener CWMs
+cwm_sp <- data.frame(indices_abunrelativa_sp$CWM) 
+colnames(cwm_sp) <-  paste("cwm_sp", colnames(cwm_sp), sep = "_") 
+cwm_sp <- cwm_sp %>% rownames_to_column("plot")
+
+#Guardar  archivos .csv
+write.csv(indices_sp, "C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_fdiver_sp.csv")
+write.csv(cwm_sp, "C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_cwm_eff_sp.csv")
+```
+
+
+
+##Medidas de resumen para FDis, FEve, FDiv sin palmas
+
+###Medidas de resumen por indice
+```{r}
+
+indices_sp %>% gather("feve_sp", "fric_sp", "fdis_sp" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
+###Medidas de resumen para cada indice por tipo de bosque
+```{r}
+dfull <- left_join(indices_sp,dparcelas, by="plot") 
+
+dfull %>% gather("feve_sp", "fric_sp", "fdis_sp" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
+
+##Medidas de resumen para CWM sin palmas
+
+
+###Medidas de resumen por CWM
+```{r}
+cwm_sp %>% gather("cwm_sp_afe","cwm_sp_cfms","cwm_sp_dm","cwm_sp_n","cwm_sp_p" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+###Medidas de resumen para cada cwm por tipo de bosque
+```{r}
+dfull <- left_join(cwm_sp,dparcelas, by="plot") 
+
+dfull %>% gather("cwm_sp_afe","cwm_sp_cfms","cwm_sp_dm","cwm_sp_n","cwm_sp_p", key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
