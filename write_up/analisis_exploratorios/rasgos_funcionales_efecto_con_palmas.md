@@ -206,7 +206,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 5.69 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> P.macroloba </td>
    <td style="text-align:left;"> afe </td>
    <td style="text-align:right;"> 13.5927447 </td>
    <td style="text-align:right;"> 5.1211327 </td>
@@ -214,7 +214,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 5.69 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> Q.paraensis </td>
    <td style="text-align:left;"> afe </td>
    <td style="text-align:right;"> 12.1317913 </td>
    <td style="text-align:right;"> 4.3904606 </td>
@@ -230,7 +230,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 190.00 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> P.macroloba </td>
    <td style="text-align:left;"> cfms </td>
    <td style="text-align:right;"> 406.8757872 </td>
    <td style="text-align:right;"> 63.2703305 </td>
@@ -238,7 +238,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 210.00 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> Q.paraensis </td>
    <td style="text-align:left;"> cfms </td>
    <td style="text-align:right;"> 418.4602362 </td>
    <td style="text-align:right;"> 62.4360420 </td>
@@ -254,7 +254,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 0.12 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> P.macroloba </td>
    <td style="text-align:left;"> dm </td>
    <td style="text-align:right;"> 0.5121489 </td>
    <td style="text-align:right;"> 0.2010983 </td>
@@ -262,7 +262,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 0.07 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> Q.paraensis </td>
    <td style="text-align:left;"> dm </td>
    <td style="text-align:right;"> 0.5658661 </td>
    <td style="text-align:right;"> 0.2040938 </td>
@@ -278,7 +278,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 2.30 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> P.macroloba </td>
    <td style="text-align:left;"> n </td>
    <td style="text-align:right;"> 23.5659468 </td>
    <td style="text-align:right;"> 5.8067995 </td>
@@ -286,7 +286,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 2.30 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> Q.paraensis </td>
    <td style="text-align:left;"> n </td>
    <td style="text-align:right;"> 21.8619488 </td>
    <td style="text-align:right;"> 5.6278853 </td>
@@ -302,7 +302,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 0.47 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> P. macroloba </td>
+   <td style="text-align:left;"> P.macroloba </td>
    <td style="text-align:left;"> p </td>
    <td style="text-align:right;"> 1.0348511 </td>
    <td style="text-align:right;"> 0.3108079 </td>
@@ -310,7 +310,7 @@ dfull %>% gather("afe", "cfms", "dm","n","p"  , key = "rasgo", value = "valor_de
    <td style="text-align:right;"> 0.40 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Q. paraensis </td>
+   <td style="text-align:left;"> Q.paraensis </td>
    <td style="text-align:left;"> p </td>
    <td style="text-align:right;"> 0.9345669 </td>
    <td style="text-align:right;"> 0.2789852 </td>
