@@ -3,14 +3,14 @@ title: "Indices diversidad funcional rasgos efecto"
 author: "Erick Calderón-Morales"
 date: "March 19, 2019"
 output:   
-    html_document:
-    code_folding: hide
-    fig_height: 8
-    fig_width: 10
-    keep_md: yes
-    toc: yes
-    toc_depth: 2
-    toc_float: yes
+ html_document:
+   code_folding: hide
+   fig_height: 8
+   fig_width: 10
+   keep_md: yes
+   toc: yes
+   toc_depth: 2
+   toc_float: yes
 ---
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -35,10 +35,10 @@ dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_pa
 dparcelas <- dparcelas %>% select(-c(CRTM_90_X,CRTM_90_Y))
 
 #Data abundancia
-dabund <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_plot.csv", header = T)
+dabund <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_clean.csv", header = T, row.names = 1)
 dim(dabund)
 
-dabund_relativa <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_relativa.csv", header = T, row.names = 1)
+dabund_relativa <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_relativa_clean.csv", header = T, row.names = 1)
 
 dim(dabund_relativa)
 dim(dparcelas)
@@ -53,46 +53,101 @@ dim(deff)
 #Ordenar los nombres 
 #target <- colnames(dabund_relativa) 
 #deff <- deff[match(target, row.names(dresp)),]
+```
+
+__Indices diversidad funcional ponderados por la abundancia relativa(w.abund=T) de las especies presentes (total de individuos presentes 4801) y los rasgos estan estandarizados con media 0 y misma varianza.__
+
+
+```{r echo=FALSE}
+Rasgo <- c("AFE","CFMS","DM","N","P")
+Significado <- c("Area foliar especifica","Contenido foliar de materia seca","Densidad de madera","Concentracion foliar de nitrogeno","Concentracion foliar de fosforo")
+Unidades_de_medida <- c("mm2/Mg","Mg/g","g/cm3","Mg/g","Mg/g")
+
+d1 <- data.frame(Rasgo,Significado,Unidades_de_medida)
+
+kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 
 ```
 
-Indices diversidad funcional calculados ponderados por la 
-
-Los datos de abundancia relativa estan mal!!!!
 
 ```{r}
-indices1 <- dbFD(deff[colnames(dabund_relativa),],
+indices_abunrelativa <- dbFD(deff[colnames(dabund_relativa),],
      dabund_relativa, w.abun = T,stand.x = T)
-
-
-
 ```
 
 
 
+```{r}
+#Obtener indices Feve, Fdis, Fdiv
+indices <-   data.frame(indices_abunrelativa$FEve) %>% 
+  data.frame(indices_abunrelativa$FRic) %>% 
+  data.frame(indices_abunrelativa$FDis) %>% 
+  rownames_to_column("plot") %>% 
+  cbind() %>% 
+  rename(feve= indices_abunrelativa.FEve   ,fric = indices_abunrelativa.FRic, fdis= indices_abunrelativa.FDis )
+
+#Obtener CWMs
+cwm <- data.frame(indices_abunrelativa$CWM) 
+colnames(cwm) <-  paste("cwm", colnames(cwm), sep = "_") 
+cwm <- cwm %>% rownames_to_column("plot")
+
+
+#Guardar  archivos .csv
+#write.csv(indices, "C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_fdiver.csv")
+#write.csv(cwm, "C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_cwm_eff.csv")
+```
 
 
 
+##Medidas de resumen para FDis, FEve, FDiv
+
+###Medidas de resumen por indice
+```{r}
+
+indices %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
+
+###Medidas de resumen para cada indice por tipo de bosque
+```{r}
+dfull <- left_join(indices,dparcelas, by="plot") 
+
+dfull %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+```
 
 
+##Medidas de resumen para CWM
 
 
+###Medidas de resumen por CWM
+```{r}
+cwm %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
 
+###Medidas de resumen para cada cwm por tipo de bosque
+```{r}
+dfull <- left_join(cwm,dparcelas, by="plot") 
 
+dfull %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
 
