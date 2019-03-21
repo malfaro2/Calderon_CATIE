@@ -106,17 +106,16 @@ indices_abunrelativa <- dbFD(deff[colnames(dabund_relativa),],
 ```r
 #Obtener indices Feve, Fdis, Fdiv
 indices <-   data.frame(indices_abunrelativa$FEve) %>% 
-  data.frame(indices_abunrelativa$FRic) %>% 
+  data.frame(indices_abunrelativa$FDiv) %>% 
   data.frame(indices_abunrelativa$FDis) %>% 
   rownames_to_column("plot") %>% 
   cbind() %>% 
-  rename(feve= indices_abunrelativa.FEve   ,fric = indices_abunrelativa.FRic, fdis= indices_abunrelativa.FDis )
+  rename(feve= indices_abunrelativa.FEve   ,fdiv = indices_abunrelativa.FDiv, fdis= indices_abunrelativa.FDis )
 
 #Obtener CWMs
 cwm <- data.frame(indices_abunrelativa$CWM) 
 colnames(cwm) <-  paste("cwm", colnames(cwm), sep = "_") 
 cwm <- cwm %>% rownames_to_column("plot")
-
 
 #Guardar  archivos .csv
 #write.csv(indices, "C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_fdiver.csv")
@@ -130,7 +129,7 @@ cwm <- cwm %>% rownames_to_column("plot")
 ###Medidas de resumen por indice
 
 ```r
-indices %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_rasgo") %>% 
+indices %>% gather("feve", "fdiv", "fdis" , key = "rasgo", value = "valor_del_rasgo") %>% 
   group_by(rasgo) %>% 
   summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
   kable() %>% 
@@ -156,18 +155,18 @@ indices %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_ra
    <td style="text-align:right;"> 0.9092283 </td>
   </tr>
   <tr>
+   <td style="text-align:left;"> fdiv </td>
+   <td style="text-align:right;"> 0.7150348 </td>
+   <td style="text-align:right;"> 0.0839323 </td>
+   <td style="text-align:right;"> 0.9404433 </td>
+   <td style="text-align:right;"> 0.4425307 </td>
+  </tr>
+  <tr>
    <td style="text-align:left;"> feve </td>
    <td style="text-align:right;"> 0.7129368 </td>
    <td style="text-align:right;"> 0.0816633 </td>
    <td style="text-align:right;"> 0.8699363 </td>
    <td style="text-align:right;"> 0.4902044 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> fric </td>
-   <td style="text-align:right;"> 6.3394734 </td>
-   <td style="text-align:right;"> 6.0028841 </td>
-   <td style="text-align:right;"> 32.0000315 </td>
-   <td style="text-align:right;"> 0.0147412 </td>
   </tr>
 </tbody>
 </table>
@@ -184,7 +183,7 @@ dfull <- left_join(indices,dparcelas, by="plot")
 ```
 
 ```r
-dfull %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_rasgo") %>% 
+dfull %>% gather("feve", "fdiv", "fdis" , key = "rasgo", value = "valor_del_rasgo") %>% 
   group_by(forest_type,rasgo) %>% 
   summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
   arrange(rasgo) %>% 
@@ -230,6 +229,30 @@ dfull %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_rasg
   </tr>
   <tr>
    <td style="text-align:left;"> Foothills </td>
+   <td style="text-align:left;"> fdiv </td>
+   <td style="text-align:right;"> 0.7714724 </td>
+   <td style="text-align:right;"> 0.0584756 </td>
+   <td style="text-align:right;"> 0.9404433 </td>
+   <td style="text-align:right;"> 0.6426793 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> P.macroloba </td>
+   <td style="text-align:left;"> fdiv </td>
+   <td style="text-align:right;"> 0.6807111 </td>
+   <td style="text-align:right;"> 0.0803319 </td>
+   <td style="text-align:right;"> 0.8277621 </td>
+   <td style="text-align:right;"> 0.4425307 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Q.paraensis </td>
+   <td style="text-align:left;"> fdiv </td>
+   <td style="text-align:right;"> 0.7340045 </td>
+   <td style="text-align:right;"> 0.0781528 </td>
+   <td style="text-align:right;"> 0.8868150 </td>
+   <td style="text-align:right;"> 0.5907243 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Foothills </td>
    <td style="text-align:left;"> feve </td>
    <td style="text-align:right;"> 0.7828046 </td>
    <td style="text-align:right;"> 0.0539625 </td>
@@ -252,32 +275,143 @@ dfull %>% gather("feve", "fric", "fdis" , key = "rasgo", value = "valor_del_rasg
    <td style="text-align:right;"> 0.8258209 </td>
    <td style="text-align:right;"> 0.5645684 </td>
   </tr>
-  <tr>
-   <td style="text-align:left;"> Foothills </td>
-   <td style="text-align:left;"> fric </td>
-   <td style="text-align:right;"> 10.5937334 </td>
-   <td style="text-align:right;"> 7.3906600 </td>
-   <td style="text-align:right;"> 24.3764122 </td>
-   <td style="text-align:right;"> 0.8219774 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> P.macroloba </td>
-   <td style="text-align:left;"> fric </td>
-   <td style="text-align:right;"> 4.1963779 </td>
-   <td style="text-align:right;"> 3.5999828 </td>
-   <td style="text-align:right;"> 18.8097532 </td>
-   <td style="text-align:right;"> 0.0147412 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Q.paraensis </td>
-   <td style="text-align:left;"> fric </td>
-   <td style="text-align:right;"> 6.7431058 </td>
-   <td style="text-align:right;"> 6.4720488 </td>
-   <td style="text-align:right;"> 32.0000315 </td>
-   <td style="text-align:right;"> 0.3199830 </td>
-  </tr>
 </tbody>
 </table>
+
+###Mapa de Costa Rica 
+
+
+```r
+world <- getMap(resolution = "low")
+
+clipper_costarica <- as(extent(-86, -82.5, 8, 11.2), "SpatialPolygons")
+proj4string(clipper_costarica) <- CRS(proj4string(world))
+costarica_clip <- raster::intersect(world, clipper_costarica)
+costarica_clip<- fortify(costarica_clip)
+
+ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    #scale_color_gradient(low="yellow", high="red")+
+   
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+```
+
+![](indices_diversidad_funcional_rasgos_efecto_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
+
+```r
+world <- getMap(resolution = "low")
+
+clipper_costarica <- as(extent(-84.5, -83.75, 10, 10.80), "SpatialPolygons")
+proj4string(clipper_costarica) <- CRS(proj4string(world))
+costarica_clip <- raster::intersect(world, clipper_costarica)
+costarica_clip<- fortify(costarica_clip)
+
+feve <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull$feve,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "FEve")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+
+fdis <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull$fdis,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "FDis")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+fdiv <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull$fdiv,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "FDiv")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+#https://cran.r-project.org/web/packages/cowplot/vignettes/plot_grid.html
+theme_set(theme_cowplot(font_size=30)) 
+plot_grid(feve, fdiv, fdis,hjust = 2, vjust = 3)
+```
+
+![](indices_diversidad_funcional_rasgos_efecto_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 
 ##Medidas de resumen para CWM
@@ -345,7 +479,7 @@ cwm %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasgo", va
 ###Medidas de resumen para cada cwm por tipo de bosque
 
 ```r
-dfull <- left_join(cwm,dparcelas, by="plot") 
+dfull_cwm <- left_join(cwm,dparcelas, by="plot") 
 ```
 
 ```
@@ -354,7 +488,7 @@ dfull <- left_join(cwm,dparcelas, by="plot")
 ```
 
 ```r
-dfull %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasgo", value = "valor_del_rasgo") %>% 
+dfull_cwm %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasgo", value = "valor_del_rasgo") %>% 
   group_by(forest_type,rasgo) %>% 
   summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
   arrange(rasgo) %>% 
@@ -496,4 +630,153 @@ dfull %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasgo", 
   </tr>
 </tbody>
 </table>
+
+```r
+world <- getMap(resolution = "low")
+
+clipper_costarica <- as(extent(-84.5, -83.75, 10, 10.80), "SpatialPolygons")
+proj4string(clipper_costarica) <- CRS(proj4string(world))
+costarica_clip <- raster::intersect(world, clipper_costarica)
+costarica_clip<- fortify(costarica_clip)
+
+cwm_afe <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_cwm$cwm_afe,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "CWM AFE")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+cwm_cfms <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_cwm$cwm_cfms,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "CWM CFMS")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+cwm_dm <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_cwm$cwm_dm,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "CWM DM")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+cwm_n <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_cwm$cwm_n,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "CWM N")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+cwm_p <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_cwm$cwm_p,shape=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "CWM P")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+
+#https://cran.r-project.org/web/packages/cowplot/vignettes/plot_grid.html
+theme_set(theme_cowplot(font_size=30)) 
+plot_grid(cwm_afe,cwm_cfms,cwm_dm,cwm_n,cwm_p , nrow = 3)
+```
+
+![](indices_diversidad_funcional_rasgos_efecto_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
+
+
 
