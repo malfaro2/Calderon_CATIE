@@ -1,0 +1,284 @@
+---
+title: "Indices diversidad funcional rasgos efecto sin palmas "
+author: "Erick Calderón-Morales"
+date: "March 19, 2019"
+output:   
+ html_document:
+   code_folding: hide
+   fig_height: 8
+   fig_width: 10
+   keep_md: yes
+   toc: yes
+   toc_depth: 2
+   toc_float: yes
+---
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Paquetes
+library(vegan)
+library(lattice)
+library(knitr)
+library(tidyverse)
+library(kableExtra)
+library(GGally)
+library(FD)
+library(rgdal)
+library(raster)
+library(ggsn)
+library(rworldmap)
+library(cowplot)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/function_functional_redundancy_original.R")
+```
+
+```{r echo=FALSE}
+#Load data
+#Rasgos funcionales
+deff_redun_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/deff_clean_sin_palmas.csv",header = T)
+deff_redun_sp <- deff_redun_sp %>% dplyr::select(-c(familia, especie)) %>% column_to_rownames("coespec")
+
+#Data parcelas
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- dparcelas %>% dplyr::select(-c(CRTM_90_X,CRTM_90_Y))
+
+#Data abundancia
+dabund_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_clean.csv", header = T, row.names = 1)
+dabund_sp <- dabund_sp %>% dplyr::select(-c(WELFRE,SOCREX,EUTEPR, IRIADE))
+
+dabund_relativa_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dabund_relativa_clean.csv", header = T, row.names = 1)
+dabund_relativa_sp <- dabund_relativa_sp %>% dplyr::select(-c(WELFRE,SOCREX,EUTEPR, IRIADE))
+
+dim(dabund_relativa_sp)
+dim(dparcelas)
+dim(deff_redun_sp)
+```
+
+
+#Calculo de los indices de redundancia funcional sin palmas
+
+```{r}
+#Ordenar los nombres 
+#target <- colnames(dabund_relativa) 
+#deff <- deff[match(target, row.names(dresp)),]
+```
+
+__Indices redundancia funcional ponderados por la abundancia relativa(w.abund=T) de las especies presentes (total de individuos presentes 4801). Los rasgos estan estandarizados con media 0 y misma varianza.__
+
+```{r echo=FALSE}
+Rasgo <- c("AFE","CFMS","DM","N","P")
+Significado <- c("Area foliar especifica","Contenido foliar de materia seca","Densidad de madera","Concentracion foliar de nitrogeno","Concentracion foliar de fosforo")
+Unidades_de_medida <- c("mm2/Mg","Mg/g","g/cm3","Mg/g","Mg/g")
+
+d1 <- data.frame(Rasgo,Significado,Unidades_de_medida)
+
+kable(d1, caption = "Rasgos de efecto") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+#Objetivo 
+El objetivo de este script es calcular el uniqueness y redundancy para los 
+datos de response traits de las 127 parcelas
+
+LOS RASGOS UTILIZADOS PARA EL ANALISIS ES AFE,DM,CFMS,N,P
+
+
+Argumentos de la funcion 
+
+comm: A matrix or a data frame of N plots × S species containing the 
+abundance or incidence (0/1) of all species in the in plots. 
+Columns are species and plots are rows
+
+dis: An object of class 'dist' containing the functional distances 
+among species
+
+tol: A tolerance threshold (a value less than tol is considered as null)
+
+abundance: A logical. If TRUE abundance data are used when available; 
+if FALSE incidence (0/1) data are used.
+
+
+
+```{r}
+# comm --------------------------------------------------------------------
+#Data parcelas por especies
+#En las Columnas deben ir las especies y las parcelas en las filas 
+
+comm_sp <- dabund_relativa_sp
+
+# dis ---------------------------------------------------------------------
+#Data rasgos: se deben convertir objeto dis
+#dis: An object of class 'dist' containing the functional distances among 
+#species
+
+#Transformar traits a distancias
+dist_sp <- vegdist(deff_redun_sp, method = "euclidean") 
+
+#Transformar distancias a un rango de entre 0 y 1
+dist_rescaled_sp <- dist_sp / max(dist_sp)
+
+# Funcion -----------------------------------------------------------------
+unique_sp <- uniqueness(comm_sp, dist_rescaled_sp, abundance=TRUE)
+```
+
+
+
+```{r}
+#Obtener indices Redundancy, Uniqueness, Rao
+indices_redun_sp <-   data.frame(unique_sp$red) %>% 
+  rownames_to_column("plot") %>% 
+  mutate(redundancy_sp = 1-U)
+  
+#Guardar  archivos .csv
+#write.csv(indices_redun_sp, "C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy_sp.csv")
+```
+
+
+##Medidas de resumen para Redundancy, Uniqueness, Rao
+
+###Medidas de resumen por indice
+```{r}
+
+indices_redun_sp %>% gather("D", "Q", "U","redundancy_sp" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+
+
+###Medidas de resumen para cada indice por tipo de bosque
+```{r}
+dfull_redundancy_sp <- left_join(indices_redun_sp,dparcelas, by="plot") 
+
+dfull_redundancy_sp %>% gather("D", "Q", "U","redundancy_sp" , key = "rasgo", value = "valor_del_rasgo") %>% 
+  group_by(forest_type,rasgo) %>% 
+  summarize(mean=mean(valor_del_rasgo),sd=sd(valor_del_rasgo),max=max(valor_del_rasgo),min=min(valor_del_rasgo)) %>%
+  arrange(rasgo) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+
+###Mapa de Costa Rica 
+
+```{r message=FALSE, warning=FALSE}
+world <- getMap(resolution = "low")
+
+clipper_costarica <- as(extent(-86, -82.5, 8, 11.2), "SpatialPolygons")
+proj4string(clipper_costarica) <- CRS(proj4string(world))
+costarica_clip <- raster::intersect(world, clipper_costarica)
+costarica_clip<- fortify(costarica_clip)
+
+ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull_redundancy_sp,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=forest_type))+
+    
+    #geom_point(dfull, mapping=aes(x=longitude,y=latitude),
+    #           colour=dfull$feve, alpha=0.5)+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    #scale_color_gradient(low="yellow", high="red")+
+   
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+```
+
+
+```{r message=FALSE, warning=FALSE}
+world <- getMap(resolution = "low")
+
+clipper_costarica <- as(extent(-84.5, -83.75, 10, 10.80), "SpatialPolygons")
+proj4string(clipper_costarica) <- CRS(proj4string(world))
+costarica_clip <- raster::intersect(world, clipper_costarica)
+costarica_clip<- fortify(costarica_clip)
+
+Q_sp <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull_redundancy_sp,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_redundancy_sp$Q,shape=forest_type))+
+
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "Rao Q sin palmas")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+
+U_sp <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull_redundancy_sp,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_redundancy_sp$U,shape=forest_type))+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "Uniqueness sin palmas")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+redundancy_sp <- ggplot()+
+    
+    #Mapa de la zona de estudio 
+    geom_polygon(data = costarica_clip,
+                 aes(x=long,y=lat,group=group),
+                 fill="grey")+
+    
+    #Data de la especie
+    geom_point(data=dfull_redundancy_sp,
+               alpha=0.6,position = position_jitter(width=0.04, height=0.04),
+               aes(x=longitude,y=latitude, 
+                   colour=dfull_redundancy_sp$redundancy_sp,shape=forest_type))+
+    
+    #Le da formato de mapa
+    theme_bw()+
+    coord_quickmap()+
+    guides(colour=guide_legend(tittle="Tipo de Bosque"))+
+    #labs(colour = "FEve", shape = "Tipo de Bosque")+
+    scale_color_gradient(low="yellow", high="red")+
+    labs(colour = "Redundancy sin palmas")+
+    theme(panel.grid.major = element_line(linetype = "blank"), 
+    panel.grid.minor = element_line(linetype = "blank"))
+
+#https://cran.r-project.org/web/packages/cowplot/vignettes/plot_grid.html
+theme_set(theme_cowplot(font_size=30)) 
+plot_grid(Q_sp, U_sp ,redundancy_sp)
+```
+
+
+
