@@ -167,8 +167,6 @@ ggplot()+
 ```
 
 ```{r message=FALSE, warning=FALSE}
-
-
 world <- getMap(resolution = "low")
 
 clipper_costarica <- as(extent(-84.5, -83.75, 10, 10.80), "SpatialPolygons")
@@ -287,8 +285,6 @@ dfull_cwm %>% gather("cwm_afe","cwm_cfms","cwm_dm","cwm_n","cwm_p" , key = "rasg
 
 ```
 ```{r message=FALSE, warning=FALSE}
-
-
 world <- getMap(resolution = "low")
 
 clipper_costarica <- as(extent(-84.5, -83.75, 10, 10.80), "SpatialPolygons")
