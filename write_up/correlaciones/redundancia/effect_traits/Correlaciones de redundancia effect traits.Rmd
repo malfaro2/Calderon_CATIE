@@ -1,0 +1,180 @@
+---
+title: "Correlaciones de redundancia, uniqueness y Rao effect traits"
+author: "Erick Calderón-Morales"
+date: "March 25, 2019"
+output:   
+ html_document:
+   code_folding: hide
+   keep_md: yes
+   toc: yes
+   toc_depth: 2
+   toc_float: yes
+---
+
+```{r message=FALSE, warning=FALSE}
+#Paquetes
+library(tidyverse)
+library(PerformanceAnalytics)
+library(janitor)
+library(GGally)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+library(ggbiplot)
+```
+
+
+
+#Objetivo
+Ver la correlacion existente entre las variables ambientales y los indices de redundancia, uniqueness y diversidad de Rao
+
+```{r}
+#Cargar datos
+dredundancy <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy.csv", header=T)
+dredundancy <- clean_names(dredundancy)
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- clean_names(dparcelas)
+
+denvi <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_enviroment_worldclim_clean.csv", header = T)
+denvi <- denvi %>%
+  clean_names() %>% 
+    select(-c(crtm_90_x,crtm_90_y)) 
+    
+```
+
+```{r}
+#Summary de los datos 
+summary(dredundancy)
+glimpse(dredundancy)
+summary(dparcelas)
+glimpse(dparcelas)
+summary(denvi)
+glimpse(denvi)
+```
+
+```{r}
+dfull  <- left_join(dredundancy, dparcelas,by=c("plot") ) %>% 
+  left_join(.,denvi, by=c("plot","forest_type") )
+
+#Ordenar columnas
+dfull <- dfull %>% select(plot, forest_type,n,longitude,latitude,crtm_90_x,crtm_90_y, everything()) 
+glimpse(dfull)
+```
+
+
+#PCA con todas las variables
+```{r fig.width=10, fig.height=8, fig.fullwidth=TRUE}
+pca_full <- prcomp(dfull[,3:30], scale. = TRUE)
+ggbiplot(pca_full, obs.scale = 3, var.scale = 3,
+  groups = dfull$forest_type, ellipse = TRUE) +
+  scale_color_discrete(name = '') +
+  theme(legend.direction = 'horizontal', legend.position = 'top')+
+  theme_grey()
+```
+
+
+
+
+
+```{r}
+dfull2  <- dfull %>% 
+  select(-c(forest_type, plot,u, crtm_90_x,crtm_90_y, slope_deg, slope_per))
+
+corvif(dfull2)
+```
+
+
+
+##Variables independcientes que se van a eliminar
+
+__Se excluyeron debido a que tienen un alto VIF, en el PCA tienen la misma direccion y por su correlacion__
+
++ sand        
++ elev 
++ mg
++ preccv
++ precdriest
++ tempmin
++ ca
+
+
+```{r echo=T}
+
+dfull_sin_variables <- dfull %>% 
+  select(-c(forest_type, plot,u, crtm_90_x,crtm_90_y, slope_deg, slope_per,"sand","elev","mg","preccv","precdriest","tempmin","ca" ))
+  
+corvif(scale(dfull_sin_variables))
+```
+
+#Correlaciones para redundancia
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+dredundancia <- dfull %>% 
+  select(-c(forest_type, plot,d,q,u, crtm_90_x,crtm_90_y, slope_deg, slope_per )) %>% 
+  select(redundancy, everything())
+  
+dredundancia_est <- scale(dredundancia)
+
+#ggpairs(dredundancia, lower=list(continuous="smooth"))
+chart.Correlation(dredundancia_est, histogram=TRUE, pch="+") 
+
+```
+
+#Correlaciones para uniqueness
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+duniqueness <- dfull %>% 
+  select(-c(forest_type, plot,d,q,redundancy, crtm_90_x,crtm_90_y, slope_deg, slope_per )) %>% 
+  select(u , everything())
+  
+duniqueness_est <- scale(duniqueness)
+
+#ggpairs(dredundancia, lower=list(continuous="smooth"))
+chart.Correlation(duniqueness_est, histogram=TRUE, pch="+") 
+
+```
+
+
+
+#Correlaciones para Rao
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+
+drao <- dfull %>% 
+  select(-c(forest_type, plot, d, u, redundancy, crtm_90_x,crtm_90_y, slope_deg, slope_per)) %>% 
+  select(q , everything())
+  
+drao_est <- scale(drao)
+
+#ggpairs(dredundancia, lower=list(continuous="smooth"))
+chart.Correlation(drao_est, histogram=TRUE, pch="+") 
+
+```
+
+
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+
+dfull_sin_variables <- dfull_sin_variables %>% 
+  select(redundancy, d, q, everything())
+
+chart.Correlation(dfull_sin_variables, histogram=TRUE, pch="+") 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

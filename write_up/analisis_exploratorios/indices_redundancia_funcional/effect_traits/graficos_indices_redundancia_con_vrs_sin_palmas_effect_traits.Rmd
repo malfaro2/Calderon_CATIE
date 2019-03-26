@@ -1,0 +1,94 @@
+---
+title: "Graficos: indices redundancia con vrs sin palmas effect traits"
+author: "Erick Calderón-Morales"
+date: "March 26, 2019"
+output:   
+ html_document:
+   code_folding: hide
+   fig_height: 8
+   fig_width: 10
+   keep_md: yes
+   toc: yes
+   toc_depth: 2
+   toc_float: yes
+---
+
+```{r}
+#Paquetes
+library(tidyverse)
+library(janitor)
+```
+
+
+#Objetivo
+Comparar que tanto varian los indices de redundancia funcional con y sin palmas
+
+
+```{r}
+#Cargar datos
+dredundacia_eff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy.csv", header = T)
+dredundacia_eff <- dredundacia_eff %>% clean_names()
+
+
+dredundanica_eff_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy_sp.csv", header=T)
+dredundanica_eff_sp <- dredundanica_eff_sp %>% 
+rename(n_sp=N, d_sp=D, q_sp= Q, u_sp= U)
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header=T)
+
+```
+
+
+
+##Indices Redundancia, uniqueness y Rao Rasgos effecto
+```{r}
+#Join data
+
+ left_join(dredundacia_eff, dredundanica_eff_sp, by="plot") %>% 
+  left_join(., dparcelas, by="plot") %>% 
+  
+  gather("n","d","q","u","redundancy","n_sp","d_sp","q_sp","u_sp","redundancy_sp",key="indices", value ="valor") %>% 
+  group_by(indices, forest_type) %>% 
+  summarise(mean = 
+              mean(valor)) %>% 
+  arrange(forest_type) %>% 
+  print(n=30)
+
+#ggplot(data=djoin, aes(indices, mean)) + 
+# geom_bar(stat = "identity") + 
+# facet_grid(.~forest_type)+
+#  theme(axis.text.x = element_text(angle = 90))
+```
+
+##Indices Redundancia, uniqueness y Rao, Rasgos respuesta
+
+```{r}
+#Cargar datos
+dredundacia_resp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_resp_redundancy.csv", header = T)
+dredundacia_resp <- dredundacia_resp %>% clean_names()
+
+
+dredundanica_resp_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_resp_redundancy_sp.csv", header=T)
+dredundanica_resp_sp <- dredundanica_resp_sp %>% 
+rename(n_sp=N, d_sp=D, q_sp= Q, u_sp= U)
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header=T)
+
+```
+
+
+```{r}
+#Join data
+
+ left_join(dredundacia_resp, dredundanica_resp_sp, by="plot") %>% 
+  left_join(., dparcelas, by="plot") %>% 
+  
+  gather("n","d","q","u","redundancy","n_sp","d_sp","q_sp","u_sp","redundancy_sp",key="indices", value ="valor") %>% 
+  group_by(indices, forest_type) %>% 
+  summarise(mean = 
+              mean(valor)) %>% 
+  arrange(forest_type) %>% 
+  print(n=30)
+
+```
+
