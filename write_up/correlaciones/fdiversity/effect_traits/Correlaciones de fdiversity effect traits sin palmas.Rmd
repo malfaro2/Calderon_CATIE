@@ -1,0 +1,179 @@
+---
+title: "Correlaciones de FEve, Fdis , FDiv, effect traits sin palmas"
+author: "Erick Calderón-Morales"
+date: "March 25, 2019"
+output:   
+ html_document:
+   code_folding: hide
+   keep_md: yes
+   toc: yes
+   toc_depth: 2
+   toc_float: yes
+---
+
+```{r message=FALSE, warning=FALSE}
+#Paquetes
+library(tidyverse)
+library(PerformanceAnalytics)
+library(janitor)
+library(GGally)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+library(ggbiplot)
+```
+
+
+
+#Objetivo
+Ver la correlacion existente entre las variables ambientales y los indices de redundancia, uniqueness y diversidad de Rao
+
+```{r}
+#Cargar datos
+dfdiver_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_fdiver_sp.csv", header=T)
+dfdiver_sp <- clean_names(dfdiver_sp)
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- clean_names(dparcelas)
+
+denvi <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_enviroment_worldclim_clean.csv", header = T)
+denvi <- denvi %>%
+  clean_names() %>% 
+    select(-c(crtm_90_x,crtm_90_y)) 
+```
+
+```{r}
+#Summary de los datos 
+summary(dfdiver_sp)
+glimpse(dfdiver_sp)
+summary(dparcelas)
+glimpse(dparcelas)
+summary(denvi)
+glimpse(denvi)
+```
+
+```{r}
+dfull_sp  <- left_join(dfdiver_sp, dparcelas,by=c("plot") ) %>% 
+  left_join(.,denvi, by=c("plot","forest_type") )
+
+#Ordenar columnas
+dfull_sp <- dfull_sp %>% select(plot, forest_type,longitude,latitude,crtm_90_x,crtm_90_y, everything()) 
+glimpse(dfull_sp)
+```
+
+
+#PCA con todas las variables
+```{r fig.width=10, fig.height=8, fig.fullwidth=TRUE}
+pca_full_sp <- prcomp(dfull_sp[,3:28], scale. = TRUE)
+ggbiplot(pca_full_sp, obs.scale = 3, var.scale = 3,
+  groups = dfull_sp$forest_type, ellipse = TRUE) +
+  scale_color_discrete(name = '') +
+  theme(legend.direction = 'horizontal', legend.position = 'top')+
+  theme_grey()
+```
+
+
+
+
+
+```{r}
+dfull2_sp  <- dfull_sp %>% 
+  select(-c(forest_type, plot, crtm_90_x,crtm_90_y, slope_deg, slope_per))
+
+corvif(dfull2_sp)
+```
+
+
+
+##Variables independcientes que se van a eliminar
+
+__Se excluyeron debido a que tienen un alto VIF, en el PCA tienen la misma direccion y por su correlacion__
+
++ sand        
++ elev 
++ mg
++ preccv
++ precdriest
++ tempmin
++ ca
+
+
+```{r echo=T}
+
+dfull_sin_variables_sp <- dfull_sp %>% 
+  select(-c(forest_type, plot, crtm_90_x,crtm_90_y, slope_deg, slope_per,"sand","elev","mg","preccv","precdriest","tempmin","ca" ))
+  
+corvif(scale(dfull_sin_variables_sp))
+```
+
+#Correlaciones para feve
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+dfeve_sp <- dfull_sp %>% 
+  select(-c(forest_type, plot,fdis_sp,fdiv_sp, crtm_90_x,crtm_90_y, slope_deg, slope_per )) %>% 
+  select(feve_sp, everything())
+  
+dfeve_est_sp <- scale(dfeve_sp)
+
+#ggpairs(dredundancia, lower=list(continuous="smooth"))
+chart.Correlation(dfeve_est_sp, histogram=TRUE, pch="+") 
+
+```
+
+#Correlaciones para fdis
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+dfdis_sp <- dfull_sp %>% 
+  select(-c(forest_type, plot,feve_sp, fdiv_sp, crtm_90_x,crtm_90_y, slope_deg, slope_per )) %>% 
+  select(fdis_sp , everything())
+  
+dfdis_est_sp <- scale(dfdis_sp)
+
+#ggpairs(dredundancia, lower=list(continuous="smooth"))
+chart.Correlation(dfdis_est_sp, histogram=TRUE, pch="+") 
+
+```
+
+
+
+#Correlaciones para fdiv
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+
+dfdiv_sp <- dfull_sp %>% 
+  select(-c(forest_type, plot,feve_sp,fdis_sp, crtm_90_x,crtm_90_y, slope_deg, slope_per)) %>% 
+  select(fdiv_sp , everything())
+  
+dfdiv_est_sp <- scale(dfdiv_sp)
+
+#ggpairs(dredundancia, lower=list(continuous="smooth"))
+chart.Correlation(dfdiv_est_sp, histogram=TRUE, pch="+") 
+
+```
+
+
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE}
+
+dfull_sin_variables_sp <- dfull_sin_variables_sp %>% 
+  select(fdis_sp, feve_sp, fdiv_sp, everything())
+
+chart.Correlation(dfull_sin_variables_sp, histogram=TRUE, pch="+") 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
