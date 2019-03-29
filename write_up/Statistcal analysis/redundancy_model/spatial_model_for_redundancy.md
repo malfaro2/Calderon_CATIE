@@ -13,9 +13,7 @@ output:
     toc_float: yes
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 #Model Formulation 
 ##Modelo lineal sin componente espacial 
@@ -32,7 +30,8 @@ $$\beta_7K + \beta_8P + \beta_9OrganicMatter +$$
 
 ##Codigo INLA
 
-```{r eval=FALSE}
+
+```r
 library(INLA)
 #Estandarizar todas las variables 
 data <- scale(data)
