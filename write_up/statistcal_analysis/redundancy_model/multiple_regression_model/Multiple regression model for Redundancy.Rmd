@@ -1,5 +1,5 @@
 ---
-title: "Multiple regression model for Redundancy"
+title: "Multiple regression model for Redundancy, Effect traits"
 author: "Erick Calderón-Morales"
 date: "March 30, 2019"
 output: 
@@ -27,7 +27,22 @@ Ref: Capitulo 8 Zuur et al.
 
 ```{r}
 #Load data
+dredun_eff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy.csv", header=T)
+dredun_eff <- clean_names(dredun_eff)
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- clean_names(dparcelas)
+
+denvi <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_enviroment_worldclim_clean.csv", header = T)
+denvi <- denvi %>%
+  clean_names() %>% 
+    select(-c(crtm_90_x,crtm_90_y)) 
+
+
 ```
+
+#Data exploration
+##PCA sin variables de respuesta
 
 
 
