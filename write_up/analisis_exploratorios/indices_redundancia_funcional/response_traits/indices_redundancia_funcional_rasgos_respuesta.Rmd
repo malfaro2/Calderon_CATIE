@@ -35,7 +35,7 @@ source("C:/tesis_catie/Calderon_CATIE/scripts/functions/function_functional_redu
 #Load data
 #Rasgos funcionales
 dresp_redun <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean.csv",header = T)
-dresp_redun <- dresp_redun %>% dplyr::select(-c(tasacrecimiento, familia, especie)) %>% column_to_rownames("X")
+dresp_redun <- dresp_redun %>% dplyr::select(-c( familia, especie)) %>% column_to_rownames("X")
 
 #Data parcelas
 dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
@@ -56,7 +56,7 @@ str(dresp_redun)
 
 #Calculo de los indices de redundancia funcional 
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 #Ordenar los nombres 
 #target <- colnames(dabund_relativa) 
 #deff <- deff[match(target, row.names(dresp)),]
@@ -91,7 +91,8 @@ El objetivo de este script es calcular el uniqueness y redundancy para los
 datos de response traits de las 127 parcelas
 
 
-Argumentos de la funcion 
+Argumentos de la funcion uniqueness()
+Ref: Ricota et al 2016
 
 __comm:__ A matrix or a data frame of N plots × S species containing the 
 abundance or incidence (0/1) of all species in the in plots. 

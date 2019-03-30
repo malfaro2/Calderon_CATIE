@@ -35,7 +35,7 @@ source("C:/tesis_catie/Calderon_CATIE/scripts/functions/function_functional_redu
 #Load data
 #Rasgos funcionales
 dresp_redun_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean_sinpalmas.csv",header = T)
-dresp_redun_sp <- dresp_redun_sp %>% dplyr::select(-c(tasacrecimiento, familia, especie)) %>% column_to_rownames("X")
+dresp_redun_sp <- dresp_redun_sp %>% dplyr::select(-c( familia, especie)) %>% column_to_rownames("X")
 
 #Data parcelas
 dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
@@ -54,6 +54,7 @@ dim(dabund_relativa_sp)
 dim(dparcelas)
 dim(dresp_redun_sp)
 str(dresp_redun_sp)
+summary(dresp_redun_sp)
 ```
 
 

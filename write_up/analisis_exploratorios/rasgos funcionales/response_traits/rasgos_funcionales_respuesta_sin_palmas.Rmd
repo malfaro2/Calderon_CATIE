@@ -1,5 +1,5 @@
 ---
-title: "Analisis exploratorio rasgos funcionales respuesta con palmas"
+title: "Analisis exploratorio rasgos funcionales respuesta sin palmas"
 author: "Erick Calderón-Morales"
 date: "March 18, 2019"
 output: 
@@ -50,31 +50,37 @@ kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options =
 
 ```{r echo=FALSE}
 #Load data
-dresp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean.csv",header = T)
-dresp <- rename(dresp, coespec=X) %>% select(-c(familia, especie))
+dresp_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean_sinpalmas.csv",header = T)
+dresp_sp <- rename(dresp_sp, coespec=X) %>% select(-c(familia, especie))
 
-despecies <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
-despecies <- rename(despecies, coespec=code)
+despecies_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
+despecies_sp <- rename(despecies_sp, coespec=code) %>% filter(!coespec %in% c("EUTEPR","IRIADE","SOCREX","WELFRE"))
 dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv",header = T)
 ```
 
 ```{r}
 #Dimensiones de los datos
-dim(dresp)
-str(dresp)
+dim(dresp_sp)
+str(dresp_sp)
+
 #Especies
-length(unique(despecies$coespec))
+length(unique(despecies_sp$coespec))
 
 #Parcelas
-length(unique(despecies$plot))
+length(unique(dparcelas$plot))
 ```
 
 #Medidas de resumen para los rasgos de respuesta 
 
+```{r}
+summary(dresp_sp)
+```
+
+
 ##Medidas de resumen por rasgo
 ```{r}
 
-dresp %>% gather(colnames(dresp[,-1])  , key = "rasgo", value = "valor_del_rasgo") %>% 
+dresp_sp %>% gather(colnames(dresp_sp[,-1])  , key = "rasgo", value = "valor_del_rasgo") %>% 
   group_by(rasgo,valor_del_rasgo) %>% 
   summarise(n=n())  %>% 
   mutate(porcentaje= round((n/sum(n))*100, 3)) %>%
@@ -83,10 +89,26 @@ dresp %>% gather(colnames(dresp[,-1])  , key = "rasgo", value = "valor_del_rasgo
 
 ```
 
+
+
+####Note: Especies sin valor de capacidad de rebrote
+
+A estas especies se les dio el valor del género, el valor de la familia. A 7 especies se les dió el valor de la mediana de las demas
+
+
+```{r}
+ dresp_37nas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/raw/response_traits/dresp_con_37NAs.csv",header = T)
+dresp_37nas %>% select(X,familia, especie,resprout_capacity) %>% 
+  filter(resprout_capacity %in% NA) %>% 
+  arrange(familia) %>% 
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
 ##Cantidad de especies por tipo de bosque
 ```{r}
 
-dfull <- left_join(despecies, dparcelas, by="plot" )
+dfull <- left_join(despecies_sp, dparcelas, by="plot" )
 dfull %>%  group_by(forest_type) %>% 
  summarize(especies = n_distinct(coespec)) %>% 
   arrange(especies) %>% 
@@ -97,9 +119,9 @@ dfull %>%  group_by(forest_type) %>%
 
 ##Medidas de resumen para cada rasgo por tipo de bosque
 ```{r}
-dfull <- left_join(dfull, dresp, by="coespec" ) %>% select(-c(CRTM_90_X,CRTM_90_Y))
+dfull <- left_join(dfull, dresp_sp, by="coespec" ) %>% select(-c(CRTM_90_X,CRTM_90_Y))
 
-dfull %>% gather(colnames(dresp[,-1])  , key = "rasgo", value = "valor_del_rasgo") %>% 
+dfull %>% gather(colnames(dresp_sp[,-1])  , key = "rasgo", value = "valor_del_rasgo") %>% 
   group_by(rasgo,valor_del_rasgo, forest_type) %>% 
   summarise(n=n_distinct(coespec))  %>%
   
@@ -111,11 +133,3 @@ dfull %>% gather(colnames(dresp[,-1])  , key = "rasgo", value = "valor_del_rasgo
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 ```
-
-
-
-
-
-
-
-

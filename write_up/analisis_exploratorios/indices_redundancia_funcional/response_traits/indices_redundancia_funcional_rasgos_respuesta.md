@@ -53,8 +53,6 @@ output:
 
 __Indices redundancia funcional ponderados por la abundancia relativa(w.abund=T) de las especies presentes (total de individuos presentes 4801). Los rasgos estan estandarizados con media 0 y misma varianza.__
 
- 0,never resprouting; 20, very poor resprouting; 40, moderateresprouting; 60, substantial resprouting; 80, abundantresprouting; and 100, very abundant resprouting
-
 <table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <caption>Rasgos de respuesta</caption>
  <thead>
