@@ -153,7 +153,7 @@ corvif(dfull_est[,c(3,4,11:27)])
 ##                        GVIF
 ## longitude      3.003471e+00
 ## latitude       1.730260e+01
-## sand           2.809899e+07
+## sand           2.809900e+07
 ## limo           1.915980e+06
 ## clay           2.641092e+07
 ## p_h            6.828257e+00
@@ -270,7 +270,39 @@ glimpse(dredundancy_eff)
 ##Model R-INLA
 
 ```r
-m1 <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
+mnull <- inla(redundancy ~ longitude + latitude,
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+ 
+m1 <- inla(redundancy ~ forest_type ,
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+ 
+
+
+m2 <- inla(redundancy ~ forest_type + clay ,
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+
+mcompleto <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
              k + organic_matter + precdriest + temp,
            family = "gaussian",
            control.predictor = list(
@@ -281,9 +313,8 @@ m1 <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
                                   waic =TRUE),
            data = dredundancy_eff)
 
-
-m2 <- inla(redundancy ~ forest_type * longitude * latitude * clay * acidity *
-             k * organic_matter * precdriest * temp,
+mcompleto_interac <- inla(redundancy ~ forest_type * longitude +  forest_type*latitude + forest_type*clay + forest_type*acidity +
+             forest_type*k + forest_type*organic_matter + forest_type*precdriest + forest_type*temp,
            family = "gaussian",
            control.predictor = list(
              compute = TRUE,
@@ -294,9 +325,135 @@ m2 <- inla(redundancy ~ forest_type * longitude * latitude * clay * acidity *
            data = dredundancy_eff)
 ```
 
+#Model selection
 
+####DIC
 
+```r
+mnull$dic$dic
+```
+
+```
+## [1] -527.7513
+```
+
+```r
+m1$dic$dic
+```
+
+```
+## [1] -551.5865
+```
+
+```r
+m2$dic$dic
+```
+
+```
+## [1] -550.5398
+```
+
+```r
+#m3$dic$dic
+mcompleto$dic$dic 
+```
+
+```
+## [1] -547.639
+```
+
+```r
+mcompleto_interac$dic$dic 
+```
+
+```
+## [1] -545.284
+```
+
+####WAIC
+
+```r
+mnull$waic$waic
+```
+
+```
+## [1] -527.7029
+```
+
+```r
+m1$waic$waic
+```
+
+```
+## [1] -551.0271
+```
+
+```r
+m2$waic$waic
+```
+
+```
+## [1] -549.5509
+```
+
+```r
+#m3$waic$waic
+mcompleto$waic$waic
+```
+
+```
+## [1] -546.1092
+```
+
+```r
+mcompleto_interac$waic$waic
+```
+
+```
+## [1] -543.5125
+```
 ##Numerical outputs for the Betas
+
+```r
+betanull <- mnull$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(betanull,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> 0.025quant </th>
+   <th style="text-align:right;"> 0.975quant </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (Intercept) </td>
+   <td style="text-align:right;"> 9.329 </td>
+   <td style="text-align:right;"> 2.931 </td>
+   <td style="text-align:right;"> 3.564 </td>
+   <td style="text-align:right;"> 15.088 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> longitude </td>
+   <td style="text-align:right;"> 0.109 </td>
+   <td style="text-align:right;"> 0.036 </td>
+   <td style="text-align:right;"> 0.039 </td>
+   <td style="text-align:right;"> 0.179 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> latitude </td>
+   <td style="text-align:right;"> 0.066 </td>
+   <td style="text-align:right;"> 0.016 </td>
+   <td style="text-align:right;"> 0.034 </td>
+   <td style="text-align:right;"> 0.099 </td>
+  </tr>
+</tbody>
+</table>
 
 
 ```r
@@ -318,99 +475,85 @@ kable(beta1,digits = 3) %>%
 <tbody>
   <tr>
    <td style="text-align:left;"> (Intercept) </td>
-   <td style="text-align:right;"> 3.915 </td>
-   <td style="text-align:right;"> 3.325 </td>
-   <td style="text-align:right;"> -2.624 </td>
-   <td style="text-align:right;"> 10.449 </td>
+   <td style="text-align:right;"> 0.834 </td>
+   <td style="text-align:right;"> 0.005 </td>
+   <td style="text-align:right;"> 0.824 </td>
+   <td style="text-align:right;"> 0.843 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> forest_typeP.macroloba </td>
-   <td style="text-align:right;"> 0.023 </td>
-   <td style="text-align:right;"> 0.011 </td>
-   <td style="text-align:right;"> 0.002 </td>
-   <td style="text-align:right;"> 0.044 </td>
+   <td style="text-align:right;"> 0.041 </td>
+   <td style="text-align:right;"> 0.006 </td>
+   <td style="text-align:right;"> 0.029 </td>
+   <td style="text-align:right;"> 0.052 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> forest_typeQ.paraensis </td>
-   <td style="text-align:right;"> 0.014 </td>
-   <td style="text-align:right;"> 0.011 </td>
-   <td style="text-align:right;"> -0.008 </td>
-   <td style="text-align:right;"> 0.035 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> longitude </td>
-   <td style="text-align:right;"> 0.039 </td>
-   <td style="text-align:right;"> 0.039 </td>
-   <td style="text-align:right;"> -0.038 </td>
-   <td style="text-align:right;"> 0.116 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> latitude </td>
-   <td style="text-align:right;"> 0.006 </td>
-   <td style="text-align:right;"> 0.031 </td>
-   <td style="text-align:right;"> -0.056 </td>
-   <td style="text-align:right;"> 0.068 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> clay </td>
-   <td style="text-align:right;"> -0.003 </td>
-   <td style="text-align:right;"> 0.017 </td>
-   <td style="text-align:right;"> -0.037 </td>
-   <td style="text-align:right;"> 0.031 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> acidity </td>
-   <td style="text-align:right;"> 0.004 </td>
+   <td style="text-align:right;"> 0.027 </td>
    <td style="text-align:right;"> 0.007 </td>
-   <td style="text-align:right;"> -0.011 </td>
-   <td style="text-align:right;"> 0.018 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> k </td>
-   <td style="text-align:right;"> -0.008 </td>
-   <td style="text-align:right;"> 0.006 </td>
-   <td style="text-align:right;"> -0.020 </td>
-   <td style="text-align:right;"> 0.004 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> organic_matter </td>
-   <td style="text-align:right;"> -0.006 </td>
-   <td style="text-align:right;"> 0.009 </td>
-   <td style="text-align:right;"> -0.024 </td>
-   <td style="text-align:right;"> 0.013 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> precdriest </td>
-   <td style="text-align:right;"> 0.009 </td>
-   <td style="text-align:right;"> 0.023 </td>
-   <td style="text-align:right;"> -0.037 </td>
-   <td style="text-align:right;"> 0.055 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> temp </td>
-   <td style="text-align:right;"> 0.140 </td>
-   <td style="text-align:right;"> 0.139 </td>
-   <td style="text-align:right;"> -0.133 </td>
-   <td style="text-align:right;"> 0.414 </td>
+   <td style="text-align:right;"> 0.014 </td>
+   <td style="text-align:right;"> 0.041 </td>
   </tr>
 </tbody>
 </table>
 
 
+
 ```r
-names(m1$marginals.fixed)
+beta2 <- m2$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(beta2,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 ```
 
-```
-##  [1] "(Intercept)"            "forest_typeP.macroloba"
-##  [3] "forest_typeQ.paraensis" "longitude"             
-##  [5] "latitude"               "clay"                  
-##  [7] "acidity"                "k"                     
-##  [9] "organic_matter"         "precdriest"            
-## [11] "temp"
-```
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> 0.025quant </th>
+   <th style="text-align:right;"> 0.975quant </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (Intercept) </td>
+   <td style="text-align:right;"> 0.830 </td>
+   <td style="text-align:right;"> 0.006 </td>
+   <td style="text-align:right;"> 0.819 </td>
+   <td style="text-align:right;"> 0.842 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba </td>
+   <td style="text-align:right;"> 0.033 </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.014 </td>
+   <td style="text-align:right;"> 0.052 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis </td>
+   <td style="text-align:right;"> 0.021 </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> 0.002 </td>
+   <td style="text-align:right;"> 0.040 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> clay </td>
+   <td style="text-align:right;"> 0.009 </td>
+   <td style="text-align:right;"> 0.010 </td>
+   <td style="text-align:right;"> -0.010 </td>
+   <td style="text-align:right;"> 0.029 </td>
+  </tr>
+</tbody>
+</table>
 
 
+
+```r
+#beta3 <- m3$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+#kable(beta3,digits = 3) %>% 
+#  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
 
 
 ##Numerical outputs for the hyperparameters
@@ -439,12 +582,12 @@ kable(m1$summary.hyperpar,digits = 3) %>%
 <tbody>
   <tr>
    <td style="text-align:left;"> Precision for the Gaussian observations </td>
-   <td style="text-align:right;"> 1447.517 </td>
-   <td style="text-align:right;"> 189.829 </td>
-   <td style="text-align:right;"> 1100.038 </td>
-   <td style="text-align:right;"> 1438.961 </td>
-   <td style="text-align:right;"> 1843.428 </td>
-   <td style="text-align:right;"> 1421.916 </td>
+   <td style="text-align:right;"> 1400.825 </td>
+   <td style="text-align:right;"> 177.729 </td>
+   <td style="text-align:right;"> 1074.704 </td>
+   <td style="text-align:right;"> 1393.079 </td>
+   <td style="text-align:right;"> 1770.806 </td>
+   <td style="text-align:right;"> 1377.648 </td>
   </tr>
 </tbody>
 </table>
@@ -463,7 +606,7 @@ MySqrt <- function(x){1/sqrt(x)}
 ```
 
 ```
-## [1] 0.02645636
+## [1] 0.02688236
 ```
 
 
@@ -479,7 +622,7 @@ plot(tau[,1], tau[,2], type="l",
      ylab = expression(paste("P(",tau,"|Data)")))
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 ###Spline smoothing applied on the posterior marginal distribution of $\tau$
 
@@ -490,7 +633,7 @@ plot(tau.distr$x, tau.distr$y, type="l",
      ylab = expression(paste("P(",tau,"|Data)")))
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 
 ###Posterior marginal distribution of $\sigma$
@@ -506,7 +649,7 @@ plot(x = sigma.distr[,1],
 text(0.86, 8.2, "C", cex = 1.5)
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 
 #Fitted Model
@@ -538,7 +681,7 @@ plot(x = Fit,
      ylab = "Residuals")
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
 
 ```r
 range(dredundancy_eff$redundancy)
@@ -558,14 +701,14 @@ plot(x = Fit,
      ylab = "Observed latency scores")
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-19-2.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-23-2.png)<!-- -->
 
 
 ```r
 hist(E1, main = "Normality", breaks=10)
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
 
 ```r
 #Plot residuals versus covariates
@@ -573,50 +716,16 @@ plot(x = dredundancy_eff$forest_type,
      y = E1)
 ```
 
-![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+![](Multiple_regression_model_for_Redundancy_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
 
 
 
-#Model selection
 
-```r
-#DIC
-m1$dic$dic
-```
 
-```
-## [1] -547.639
-```
-
-```r
-m2$dic$dic
-```
-
-```
-## [1] -529.8926
-```
-
-```r
-#WAIC
-m1$waic$waic
-```
-
-```
-## [1] -546.1092
-```
-
-```r
-m2$waic$waic
-```
-
-```
-## [1] -550.5664
-```
-
-#####Importante
+#####Importante:
 There is the __number of equivalent replicates__. We have a sample size (n) and the model regression parameters (p) . A general recommendation on statistics is to have al least 15 obsevations per parameter (n/p = 15 )
 
-
+#Visualising the model
 
 
 

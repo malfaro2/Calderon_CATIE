@@ -139,8 +139,41 @@ glimpse(dredundancy_eff)
 ```
 
 ##Model R-INLA
-```{r}
-m1 <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
+```{r }
+
+mnull <- inla(redundancy ~ longitude + latitude,
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+ 
+m1 <- inla(redundancy ~ forest_type ,
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+ 
+
+
+m2 <- inla(redundancy ~ forest_type + clay ,
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+
+mcompleto <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
              k + organic_matter + precdriest + temp,
            family = "gaussian",
            control.predictor = list(
@@ -151,9 +184,8 @@ m1 <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
                                   waic =TRUE),
            data = dredundancy_eff)
 
-
-m2 <- inla(redundancy ~ forest_type * longitude * latitude * clay * acidity *
-             k * organic_matter * precdriest * temp,
+mcompleto_interac <- inla(redundancy ~ forest_type * longitude +  forest_type*latitude + forest_type*clay + forest_type*acidity +
+             forest_type*k + forest_type*organic_matter + forest_type*precdriest + forest_type*temp,
            family = "gaussian",
            control.predictor = list(
              compute = TRUE,
@@ -162,12 +194,36 @@ m2 <- inla(redundancy ~ forest_type * longitude * latitude * clay * acidity *
            control.compute = list(dic = TRUE,
                                   waic =TRUE),
            data = dredundancy_eff)
-
 ```
 
+#Model selection
 
+####DIC
+```{r}
+mnull$dic$dic
+m1$dic$dic
+m2$dic$dic
+#m3$dic$dic
+mcompleto$dic$dic 
+mcompleto_interac$dic$dic 
+```
 
+####WAIC
+```{r}
+mnull$waic$waic
+m1$waic$waic
+m2$waic$waic
+#m3$waic$waic
+mcompleto$waic$waic
+mcompleto_interac$waic$waic
+
+```
 ##Numerical outputs for the Betas
+```{r}
+betanull <- mnull$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(betanull,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
 
 ```{r}
 beta1 <- m1$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
@@ -175,11 +231,23 @@ kable(beta1,digits = 3) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 ```
 
+
 ```{r}
-names(m1$marginals.fixed)
+beta2 <- m2$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(beta2,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+
 ```
 
 
+```{r}
+betacompleto_interac <- mcompleto_interac$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(betacompleto_interac,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+
+
+```
 
 
 ##Numerical outputs for the hyperparameters
@@ -288,18 +356,7 @@ plot(x = dredundancy_eff$forest_type,
 
 
 
-#Model selection
-```{r}
-#DIC
-m1$dic$dic
-m2$dic$dic
 
-#WAIC
-m1$waic$waic
-m2$waic$waic
-
-
-```
 
 #####Importante:
 There is the __number of equivalent replicates__. We have a sample size (n) and the model regression parameters (p) . A general recommendation on statistics is to have al least 15 obsevations per parameter (n/p = 15 )
