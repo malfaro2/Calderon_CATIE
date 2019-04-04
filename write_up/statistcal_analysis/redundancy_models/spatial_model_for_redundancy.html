@@ -182,7 +182,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
+  window.initializeCodeFolding("hide" === "show");
 });
 </script>
 
@@ -485,22 +485,607 @@ ggbiplot(pca_envi, obs.scale = 3, var.scale = 3,
 </div>
 <div id="codigo-inla-para-modelo-lineal-sin-componente-espacial" class="section level2">
 <h2>Codigo INLA para modelo lineal sin componente espacial</h2>
+<div id="forward-con-lat-lon-en-las-covariables-y-sin-interacciones" class="section level3">
+<h3>Forward con lat lon en las covariables y sin interacciones</h3>
+<pre class="r"><code>mlatlon &lt;- inla(redundancy ~  longitude*latitude, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_1 &lt;- inla(redundancy ~  longitude*latitude +
+                 forest_type, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_2 &lt;- inla(redundancy ~  longitude*latitude +
+                 forest_type +
+                  clay, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_3 &lt;- inla(redundancy ~  longitude*latitude +
+                 forest_type +
+                  clay +
+                  acidity, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_4 &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  acidity +
+                  k, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_5 &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter , 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_6 &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_7 &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest +
+                  temp, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)</code></pre>
+<pre class="r"><code>m_dic_forw  &lt;- c(mlatlon$dic$dic,
+            mlatlon_1$dic$dic,
+            mlatlon_2$dic$dic,
+            mlatlon_3$dic$dic, 
+            mlatlon_4$dic$dic, 
+            mlatlon_5$dic$dic,
+            mlatlon_6$dic$dic,
+            mlatlon_7$dic$dic) 
+
+m_waic_forw &lt;- c(mlatlon$waic$waic,
+            mlatlon_1$waic$waic, 
+            mlatlon_2$waic$waic,
+            mlatlon_3$waic$waic, 
+            mlatlon_4$waic$waic, 
+            mlatlon_5$waic$waic,
+            mlatlon_6$waic$waic,
+            mlatlon_7$waic$waic)
+
+z_out_forw     &lt;- cbind(m_dic_forw, m_waic_forw)
+
+rownames(z_out_forw) &lt;- c(&quot;mlatlon model&quot;, 
+                     &quot;mlatlon + forest type&quot;,
+                     &quot;mlatlon + forest type, clay&quot;,
+                     &quot;mlatlon + forest type, clay, acidity&quot;, 
+                     &quot;mlatlon + forest type, clay, acidity, k&quot;, 
+                     &quot;mlatlon + forest type, clay, acidity, k, organic matter&quot;,
+                     &quot;mlatlon + forest type, clay, acidity, k, organic matter, precdriest&quot;,
+                     &quot;mlatlon + forest type, clay, acidity, k, organic matter, precdriest, prec&quot;)
+               
+z_out_forw</code></pre>
+<pre><code>##                                                                           m_dic_forw
+## mlatlon model                                                              -526.3953
+## mlatlon + forest type                                                      -548.8544
+## mlatlon + forest type, clay                                                -549.1718
+## mlatlon + forest type, clay, acidity                                       -547.5062
+## mlatlon + forest type, clay, acidity, k                                    -547.0598
+## mlatlon + forest type, clay, acidity, k, organic matter                    -548.1351
+## mlatlon + forest type, clay, acidity, k, organic matter, precdriest        -547.0871
+## mlatlon + forest type, clay, acidity, k, organic matter, precdriest, prec  -546.3544
+##                                                                           m_waic_forw
+## mlatlon model                                                               -526.3322
+## mlatlon + forest type                                                       -547.9537
+## mlatlon + forest type, clay                                                 -548.0201
+## mlatlon + forest type, clay, acidity                                        -546.7155
+## mlatlon + forest type, clay, acidity, k                                     -546.1147
+## mlatlon + forest type, clay, acidity, k, organic matter                     -546.8916
+## mlatlon + forest type, clay, acidity, k, organic matter, precdriest         -545.7269
+## mlatlon + forest type, clay, acidity, k, organic matter, precdriest, prec   -544.5254</code></pre>
+</div>
+<div id="backward-con-lat-lon-en-las-covariables-y-sin-interacciones" class="section level3">
+<h3>Backward con lat lon en las covariables y sin interacciones</h3>
+<pre class="r"><code>mlatlon_7_b &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay + 
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_6_b &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay + 
+                  acidity +
+                  k + 
+                  organic_matter 
+                  , 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_5_b &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay + 
+                  acidity +
+                  k, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_4_b &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay + 
+                  acidity, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_3_b &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_2_b &lt;- inla(redundancy ~  longitude*latitude +
+                  forest_type, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)</code></pre>
+<pre class="r"><code>m_dic_back  &lt;- c(mlatlon$dic$dic,
+                 mlatlon_7_b$dic$dic,
+                 mlatlon_6_b$dic$dic,
+                 mlatlon_5_b$dic$di,
+                 mlatlon_4_b$dic$dic, 
+                 mlatlon_3_b$dic$dic,
+                 mlatlon_2_b$dic$dic 
+                 ) 
+
+m_waic_back &lt;- c(mlatlon$waic$waic,
+                 mlatlon_7_b$waic$waic,
+                 mlatlon_6_b$waic$waic,
+                 mlatlon_5_b$waic$waic,
+                 mlatlon_4_b$waic$waic, 
+                 mlatlon_3_b$waic$waic, 
+                 mlatlon_2_b$waic$waic 
+                 )
+             
+
+z_out_back     &lt;- cbind(m_dic_back, m_waic_back)</code></pre>
+<pre><code>## Warning in cbind(m_dic_back, m_waic_back): number of rows of result is not
+## a multiple of vector length (arg 1)</code></pre>
+<pre class="r"><code>rownames(z_out_back) &lt;- c(&quot;mlatlon model&quot;, 
+                          &quot;mlatlon + forest type, clay, acidity, k, organic matter, precdriest&quot;,
+                          &quot;mlatlon + forest type, clay, acidity, k, organic matter&quot;,
+                          &quot;mlatlon + forest type, clay, acidity, k&quot;, 
+                          &quot;mlatlon + forest type, clay, acidity&quot;,
+                          &quot;mlatlon + forest type, clay&quot;,
+                          &quot;mlatlon + forest type&quot;)
+                     
+
+z_out_back</code></pre>
+<pre><code>##                                                                     m_dic_back
+## mlatlon model                                                        -526.3953
+## mlatlon + forest type, clay, acidity, k, organic matter, precdriest  -547.0871
+## mlatlon + forest type, clay, acidity, k, organic matter              -548.1351
+## mlatlon + forest type, clay, acidity, k                              -547.5062
+## mlatlon + forest type, clay, acidity                                 -549.1718
+## mlatlon + forest type, clay                                          -548.8544
+## mlatlon + forest type                                                -526.3953
+##                                                                     m_waic_back
+## mlatlon model                                                         -526.3322
+## mlatlon + forest type, clay, acidity, k, organic matter, precdriest   -545.7269
+## mlatlon + forest type, clay, acidity, k, organic matter               -546.8916
+## mlatlon + forest type, clay, acidity, k                               -546.1147
+## mlatlon + forest type, clay, acidity                                  -546.7155
+## mlatlon + forest type, clay                                           -548.0201
+## mlatlon + forest type                                                 -547.9537</code></pre>
+</div>
+<div id="mejor-modelo-con-lat-lon-en-las-covariables-y-sin-interacciones" class="section level3">
+<h3>Mejor modelo con lat lon en las covariables y sin interacciones</h3>
+<pre class="r"><code>best1 &lt;- inla(redundancy ~ longitude*latitude +
+                  forest_type +
+                  clay, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+best1$waic$waic</code></pre>
+<pre><code>## [1] -548.0201</code></pre>
+</div>
+<div id="forward-solo-con-covariables-sin-interacciones" class="section level3">
+<h3>Forward solo con covariables sin interacciones</h3>
+<pre class="r"><code>m_0 &lt;- inla(redundancy ~  1, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+m_1 &lt;- inla(redundancy ~ forest_type, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+m_2 &lt;- inla(redundancy ~ forest_type +
+                  clay, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_3 &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+m_4 &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+m_5 &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter , 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_6 &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_7 &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest +
+                  temp, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)</code></pre>
+<pre class="r"><code>m_dic_forw  &lt;- c(m_0$dic$dic,
+            m_1$dic$dic,
+            m_2$dic$dic,
+            m_3$dic$dic, 
+            m_4$dic$dic, 
+            m_5$dic$dic,
+            m_6$dic$dic,
+            m_7$dic$dic) 
+
+m_waic_forw &lt;- c(m_0$waic$waic,
+            m_1$waic$waic, 
+            m_2$waic$waic,
+            m_3$waic$waic, 
+            m_4$waic$waic, 
+            m_5$waic$waic,
+            m_6$waic$waic,
+            m_7$waic$waic)
+
+z_out_forw     &lt;- cbind(m_dic_forw, m_waic_forw)
+
+rownames(z_out_forw) &lt;- c(&quot;m_0 model&quot;, 
+                     &quot;m_1  = forest type&quot;,
+                     &quot;m_2  = forest type, clay&quot;,
+                     &quot;m_3  = forest type, clay, acidity&quot;, 
+                     &quot;m_4  = forest type, clay, acidity, k&quot;, 
+                     &quot;m_5  = forest type, clay, acidity, k, organic matter&quot;,
+                     &quot;m_6  = forest type, clay, acidity, k, organic matter, precdriest&quot;,
+                     &quot;m_7  = forest type, clay, acidity, k, organic matter, precdriest, prec&quot;)
+               
+z_out_forw</code></pre>
+<pre><code>##                                                                        m_dic_forw
+## m_0 model                                                               -513.8653
+## m_1  = forest type                                                      -551.5865
+## m_2  = forest type, clay                                                -550.5398
+## m_3  = forest type, clay, acidity                                       -549.3414
+## m_4  = forest type, clay, acidity, k                                    -549.5552
+## m_5  = forest type, clay, acidity, k, organic matter                    -550.8266
+## m_6  = forest type, clay, acidity, k, organic matter, precdriest        -551.2410
+## m_7  = forest type, clay, acidity, k, organic matter, precdriest, prec  -550.6347
+##                                                                        m_waic_forw
+## m_0 model                                                                -513.7144
+## m_1  = forest type                                                       -551.0271
+## m_2  = forest type, clay                                                 -549.5509
+## m_3  = forest type, clay, acidity                                        -548.6331
+## m_4  = forest type, clay, acidity, k                                     -548.7592
+## m_5  = forest type, clay, acidity, k, organic matter                     -549.7955
+## m_6  = forest type, clay, acidity, k, organic matter, precdriest         -550.3864
+## m_7  = forest type, clay, acidity, k, organic matter, precdriest, prec   -549.7811</code></pre>
+</div>
+<div id="backward-solo-con-covariables-sin-interacciones" class="section level3">
+<h3>Backward solo con covariables sin interacciones</h3>
+<pre class="r"><code>m_7_b &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest +
+                  temp, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_6_b &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_5_b &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter , 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_4_b &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_3_b &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_2_b &lt;- inla(redundancy ~ forest_type +
+                  clay, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_1_b &lt;- inla(redundancy ~ forest_type, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_0_b &lt;- inla(redundancy ~  1, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)</code></pre>
+<pre class="r"><code>m_dic_back  &lt;- c(m_0_b$dic$dic,
+                 m_1_b$dic$dic,
+                 m_2_b$dic$dic,
+                 m_3_b$dic$dic, 
+                 m_4_b$dic$dic, 
+                 m_5_b$dic$dic,
+                 m_6_b$dic$dic,
+                 m_7_b$dic$dic) 
+
+m_waic_back &lt;- c(m_0_b$waic$waic,
+                 m_1_b$waic$waic, 
+                 m_2_b$waic$waic,
+                 m_3_b$waic$waic, 
+                 m_4_b$waic$waic, 
+                 m_5_b$waic$waic,
+                 m_6_b$waic$waic,
+                 m_7_b$waic$waic)
+
+z_out_back    &lt;- cbind(m_dic_back, m_waic_back)
+
+rownames(z_out_back) &lt;- c(&quot;m_7_b  = forest type, clay, acidity, k, organic matter, precdriest, prec&quot;,
+                          &quot;m_6_b  = forest type, clay, acidity, k, organic matter, precdriest&quot;,
+                          &quot;m_5_b  = forest type, clay, acidity, k, organic matter&quot;,
+                          &quot;m_4_b  = forest type, clay, acidity, k&quot;, 
+                          &quot;m_3_b  = forest type, clay, acidity&quot;, 
+                          &quot;m_2_b  = forest type, clay&quot;,
+                          &quot;m_1_b  = forest type&quot;,
+                          &quot;m_0_b model&quot;)
+                          
+               
+z_out_back</code></pre>
+<pre><code>##                                                                          m_dic_back
+## m_7_b  = forest type, clay, acidity, k, organic matter, precdriest, prec  -513.8653
+## m_6_b  = forest type, clay, acidity, k, organic matter, precdriest        -551.5865
+## m_5_b  = forest type, clay, acidity, k, organic matter                    -550.5398
+## m_4_b  = forest type, clay, acidity, k                                    -549.3414
+## m_3_b  = forest type, clay, acidity                                       -549.5552
+## m_2_b  = forest type, clay                                                -550.8266
+## m_1_b  = forest type                                                      -551.2410
+## m_0_b model                                                               -550.6347
+##                                                                          m_waic_back
+## m_7_b  = forest type, clay, acidity, k, organic matter, precdriest, prec   -513.7144
+## m_6_b  = forest type, clay, acidity, k, organic matter, precdriest         -551.0271
+## m_5_b  = forest type, clay, acidity, k, organic matter                     -549.5509
+## m_4_b  = forest type, clay, acidity, k                                     -548.6331
+## m_3_b  = forest type, clay, acidity                                        -548.7592
+## m_2_b  = forest type, clay                                                 -549.7955
+## m_1_b  = forest type                                                       -550.3864
+## m_0_b model                                                                -549.7811</code></pre>
+</div>
+<div id="mejor-modelo-solo-con-covariables-y-sin-interacciones" class="section level3">
+<h3>Mejor modelo solo con covariables y sin interacciones</h3>
+<pre class="r"><code>best2_a &lt;- inla(redundancy ~ forest_type, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+best2_b &lt;- inla(redundancy ~ forest_type +
+                  clay +
+                  acidity +
+                  k + 
+                  organic_matter +
+                  precdriest, 
+             
+           family = &quot;gaussian&quot;,
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+best2_a$waic$waic</code></pre>
+<pre><code>## [1] -551.0271</code></pre>
+<pre class="r"><code>best2_b$waic$waic</code></pre>
+<pre><code>## [1] -550.3864</code></pre>
+</div>
+<div id="forward-solo-con-covariables-con-interacciones" class="section level3">
+<h3>Forward solo con covariables con interacciones</h3>
+</div>
+<div id="backward-solo-con-covariables-con-interacciones" class="section level3">
+<h3>Backward solo con covariables con interacciones</h3>
+</div>
+<div id="mejor-modelo-solo-con-covariables-y-con-interacciones" class="section level3">
+<h3>Mejor modelo solo con covariables y con interacciones</h3>
 <pre class="r"><code>library(INLA)
 
-#Modelo 1
+
 m1 &lt;- inla(redundancy ~  forest_type + clay + acidity +
                          k + organic_matter +
                          precdriest + temp,  
                          
-                         
-             #Interacciones
-             #           forest_type:clay + forest_type:acidity +
-             #           forest_type:k +
-             #           forest_type:organic_matter +
-             #           forest_type:organic_matter + 
-             #           forest_type:precdriest +
-             #           forest_type:temp,  
-             
            family = &quot;gaussian&quot;,
            control.predictor = list(compute= TRUE),
            control.compute = list(dic = TRUE, 
@@ -715,37 +1300,53 @@ m7 &lt;- inla(redundancy ~  forest_type + clay + acidity +
            data = dredundancy_eff
                       
 )</code></pre>
-</div>
-<div id="compare-models" class="section level2">
-<h2>Compare models</h2>
-<pre class="r"><code>m_dic  &lt;- c(m1$dic$dic, m2$dic$dic,  m3$dic$dic, m4$dic$dic, m5$dic$dic, m6$dic$dic,m7$dic$dic)
-m_waic &lt;- c(m1$waic$waic, m2$waic$waic, m3$waic$waic, m4$waic$waic,m5$waic$waic, m6$waic$waic,m7$waic$waic)
-Z.out     &lt;- cbind(m_dic, m_waic)
-rownames(Z.out) &lt;- c(&quot;Gaussian lm&quot;,  
-                     &quot;Gaussian lm + interacciones por bosque&quot;,
-                     &quot;Gaussian lm + interacciones por bosque, clay&quot;,
-                     &quot;Gaussian lm + interacciones por bosque, clay, acidity&quot;,
-                     &quot;Gaussian lm + interacciones por bosque, clay, acidity, k&quot;,
-                     &quot;Gaussian lm + interacciones por bosque, clay, acidity, k, organic matter&quot;,
-                     &quot;Gaussian lm + interacciones por bosque, clay, acidity, k, organic matter, precdriest&quot;
+<pre class="r"><code>m_dic  &lt;- c(mlatlon$dic$dic,
+            m1$dic$dic, 
+            m2$dic$dic,  
+            m3$dic$dic, 
+            m4$dic$dic, 
+            m5$dic$dic, 
+            m6$dic$dic,
+            m7$dic$dic)
+
+m_waic &lt;- c(mlatlon$waic$waic,
+            m1$waic$waic, 
+            m2$waic$waic, 
+            m3$waic$waic, 
+            m4$waic$waic,
+            m5$waic$waic, 
+            m6$waic$waic,
+            m7$waic$waic)
+
+z_out     &lt;- cbind(m_dic, m_waic)
+rownames(z_out) &lt;- c(&quot;mlatlon model&quot;, 
+                     &quot;lm&quot;,  
+                     &quot;lm + interacciones por bosque&quot;,
+                     &quot;lm + interacciones por bosque, clay&quot;,
+                     &quot;lm + interacciones por bosque, clay, acidity&quot;,
+                     &quot;lm + interacciones por bosque, clay, acidity, k&quot;,
+                     &quot;lm + interacciones por bosque, clay, acidity, k, organic matter&quot;,
+                     &quot;lm + interacciones por bosque, clay, acidity, k, organic matter, precdriest&quot;
                      )
-Z.out</code></pre>
-<pre><code>##                                                                                          m_dic
-## Gaussian lm                                                                          -550.6347
-## Gaussian lm + interacciones por bosque                                               -543.3182
-## Gaussian lm + interacciones por bosque, clay                                         -543.6661
-## Gaussian lm + interacciones por bosque, clay, acidity                                -535.0956
-## Gaussian lm + interacciones por bosque, clay, acidity, k                             -531.7410
-## Gaussian lm + interacciones por bosque, clay, acidity, k, organic matter             -533.0274
-## Gaussian lm + interacciones por bosque, clay, acidity, k, organic matter, precdriest -534.2235
-##                                                                                         m_waic
-## Gaussian lm                                                                          -549.7811
-## Gaussian lm + interacciones por bosque                                               -540.6988
-## Gaussian lm + interacciones por bosque, clay                                         -540.3982
-## Gaussian lm + interacciones por bosque, clay, acidity                                -532.6456
-## Gaussian lm + interacciones por bosque, clay, acidity, k                             -528.6813
-## Gaussian lm + interacciones por bosque, clay, acidity, k, organic matter             -531.3887
-## Gaussian lm + interacciones por bosque, clay, acidity, k, organic matter, precdriest -533.0913</code></pre>
+z_out </code></pre>
+<pre><code>##                                                                                 m_dic
+## mlatlon model                                                               -526.3953
+## lm                                                                          -550.6347
+## lm + interacciones por bosque                                               -543.3182
+## lm + interacciones por bosque, clay                                         -543.6661
+## lm + interacciones por bosque, clay, acidity                                -535.0956
+## lm + interacciones por bosque, clay, acidity, k                             -531.7410
+## lm + interacciones por bosque, clay, acidity, k, organic matter             -533.0274
+## lm + interacciones por bosque, clay, acidity, k, organic matter, precdriest -534.2235
+##                                                                                m_waic
+## mlatlon model                                                               -526.3322
+## lm                                                                          -549.7811
+## lm + interacciones por bosque                                               -540.6988
+## lm + interacciones por bosque, clay                                         -540.3982
+## lm + interacciones por bosque, clay, acidity                                -532.6456
+## lm + interacciones por bosque, clay, acidity, k                             -528.6813
+## lm + interacciones por bosque, clay, acidity, k, organic matter             -531.3887
+## lm + interacciones por bosque, clay, acidity, k, organic matter, precdriest -533.0913</code></pre>
 <pre class="r"><code>m_dic  &lt;- c(m1$dic$dic, m3$dic$dic)
 m_waic &lt;- c(m1$waic$waic, m3$waic$waic)
 Z.out     &lt;- cbind(m_dic, m_waic)
@@ -934,6 +1535,7 @@ temp
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 <div id="tau" class="section level2">
 <h2><span class="math inline">\(\tau\)</span></h2>
@@ -1197,7 +1799,7 @@ SM2b&lt;- inla(f2b,
              control.predictor = list(
                A = inla.stack.A(stackfit)))</code></pre>
 </div>
-<div id="compare-models-1" class="section level2">
+<div id="compare-models" class="section level2">
 <h2>Compare models</h2>
 <pre class="r"><code>dic  &lt;- c(SM2a$dic$dic, SM2b$dic$dic)
 waic &lt;- c(SM2a$waic$waic, SM2b$waic$waic)

@@ -153,7 +153,7 @@ corvif(dfull_est[,c(3,4,11:27)])
 ##                        GVIF
 ## longitude      3.003471e+00
 ## latitude       1.730260e+01
-## sand           2.809900e+07
+## sand           2.809899e+07
 ## limo           1.915980e+06
 ## clay           2.641092e+07
 ## p_h            6.828257e+00
@@ -550,10 +550,213 @@ kable(beta2,digits = 3) %>%
 
 
 ```r
-#beta3 <- m3$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
-#kable(beta3,digits = 3) %>% 
-#  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+betacompleto_interac <- mcompleto_interac$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(betacompleto_interac,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 ```
+
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;">   </th>
+   <th style="text-align:right;"> mean </th>
+   <th style="text-align:right;"> sd </th>
+   <th style="text-align:right;"> 0.025quant </th>
+   <th style="text-align:right;"> 0.975quant </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> (Intercept) </td>
+   <td style="text-align:right;"> -12.564 </td>
+   <td style="text-align:right;"> 9.544 </td>
+   <td style="text-align:right;"> -31.229 </td>
+   <td style="text-align:right;"> 6.276 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba </td>
+   <td style="text-align:right;"> 15.075 </td>
+   <td style="text-align:right;"> 10.701 </td>
+   <td style="text-align:right;"> -6.069 </td>
+   <td style="text-align:right;"> 36.002 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis </td>
+   <td style="text-align:right;"> 36.899 </td>
+   <td style="text-align:right;"> 15.443 </td>
+   <td style="text-align:right;"> 6.341 </td>
+   <td style="text-align:right;"> 67.039 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> longitude </td>
+   <td style="text-align:right;"> -0.199 </td>
+   <td style="text-align:right;"> 0.136 </td>
+   <td style="text-align:right;"> -0.464 </td>
+   <td style="text-align:right;"> 0.069 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> latitude </td>
+   <td style="text-align:right;"> -0.344 </td>
+   <td style="text-align:right;"> 0.247 </td>
+   <td style="text-align:right;"> -0.829 </td>
+   <td style="text-align:right;"> 0.143 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> clay </td>
+   <td style="text-align:right;"> 0.049 </td>
+   <td style="text-align:right;"> 0.037 </td>
+   <td style="text-align:right;"> -0.024 </td>
+   <td style="text-align:right;"> 0.122 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> acidity </td>
+   <td style="text-align:right;"> -0.027 </td>
+   <td style="text-align:right;"> 0.024 </td>
+   <td style="text-align:right;"> -0.074 </td>
+   <td style="text-align:right;"> 0.021 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> k </td>
+   <td style="text-align:right;"> 0.002 </td>
+   <td style="text-align:right;"> 0.016 </td>
+   <td style="text-align:right;"> -0.030 </td>
+   <td style="text-align:right;"> 0.035 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> organic_matter </td>
+   <td style="text-align:right;"> -0.020 </td>
+   <td style="text-align:right;"> 0.015 </td>
+   <td style="text-align:right;"> -0.049 </td>
+   <td style="text-align:right;"> 0.009 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> precdriest </td>
+   <td style="text-align:right;"> -0.004 </td>
+   <td style="text-align:right;"> 0.074 </td>
+   <td style="text-align:right;"> -0.150 </td>
+   <td style="text-align:right;"> 0.142 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> temp </td>
+   <td style="text-align:right;"> 0.248 </td>
+   <td style="text-align:right;"> 0.331 </td>
+   <td style="text-align:right;"> -0.404 </td>
+   <td style="text-align:right;"> 0.899 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:longitude </td>
+   <td style="text-align:right;"> 0.222 </td>
+   <td style="text-align:right;"> 0.146 </td>
+   <td style="text-align:right;"> -0.067 </td>
+   <td style="text-align:right;"> 0.507 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:longitude </td>
+   <td style="text-align:right;"> 0.468 </td>
+   <td style="text-align:right;"> 0.189 </td>
+   <td style="text-align:right;"> 0.093 </td>
+   <td style="text-align:right;"> 0.837 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:latitude </td>
+   <td style="text-align:right;"> 0.403 </td>
+   <td style="text-align:right;"> 0.251 </td>
+   <td style="text-align:right;"> -0.094 </td>
+   <td style="text-align:right;"> 0.895 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:latitude </td>
+   <td style="text-align:right;"> 0.177 </td>
+   <td style="text-align:right;"> 0.269 </td>
+   <td style="text-align:right;"> -0.353 </td>
+   <td style="text-align:right;"> 0.703 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:clay </td>
+   <td style="text-align:right;"> -0.040 </td>
+   <td style="text-align:right;"> 0.045 </td>
+   <td style="text-align:right;"> -0.128 </td>
+   <td style="text-align:right;"> 0.048 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:clay </td>
+   <td style="text-align:right;"> -0.112 </td>
+   <td style="text-align:right;"> 0.057 </td>
+   <td style="text-align:right;"> -0.224 </td>
+   <td style="text-align:right;"> 0.000 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:acidity </td>
+   <td style="text-align:right;"> 0.028 </td>
+   <td style="text-align:right;"> 0.026 </td>
+   <td style="text-align:right;"> -0.023 </td>
+   <td style="text-align:right;"> 0.079 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:acidity </td>
+   <td style="text-align:right;"> 0.053 </td>
+   <td style="text-align:right;"> 0.034 </td>
+   <td style="text-align:right;"> -0.013 </td>
+   <td style="text-align:right;"> 0.119 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:k </td>
+   <td style="text-align:right;"> -0.012 </td>
+   <td style="text-align:right;"> 0.018 </td>
+   <td style="text-align:right;"> -0.048 </td>
+   <td style="text-align:right;"> 0.024 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:k </td>
+   <td style="text-align:right;"> -0.030 </td>
+   <td style="text-align:right;"> 0.028 </td>
+   <td style="text-align:right;"> -0.085 </td>
+   <td style="text-align:right;"> 0.024 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:organic_matter </td>
+   <td style="text-align:right;"> 0.037 </td>
+   <td style="text-align:right;"> 0.022 </td>
+   <td style="text-align:right;"> -0.006 </td>
+   <td style="text-align:right;"> 0.081 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:organic_matter </td>
+   <td style="text-align:right;"> -0.006 </td>
+   <td style="text-align:right;"> 0.037 </td>
+   <td style="text-align:right;"> -0.079 </td>
+   <td style="text-align:right;"> 0.067 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:precdriest </td>
+   <td style="text-align:right;"> 0.026 </td>
+   <td style="text-align:right;"> 0.083 </td>
+   <td style="text-align:right;"> -0.136 </td>
+   <td style="text-align:right;"> 0.189 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:precdriest </td>
+   <td style="text-align:right;"> -0.126 </td>
+   <td style="text-align:right;"> 0.118 </td>
+   <td style="text-align:right;"> -0.356 </td>
+   <td style="text-align:right;"> 0.106 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeP.macroloba:temp </td>
+   <td style="text-align:right;"> -0.623 </td>
+   <td style="text-align:right;"> 0.488 </td>
+   <td style="text-align:right;"> -1.582 </td>
+   <td style="text-align:right;"> 0.338 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> forest_typeQ.paraensis:temp </td>
+   <td style="text-align:right;"> 0.820 </td>
+   <td style="text-align:right;"> 0.827 </td>
+   <td style="text-align:right;"> -0.802 </td>
+   <td style="text-align:right;"> 2.450 </td>
+  </tr>
+</tbody>
+</table>
 
 
 ##Numerical outputs for the hyperparameters

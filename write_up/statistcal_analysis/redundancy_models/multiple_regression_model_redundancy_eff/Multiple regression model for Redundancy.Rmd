@@ -91,10 +91,6 @@ corvif(dfull_est[,c(3,4,11:27)])
 
 ##Covariables que se van a eliminar 
 
-```{r}
-dredundancy_eff <- dfull_est %>% 
-  select(-c(tempsd, mg, ca, p, elev, sand, prec, preccv, tempmin, limo, p_h, u,q, crtm_90_x,crtm_90_y ))
-```
 
 + __tempsd__. Debido a que no tiene relacion con redundancy
 + __mg__. Debido a que no tiene relacion con redundancy
@@ -106,8 +102,13 @@ dredundancy_eff <- dfull_est %>%
 + __preccv__. Alta correlacion con predriest, en el pca tiene la misma direccion que prec y tiene poca relacion con redundancia.
 + __limo__. Tiene poca relacion con redundancia.
 + __pH__. Tiene poca relacion con redundancia.
++ __k__. Tiene poca relacion con redundancia.
++ __acidity__. Debido a que en el PCA tiene la misma direccion que clay 
 
-
+```{r}
+dredundancy_eff <- dfull_est %>% 
+  select(-c(tempsd, mg, ca, p, elev, sand, prec, preccv, tempmin, limo, p_h, u,q, k, acidity ))
+```
 
 ###VIFs sin variables eliminadas 
 ```{r}
@@ -141,51 +142,7 @@ glimpse(dredundancy_eff)
 ##Model R-INLA
 ```{r }
 
-mnull <- inla(redundancy ~ longitude + latitude,
-           family = "gaussian",
-           control.predictor = list(
-             compute = TRUE,
-             quantiles = c(0.025, 0.975)
-           ),
-           control.compute = list(dic = TRUE,
-                                  waic =TRUE),
-           data = dredundancy_eff)
- 
-m1 <- inla(redundancy ~ forest_type ,
-           family = "gaussian",
-           control.predictor = list(
-             compute = TRUE,
-             quantiles = c(0.025, 0.975)
-           ),
-           control.compute = list(dic = TRUE,
-                                  waic =TRUE),
-           data = dredundancy_eff)
- 
-
-
-m2 <- inla(redundancy ~ forest_type + clay ,
-           family = "gaussian",
-           control.predictor = list(
-             compute = TRUE,
-             quantiles = c(0.025, 0.975)
-           ),
-           control.compute = list(dic = TRUE,
-                                  waic =TRUE),
-           data = dredundancy_eff)
-
-mcompleto <- inla(redundancy ~ forest_type + longitude + latitude + clay + acidity +
-             k + organic_matter + precdriest + temp,
-           family = "gaussian",
-           control.predictor = list(
-             compute = TRUE,
-             quantiles = c(0.025, 0.975)
-           ),
-           control.compute = list(dic = TRUE,
-                                  waic =TRUE),
-           data = dredundancy_eff)
-
-mcompleto_interac <- inla(redundancy ~ forest_type * longitude +  forest_type*latitude + forest_type*clay + forest_type*acidity +
-             forest_type*k + forest_type*organic_matter + forest_type*precdriest + forest_type*temp,
+m_0 <- inla(redundancy ~ 1,
            family = "gaussian",
            control.predictor = list(
              compute = TRUE,
@@ -196,61 +153,331 @@ mcompleto_interac <- inla(redundancy ~ forest_type * longitude +  forest_type*la
            data = dredundancy_eff)
 ```
 
+
+```{r}
+m_1 <- inla(redundancy ~ latitude*longitude ,
+           
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+
+```
+
+### m0 vrs m1
+
+```{r}
+
+m_dic  <- c(m_0$dic$dic,
+            m_1$dic$dic)
+            #mlatlon_2$dic$dic, 
+            #mlatlon_4$dic$dic, 
+            #mlatlon_5$dic$dic,
+            #mlatlon_6$dic$dic
+            #) 
+
+m_waic <- c(m_0$waic$waic,
+            m_1$waic$waic) 
+            #mlatlon_2$waic$waic, 
+            #mlatlon_4$waic$waic, 
+            #mlatlon_5$waic$waic,
+            #mlatlon_6$waic$waic
+            #)
+
+m_selection     <- cbind(m_dic, m_waic)
+
+rownames(m_selection) <- c("m0", 
+                           "m1")
+                           #"mlatlon + forest type, clay", 
+                           #"mlatlon + forest type, clay, organic matter",
+                           #"mlatlon + forest type, clay, organic matter, precdriest",
+                           #"mlatlon + forest type, clay, organic matter, precdriest, prec")
+               
+m_selection
+```
+
+
+
+
+```{r}
+m_2 <- inla(redundancy ~ forest_type + 
+              clay + 
+              organic_matter + 
+              precdriest + 
+              temp,
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+```
+
+###m_1 vrs m_2
+
+```{r}
+
+m_dic  <- c(m_1$dic$dic,
+            m_2$dic$dic)
+            #mlatlon_2$dic$dic, 
+            #mlatlon_4$dic$dic, 
+            #mlatlon_5$dic$dic,
+            #mlatlon_6$dic$dic
+            #) 
+
+m_waic <- c(m_1$waic$waic,
+            m_2$waic$waic) 
+            #mlatlon_2$waic$waic, 
+            #mlatlon_4$waic$waic, 
+            #mlatlon_5$waic$waic,
+            #mlatlon_6$waic$waic
+            #)
+
+m_selection     <- cbind(m_dic, m_waic)
+
+rownames(m_selection) <- c("m1", 
+                           "m2")
+                           #"mlatlon + forest type, clay", 
+                           #"mlatlon + forest type, clay, organic matter",
+                           #"mlatlon + forest type, clay, organic matter, precdriest",
+                           #"mlatlon + forest type, clay, organic matter, precdriest, prec")
+               
+m_selection
+```
+
+```{r}
+m_3 <- inla(redundancy ~ latitude*longitude + 
+              forest_type + 
+              clay + 
+              organic_matter + 
+              precdriest + 
+              temp,
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+```
+
+###m_2 vrs m_3
+
+```{r}
+
+m_dic  <- c(m_2$dic$dic,
+            m_3$dic$dic)
+            #mlatlon_2$dic$dic, 
+            #mlatlon_4$dic$dic, 
+            #mlatlon_5$dic$dic,
+            #mlatlon_6$dic$dic
+            #) 
+
+m_waic <- c(m_2$waic$waic,
+            m_3$waic$waic) 
+            #mlatlon_2$waic$waic, 
+            #mlatlon_4$waic$waic, 
+            #mlatlon_5$waic$waic,
+            #mlatlon_6$waic$waic
+            #)
+
+m_selection     <- cbind(m_dic, m_waic)
+
+rownames(m_selection) <- c("m2", 
+                           "m3")
+                           #"mlatlon + forest type, clay", 
+                           #"mlatlon + forest type, clay, organic matter",
+                           #"mlatlon + forest type, clay, organic matter, precdriest",
+                           #"mlatlon + forest type, clay, organic matter, precdriest, prec")
+               
+m_selection
+```
+
+```{r}
+
+m_2 <- inla(redundancy ~ forest_type + 
+                precdriest +
+                temp +
+                clay + 
+                organic_matter,
+              
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+
+
+
+m_2_a <- inla(redundancy ~ forest_type + 
+                precdriest + 
+                temp +
+                clay + 
+                organic_matter +
+              
+              #2way interactions
+              forest_type:clay +
+              forest_type:organic_matter +
+              forest_type:precdriest +
+              forest_type:temp +
+              
+              clay:organic_matter +
+              clay:precdriest +
+              clay:temp  +
+              
+              organic_matter:precdriest +
+              organic_matter:temp +
+              
+              precdriest:temp,
+              
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff) 
+
+m_2_b <- inla(redundancy ~ forest_type +
+                precdriest + 
+                temp +
+                clay + 
+                organic_matter +
+              
+              #2way interactions
+              forest_type:clay +
+              forest_type:organic_matter +
+              forest_type:precdriest +
+              forest_type:temp +
+              
+              clay:organic_matter +
+              clay:precdriest +
+              clay:temp  +
+              
+              organic_matter:precdriest +
+              organic_matter:temp +
+              
+              precdriest:temp +
+              
+              #3way interactions
+              forest_type:clay:organic_matter +
+              forest_type:clay:precdriest +
+              forest_type:clay:temp +
+              forest_type:organic_matter:precdriest +
+              forest_type:organic_matter:temp +
+              forest_type:precdriest:temp +
+              
+              clay:organic_matter:precdriest +    
+              clay:organic_matter:temp +  
+              clay:precdriest:temp,   
+                
+              
+              
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+
+m_2_c <- inla(redundancy ~ forest_type *
+                precdriest * 
+                temp *
+                clay * 
+                organic_matter,
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+```
+
+
+
+###m_2 vrs a,b,c
+```{r}
+
+m_dic  <- c(m_2$dic$dic,
+            m_2_a$dic$dic,
+            m_2_b$dic$dic,
+            m_2_c$dic$dic
+            )
+
+m_waic <- c(m_2$waic$waic,
+            m_2_a$waic$waic,
+            m_2_b$waic$waic,
+            m_2_c$waic$waic)
+            
+            
+            
+
+m_selection     <- cbind(m_dic, m_waic)
+
+rownames(m_selection) <- c("m2", 
+                           "m2_a",
+                           "m2_b",
+                           "m2_c")
+m_selection
+```
+
+
+```{r}
+prueba<- inla(redundancy ~ forest_type +
+                temp + precdriest, 
+            
+           family = "gaussian",
+           control.predictor = list(
+             compute = TRUE,
+             quantiles = c(0.025, 0.975)
+           ),
+           control.compute = list(dic = TRUE,
+                                  waic =TRUE),
+           data = dredundancy_eff)
+
+
+prueba$waic$waic
+m2$waic$waic
+```
+
+ 
 #Model selection
 
-####DIC
-```{r}
-mnull$dic$dic
-m1$dic$dic
-m2$dic$dic
-#m3$dic$dic
-mcompleto$dic$dic 
-mcompleto_interac$dic$dic 
-```
-
-####WAIC
-```{r}
-mnull$waic$waic
-m1$waic$waic
-m2$waic$waic
-#m3$waic$waic
-mcompleto$waic$waic
-mcompleto_interac$waic$waic
-
-```
-##Numerical outputs for the Betas
-```{r}
-betanull <- mnull$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
-kable(betanull,digits = 3) %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
-```
-
-```{r}
-beta1 <- m1$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
-kable(beta1,digits = 3) %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
-```
 
 
-```{r}
-beta2 <- m2$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
-kable(beta2,digits = 3) %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
-
-
-```
-
-
-```{r}
-betacompleto_interac <- mcompleto_interac$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
-kable(betacompleto_interac,digits = 3) %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
-
-
-```
 
 
 ##Numerical outputs for the hyperparameters
+
+
+```{r}
+beta2 <- prueba$summary.fixed[,c("mean","sd", "0.025quant","0.975quant")]
+kable(beta2,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+
 
 ###Precision($\tau$)
 
@@ -307,52 +534,7 @@ text(0.86, 8.2, "C", cex = 1.5)
 ```
 
 
-#Fitted Model
 
-$$redundancia \sim N(\mu_i, 0.02656408^2)$$
-
-$$E(redundancia)= \mu_i, var(redundancia)=0.02656408^2$$
-
-
-Solo P. macroloba es importante:
-
-$\mu_i$ = 4.201 + 0.024
-
-
-#Model validation
-
-##Calculating the residuals in R-INLA
-
-```{r}
-Fit <- m1$summary.fitted.values[,"mean"]
-E1 <- dredundancy_eff$redundancy - Fit
-
-par(mar = c(5, 5, 2, 2), cex.lab = 1.5)
-
-plot(x = Fit, 
-     y = E1, 
-     xlab = "Fitted values",
-     ylab = "Residuals")
-
-range(dredundancy_eff$redundancy)
-par(mar = c(5, 5, 2, 2), cex.lab = 1.5, pty = "s")
-plot(x = Fit, 
-     xlim = c(0.77, .92),
-     ylim = c(0.77, .92),
-     y = dredundancy_eff$redundancy, 
-     xlab = "Fitted values",
-     ylab = "Observed latency scores")
-
-```
-
-```{r}
-hist(E1, main = "Normality", breaks=10)
-```
-```{r}
-#Plot residuals versus covariates
-plot(x = dredundancy_eff$forest_type, 
-     y = E1)
-```
 
 
 
