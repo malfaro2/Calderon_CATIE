@@ -122,673 +122,7 @@ corvif(dredundancy_eff[,c(3,4,7:12)])
 Mydotplot(dredundancy_eff[, 8:12])
 ```
 
-# Modelo lineal sin componente espacial    
 
-##Model Formulation
-$$redundancia \sim N(\mu_i, \sigma^2)$$
-
-$$E(redundancia)=\mu_i ,var(redundancia)=\sigma^2$$
-
-$$\mu_i= \beta_1*foresttype+\beta_2*long+\beta_3*lat+\beta_4*clay+\beta_5*acidity$$  $$+\beta_6*k+\beta_7*organicmatter+\beta_8*precdriest+\beta_9*temp  $$
-
-  
-
-##Codigo INLA para modelo lineal sin componente espacial
-
-###Forward con lat lon en las covariables y sin interacciones
-```{r}
-mlatlon <- inla(redundancy ~  longitude*latitude, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-mlatlon_1 <- inla(redundancy ~  longitude*latitude +
-                 forest_type, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-mlatlon_2 <- inla(redundancy ~  longitude*latitude +
-                 forest_type +
-                  clay, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-
-mlatlon_4 <- inla(redundancy ~  longitude*latitude +
-                  forest_type +
-                  clay +
-                  organic_matter , 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-mlatlon_5 <- inla(redundancy ~  longitude*latitude +
-                  forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-mlatlon_6 <- inla(redundancy ~  longitude*latitude +
-                  forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest +
-                  temp, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-```
-
-```{r}
-m_dic_forw  <- c(mlatlon$dic$dic,
-            mlatlon_1$dic$dic,
-            mlatlon_2$dic$dic, 
-            mlatlon_4$dic$dic, 
-            mlatlon_5$dic$dic,
-            mlatlon_6$dic$dic
-            ) 
-
-m_waic_forw <- c(mlatlon$waic$waic,
-            mlatlon_1$waic$waic, 
-            mlatlon_2$waic$waic, 
-            mlatlon_4$waic$waic, 
-            mlatlon_5$waic$waic,
-            mlatlon_6$waic$waic
-            )
-
-z_out_forw     <- cbind(m_dic_forw, m_waic_forw)
-
-rownames(z_out_forw) <- c("mlatlon model", 
-                     "mlatlon + forest type",
-                     "mlatlon + forest type, clay", 
-                     "mlatlon + forest type, clay, organic matter",
-                     "mlatlon + forest type, clay, organic matter, precdriest",
-                     "mlatlon + forest type, clay, organic matter, precdriest, prec")
-               
-z_out_forw
-```
-
-###Backward con lat lon en las covariables y sin interacciones
-```{r}
-mlatlon_7_b <- inla(redundancy ~  longitude*latitude +
-                  forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest+
-                    temp, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-mlatlon_6_b <- inla(redundancy ~  longitude*latitude +
-                  forest_type +
-                  clay +
-                  organic_matter, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-
-mlatlon_4_b <- inla(redundancy ~  longitude*latitude +
-                  forest_type +
-                  clay, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-mlatlon_3_b <- inla(redundancy ~  longitude*latitude +
-                  forest_type, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-```
-
-```{r}
-m_dic_back  <- c(mlatlon$dic$dic,
-                 mlatlon_7_b$dic$dic,
-                 mlatlon_6_b$dic$dic,
-                 mlatlon_4_b$dic$dic, 
-                 mlatlon_3_b$dic$dic 
-                 ) 
-
-m_waic_back <- c(mlatlon$waic$waic,
-                 mlatlon_7_b$waic$waic,
-                 mlatlon_6_b$waic$waic,
-                 mlatlon_4_b$waic$waic, 
-                 mlatlon_3_b$waic$waic
-                 )
-             
-
-z_out_back     <- cbind(m_dic_back, m_waic_back)
-
-rownames(z_out_back) <- c("mlatlon model", 
-                          "mlatlon + forest type, clay, organic matter, precdriest, temp",
-                          "mlatlon + forest type, clay, organic matter",
-                          "mlatlon + forest type, clay",
-                          "mlatlon + forest type")
-                     
-
-z_out_back
-```
-
-###Mejor modelo con lat lon en las covariables y sin interacciones
-```{r}
-best1 <- inla(redundancy ~ longitude*latitude +
-                  forest_type +
-                  clay +
-                  organic_matter, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-best1$waic$waic
-```
-
-###Forward  sin interacciones
-```{r}
-m_0 <- inla(redundancy ~  1, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-m_1 <- inla(redundancy ~ forest_type, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-m_2 <- inla(redundancy ~ forest_type +
-                  clay, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-
-m_5 <- inla(redundancy ~ forest_type +
-                  clay +
-                  organic_matter , 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_6 <- inla(redundancy ~ forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_7 <- inla(redundancy ~ forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest +
-                  temp, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-```
-
-```{r}
-m_dic_forw  <- c(m_0$dic$dic,
-            m_1$dic$dic,
-            m_2$dic$dic, 
-            m_5$dic$dic,
-            m_6$dic$dic,
-            m_7$dic$dic) 
-
-m_waic_forw <- c(m_0$waic$waic,
-            m_1$waic$waic, 
-            m_2$waic$waic, 
-            m_5$waic$waic,
-            m_6$waic$waic,
-            m_7$waic$waic)
-
-z_out_forw     <- cbind(m_dic_forw, m_waic_forw)
-
-rownames(z_out_forw) <- c("m_0 model", 
-                     "m_1  = forest type",
-                     "m_2  = forest type, clay",
-                     "m_5  = forest type, clay, organic matter",
-                     "m_6  = forest type, clay, organic matter, precdriest",
-                     "m_7  = forest type, clay, organic matter, precdriest, prec")
-               
-z_out_forw
-```
-
-###Backward sin interacciones
-```{r}
-
-m_7_b <- inla(redundancy ~ forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest +
-                  temp, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_6_b <- inla(redundancy ~ forest_type +
-                  clay +
-                  organic_matter +
-                  precdriest, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_5_b <- inla(redundancy ~ forest_type +
-                  clay +
-                  organic_matter , 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_2_b <- inla(redundancy ~ forest_type +
-                  clay, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_1_b <- inla(redundancy ~ forest_type, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_0_b <- inla(redundancy ~  1, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-```
-
-```{r}
-m_dic_back  <- c(m_0_b$dic$dic,
-                 m_1_b$dic$dic,
-                 m_2_b$dic$dic, 
-                 m_5_b$dic$dic,
-                 m_6_b$dic$dic,
-                 m_7_b$dic$dic) 
-
-m_waic_back <- c(m_0_b$waic$waic,
-                 m_1_b$waic$waic, 
-                 m_2_b$waic$waic, 
-                 m_5_b$waic$waic,
-                 m_6_b$waic$waic,
-                 m_7_b$waic$waic)
-
-z_out_back    <- cbind(m_dic_back, m_waic_back)
-
-rownames(z_out_back) <- c("m_7_b  = forest type, clay, organic matter, precdriest, prec",
-                          "m_6_b  = forest type, clay, organic matter, precdriest",
-                          "m_5_b  = forest type, clay, organic matter", 
-                          "m_2_b  = forest type, clay",
-                          "m_1_b  = forest type",
-                          "m_0_b model")
-                          
-               
-z_out_back
-```
-###Mejor modelo sin interacciones
-
-```{r}
-best2_a <- inla(redundancy ~ forest_type, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-best2_b <- inla(redundancy ~ forest_type +
-                  clay + 
-                  organic_matter +
-                  precdriest, 
-             
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-best2_a$waic$waic
-best2_b$waic$waic
-
-
-```
-
-
-##Modelo Lineal con interacciones por tipo de bosque
-###Forward con interacciones por tipo de bosque
-```{r}
-library(INLA)
-
-m_interac_0 <- inla(redundancy ~  
-                         forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp,  
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-           
-m_interac_1 <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         forest_type:clay,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_interac_2 <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         forest_type:clay +
-                         forest_type:organic_matter  ,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_interac_3 <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         
-                         forest_type:clay +
-                         forest_type:organic_matter +
-                         forest_type:precdriest  ,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_interac_4 <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         
-                         forest_type:clay +
-                         forest_type:organic_matter +
-                         forest_type:precdriest +
-                         forest_type:temp,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-
-```
-
-
-
-```{r}
-minterac_dic  <- c(m_interac_0$dic$dic,
-                   m_interac_1$dic$dic, 
-                   m_interac_2$dic$dic,  
-                   m_interac_3$dic$dic, 
-                   m_interac_4$dic$dic
-            )
-
-minterac_waic <- c(m_interac_0$waic$waic,
-                   m_interac_1$waic$waic, 
-                   m_interac_2$waic$waic, 
-                   m_interac_3$waic$waic, 
-                   m_interac_4$waic$waic
-            )
-
-z_out     <- cbind(minterac_dic, minterac_waic)
-rownames(z_out) <- c( 
-                     "lm",
-                     "lm + interacciones por bosque y clay",
-                     "lm + interacciones por bosque, clay y  organic matter",
-                     "lm + interacciones por bosque, clay y  organic matter, precdriest", 
-                     "lm + interacciones por bosque, clay y  organic matter, precdriest, temp"
-                     )
-z_out 
-```
-
-###Backward con interacciones por tipo de bosque 
-```{r}
-library(INLA)
-
-m_interac_0_b <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         
-                         forest_type:clay +
-                         forest_type:organic_matter +
-                         forest_type:precdriest +
-                         forest_type:temp,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-  
-
-           
-m_interac_1_b <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         
-                         forest_type:clay +
-                         forest_type:organic_matter +
-                         forest_type:precdriest  ,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_interac_2_b <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         
-                      forest_type:clay +
-                         forest_type:organic_matter  ,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-m_interac_3_b <- inla(redundancy ~  forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp +
-                         forest_type:clay,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-  
-  
-  
-m_interac_4_b <- inla(redundancy ~  
-                         forest_type  + clay +
-                         organic_matter +
-                         precdriest  + temp,  
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-
-```
-
-```{r}
-minterac_dic_back  <- c(m_interac_0_b$dic$dic,
-                        m_interac_1_b$dic$dic, 
-                        m_interac_2_b$dic$dic,  
-                        m_interac_3_b$dic$dic, 
-                        m_interac_4_b$dic$dic
-            )
-
-minterac_waic_back <- c(m_interac_0_b$waic$waic,
-                        m_interac_1_b$waic$waic, 
-                        m_interac_2_b$waic$waic, 
-                        m_interac_3_b$waic$waic, 
-                        m_interac_4_b$waic$waic
-            )
-
-z_out_back     <- cbind(minterac_dic_back, minterac_waic_back)
-rownames(z_out_back) <- c( 
-                     "lm + interacciones por bosque, clay y  organic matter, precdriest, temp",
-                     "lm + interacciones por bosque, clay y  organic matter, precdriest", 
-                     "lm + interacciones por bosque, clay y  organic matter",
-                     "lm + interacciones por bosque y clay",
-                     "lm"
-                     )
-z_out_back 
-```
-
-###Mejor modelo
-
-```{r}
-best3 <- m_interac_2_b <- inla(redundancy ~  forest_type  + clay +
-                          organic_matter +
-                          precdriest  + temp +
-                         
-                         forest_type:clay +
-                         forest_type:organic_matter  ,
-                         
-           family = "gaussian",
-           control.predictor = list(compute= TRUE),
-           control.compute = list(dic = TRUE, 
-                                  waic = TRUE),
-           data = dredundancy_eff)
-```
-
-
-
-
-##Model parameters
-```{r}
-beta1 <- m1$summary.fixed[, c("mean", "sd", "0.025quant", "0.975quant")] 
-kable(beta1,digits = 3) %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
-```
-
-
-##$\tau$
-
-```{r}
-tau <- m1$marginals.hyperpar$`Precision for the Gaussian observations`
-```
-
-###$\sigma$
-```{r}
-sigma <- inla.emarginal(function(x)(1/sqrt(x)), tau)
-sigma
-```
-
-
-##Model validation
-
-```{r}
-fit1 <- m1$summary.fitted.values[,"mean"]
-e1 <- dredundancy_eff$redundancy - fit1
-```
 
 #Modelo lineal con componente espacial sin interacciones 
 
@@ -972,23 +306,76 @@ str(w_index)
 
 
 ###Covariates
+
+
 ```{r}
-xm <- model.matrix(~ -1 + forest_type + clay  +
-                         + organic_matter +
-                         precdriest + temp, 
+xm <- model.matrix(~ -1 + forest_type * clay  *
+                          organic_matter *precdriest * temp, 
+                   
                    data = dredundancy_eff)
 
 N <- nrow(dredundancy_eff)
 
 colnames(xm)
+
+#En esta parte se tienen que incluir interacciones no solo main effects
 X <- data.frame(Foothills   =    xm[,1],
                 P.macroloba =    xm[,2],
                 Q.paraensis =    xm[,3],
                 clay        =    xm[,4],
                 organic_matter = xm[,5],
                 precdriest  =    xm[,6],
-                temp        =    xm[,7]
+                temp        =    xm[,7],
                 
+                #2way interactions
+                P.macroloba_clay = xm[,8],
+                Q.paraensis_clay = xm[,9],
+                P.macroloba_organic_matter = xm[,10],
+                Q.paraensis_organic_matter = xm[,11],
+                clay_organic_matter = xm[,12],
+                P.macroloba_precdriest = xm[,13],
+                Q.paraensis_precdriest = xm[,14],
+                clay_precdriest = xm[,15],
+                organic_matter_precdriest = xm[,16],
+                P.macroloba_temp = xm[,17],
+                Q.paraensis_temp = xm[,18],
+                clay_temp = xm[,19],
+                organic_matter_temp = xm[,20],
+                precdriest_temp = xm[,21],
+                
+                #3way interactions
+                P.macroloba_clay_organic_matter = xm[,22],
+                Q.paraensis_clay_organic_matter = xm[,23],
+                P.macroloba_clay_precdriest = xm[,24],
+                Q.paraensis_clay_precdriest = xm[,25],
+                P.macroloba_organic_matter_precdriest = xm[,26],
+                Q.paraensis_organic_matter_precdriest = xm[,27],
+                clay_organic_matter_precdriest = xm[,28],
+                P.macroloba_clay_temp = xm[,29],
+                Q.paraensis_clay_temp = xm[,30],
+                P.macroloba_organic_matter_temp = xm[,31],
+                Q.paraensis_organic_matter_temp = xm[,32],
+                clay_organic_matter_temp = xm[,33],
+                P.macroloba_precdriest_temp = xm[,34],
+                Q.paraensis_precdriest_temp = xm[,35],
+                clay_precdriest_temp = xm[,36],
+                organic_matter_precdriest_temp = xm[,37],
+                
+                #4way interactions
+                P.macroloba_clay_organic_matter_precdriest = xm[,38],
+                Q.paraensis_clay_organic_matter_precdriest = xm[,39],
+                P.macroloba_clay_organic_matter_temp = xm[,40],
+                Q.paraensis_clay_organic_matter_temp = xm[,41],
+                P.macroloba_clay_precdriest_temp = xm[,42],
+                Q.paraensis_clay_precdriest_temp = xm[,43],
+                P.macroloba_organic_matter_precdriest_temp = xm[,44],
+                Q.paraensis_organic_matter_precdriest_temp = xm[,45],
+                clay_organic_matter_precdriest_temp = xm[,46],
+                
+                #5way interactions
+                P.macroloba_clay_organic_matter_precdriest_temp = xm[,47],
+                Q.paraensis_clay_organic_matter_precdriest_temp = xm[,48]
+                       
                 
 )
 ```
@@ -1015,24 +402,310 @@ stackfit <- inla.stack(
 ##Define the formula for the spatial model
 
 
+```{r, eval=FALSE}
+                Foothills       
+                P.macroloba     
+                Q.paraensis     
+                clay            
+                organic_matter 
+                precdriest  
+                temp        
+                
+                #2way interactions
+                P.macroloba_clay 
+                Q.paraensis_clay 
+                P.macroloba_organic_matter 
+                Q.paraensis_organic_matter 
+                clay_organic_matter 
+                P.macroloba_precdriest 
+                Q.paraensis_precdriest 
+                clay_precdriest 
+                organic_matter_precdriest 
+                P.macroloba_temp 
+                Q.paraensis_temp 
+                clay_temp 
+                organic_matter_temp 
+                precdriest_temp 
+                
+                #3way interactions
+                P.macroloba_clay_organic_matter 
+                Q.paraensis_clay_organic_matter 
+                P.macroloba_clay_precdriest 
+                Q.paraensis_clay_precdriest 
+                P.macroloba_organic_matter_precdriest
+                Q.paraensis_organic_matter_precdriest
+                clay_organic_matter_precdriest 
+                P.macroloba_clay_temp
+                Q.paraensis_clay_temp
+                P.macroloba_organic_matter_temp 
+                Q.paraensis_organic_matter_temp 
+                clay_organic_matter_temp 
+                P.macroloba_precdriest_temp
+                Q.paraensis_precdriest_temp
+                clay_precdriest_temp
+                organic_matter_precdriest_temp 
+                
+                #4way interactions
+                P.macroloba_clay_organic_matter_precdriest 
+                Q.paraensis_clay_organic_matter_precdriest 
+                P.macroloba_clay_organic_matter_temp
+                Q.paraensis_clay_organic_matter_temp
+                P.macroloba_clay_precdriest_temp
+                Q.paraensis_clay_precdriest_temp
+                P.macroloba_organic_matter_precdriest_temp 
+                Q.paraensis_organic_matter_precdriest_temp 
+                clay_organic_matter_precdriest_temp 
+                
+                #5way interactions
+                P.macroloba_clay_organic_matter_precdriest_temp
+                Q.paraensis_clay_organic_matter_precdriest_temp
+```
+
+
+
 ```{r}
 #Modelo sin dependencia espacial
-f2a <- y ~ -1 + Intercept +  Foothills + P.macroloba + Q.paraensis + clay + organic_matter +
+
+M2 <- y ~ -1 + Intercept +  Foothills + P.macroloba + Q.paraensis + clay + organic_matter +
                          precdriest + temp
 ```
 
+
 ```{r}
-#Modelo con dependencia espacial
-f2b <- y ~ -1 + Intercept + Foothills + P.macroloba + Q.paraensis + clay +
+#Modelo sin covariables y con dependencia espacial 
+
+SM1 <- y ~ -1 + Intercept + f(w, model = spde)
+
+```
+
+
+```{r}
+#Modelo con covariables y dependencia espacial
+SM2 <- y ~ -1 + Intercept + Foothills + P.macroloba + Q.paraensis + clay +
                           organic_matter +
                          precdriest + temp + f(w, model = spde)
 ```
+
+```{r}
+#Modelo con dependencia espacial y full interacciones 
+SM3 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+  
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+                
+                #3way interactions
+                P.macroloba_clay_organic_matter +
+                Q.paraensis_clay_organic_matter +
+                P.macroloba_clay_precdriest +
+                Q.paraensis_clay_precdriest +
+                P.macroloba_organic_matter_precdriest+
+                Q.paraensis_organic_matter_precdriest+
+                clay_organic_matter_precdriest +
+                P.macroloba_clay_temp+
+                Q.paraensis_clay_temp+
+                P.macroloba_organic_matter_temp +
+                Q.paraensis_organic_matter_temp +
+                clay_organic_matter_temp +
+                P.macroloba_precdriest_temp+
+                Q.paraensis_precdriest_temp+
+                clay_precdriest_temp+
+                organic_matter_precdriest_temp +
+               
+                #4way interactions
+                P.macroloba_clay_organic_matter_precdriest +
+                Q.paraensis_clay_organic_matter_precdriest +
+                P.macroloba_clay_organic_matter_temp+
+                Q.paraensis_clay_organic_matter_temp+
+                P.macroloba_clay_precdriest_temp+
+                Q.paraensis_clay_precdriest_temp+
+                P.macroloba_organic_matter_precdriest_temp +
+                Q.paraensis_organic_matter_precdriest_temp +
+                clay_organic_matter_precdriest_temp +
+                
+                #5way interactions
+                P.macroloba_clay_organic_matter_precdriest_temp+
+                Q.paraensis_clay_organic_matter_precdriest_temp + 
+                f(w, model = spde)
+```
+
+```{r}
+#Modelo con dependencia espacial  y 2way interacciones 
+SM3a <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+   f(w, model = spde)
+
+
+
+
+```
+
+```{r}
+#Modelo con dependencia espacial, 2way y 3way interacciones. 
+SM3b <- y ~ -1 + Intercept + 
+                
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+  
+   #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+                
+   #3way interactions
+                P.macroloba_clay_organic_matter +
+                Q.paraensis_clay_organic_matter +
+                P.macroloba_clay_precdriest +
+                Q.paraensis_clay_precdriest +
+                P.macroloba_organic_matter_precdriest+
+                Q.paraensis_organic_matter_precdriest+
+                clay_organic_matter_precdriest +
+                P.macroloba_clay_temp+
+                Q.paraensis_clay_temp+
+                P.macroloba_organic_matter_temp +
+                Q.paraensis_organic_matter_temp +
+                clay_organic_matter_temp +
+                P.macroloba_precdriest_temp+
+                Q.paraensis_precdriest_temp+
+                clay_precdriest_temp+
+                organic_matter_precdriest_temp +
+ 
+  f(w, model = spde)
+
+
+
+
+```
+
+```{r}
+#Modelo con covariables con 2way,3way, 4way interactions y dependencia espacial
+
+SM3c <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+  
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+                
+                #3way interactions
+                P.macroloba_clay_organic_matter +
+                Q.paraensis_clay_organic_matter +
+                P.macroloba_clay_precdriest +
+                Q.paraensis_clay_precdriest +
+                P.macroloba_organic_matter_precdriest+
+                Q.paraensis_organic_matter_precdriest+
+                clay_organic_matter_precdriest +
+                P.macroloba_clay_temp+
+                Q.paraensis_clay_temp+
+                P.macroloba_organic_matter_temp +
+                Q.paraensis_organic_matter_temp +
+                clay_organic_matter_temp +
+                P.macroloba_precdriest_temp+
+                Q.paraensis_precdriest_temp+
+                clay_precdriest_temp+
+                organic_matter_precdriest_temp +
+               
+                #4way interactions
+                P.macroloba_clay_organic_matter_precdriest +
+                Q.paraensis_clay_organic_matter_precdriest +
+                P.macroloba_clay_organic_matter_temp+
+                Q.paraensis_clay_organic_matter_temp+
+                P.macroloba_clay_precdriest_temp+
+                Q.paraensis_clay_precdriest_temp+
+                P.macroloba_organic_matter_precdriest_temp +
+                Q.paraensis_organic_matter_precdriest_temp +
+                clay_organic_matter_precdriest_temp +
+   f(w, model = spde)
+```
+
+
+
 
 ##Execute the spacial model
 ```{r}
 
 #Modelo sin dependencia espacial
-SM2a <- inla(f2a,
+M2 <- inla(M2,
              family = "gaussian",
              
              data = inla.stack.data(stackfit),
@@ -1043,8 +716,11 @@ SM2a <- inla(f2a,
              
              control.predictor = list(
                A = inla.stack.A(stackfit)))
-               
-SM2b<- inla(f2b,
+
+
+#Modelo sin covariables y dependencia espacial               
+
+SM1 <- inla(SM1,
              family = "gaussian",
              
              data = inla.stack.data(stackfit),
@@ -1055,33 +731,472 @@ SM2b<- inla(f2b,
              
              control.predictor = list(
                A = inla.stack.A(stackfit)))
+
+
+
+#Modelo con covariables y dependencia espacial               
+SM2 <- inla(SM2,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con covariables con full interacciones y dependencia espacial               
+SM3 <- inla(SM3,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con covariables con 2way interactions y dependencia espacial
+SM3a <- inla(SM3a,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con covariables con 2way y 3way interactions y dependencia espacial
+SM3b <- inla(SM3b,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con covariables con 2way,3way, 4way interactions y dependencia espacial
+SM3c <- inla(SM3c,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
 
 ```
 
 ##Compare models
 
 ```{r}
-dic  <- c(SM2a$dic$dic, SM2b$dic$dic)
-waic <- c(SM2a$waic$waic, SM2b$waic$waic)
+dic  <- c(M2$dic$dic,
+          SM1$dic$dic, 
+          SM2$dic$dic,
+          SM3$dic$dic,
+          SM3a$dic$dic,
+          SM3b$dic$dic,
+          SM3c$dic$dic)
+
+
+
+waic <- c(M2$waic$waic, 
+          SM1$waic$waic,
+          SM2$waic$waic,
+          SM3$waic$waic,
+          SM3a$waic$waic,
+          SM3b$waic$waic,
+          SM3c$waic$waic)
+
+
 Z.out     <- cbind(dic, waic)
-rownames(Z.out) <- c("Gaussian lm",  
-                     "Gaussian lm + SPDE")
+rownames(Z.out) <- c("Gaussian lm ",
+                     "Gaussian lm sin covariables sin interaccion + SPDE",
+                     "Gaussian lm con covariables sin interaccion + SPDE",
+                     "Gaussian lm con covariables con interaccion + SPDE",
+                     "Gaussian lm con covariables con 2way interactions + SPDE",
+                     "Gaussian lm con covariables con 2way interactions + 3way interactions + SPDE",
+                     "Gaussian lm con covariables con 2way interactions + 3way interactions + 4way interactions + SPDE")
 Z.out
 ```
+
+
+El modelo con todas las covariables y 2way interactions es el mejor (SM3a)
+
+```{r}
+#Modelo con dependencia espacial  y 2way interacciones 
+SM3a <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+
+ f(w, model = spde)
+
+
+#Modelo con dependencia espacial eliminando interacciones que considero no son valiosas 
+SM3a_1 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+    
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                
+                organic_matter_temp +
+                precdriest_temp +
+
+ f(w, model = spde)
+
+#Modelo con dependencia espacial dejando interacciones solo por tipo de bosque 
+SM3a_2 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+    
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                
+                
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                
+                
+
+ f(w, model = spde)
+
+#Modelo con dependencia espacial  eliminando interacciones con clay 
+SM3a_3 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                
+                
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+               
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                
+                organic_matter_temp +
+                precdriest_temp +
+
+ f(w, model = spde)
+
+#Modelo con dependencia espacial  eliminando interacciones con bosque 
+SM3a_4 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+               
+                
+                
+                
+                clay_organic_matter +
+                
+                
+                clay_precdriest +
+                organic_matter_precdriest +
+                
+                
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+
+ f(w, model = spde)
+
+
+#Modelo con dependencia espacial  eliminando interacciones con organic matter
+SM3a_5 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                
+                
+                
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                
+                precdriest_temp +
+
+ f(w, model = spde)
+
+
+#Modelo con dependencia espacial  eliminando interacciones con precdriest
+SM3a_6 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                
+                
+                
+                
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                
+
+ f(w, model = spde)
+
+
+```
+
+
+```{r}
+#Modelo con covariables con 2way interactions y dependencia espacial
+SM3a <- inla(SM3a,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con dependencia espacial eliminando interacciones que considero no son valiosas
+SM3a_1 <- inla(SM3a_1,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+
+#Modelo con dependencia espacial dejando interacciones solo por tipo de bosque
+SM3a_2 <- inla(SM3a_2,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con dependencia espacial  eliminando interacciones con clay 
+SM3a_3 <- inla(SM3a_3,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con dependencia espacial  eliminando interacciones con bosque 
+SM3a_4 <- inla(SM3a_4,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con dependencia espacial  eliminando interacciones con organic matter
+SM3a_5 <- inla(SM3a_5,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con dependencia espacial  eliminando interacciones con precdriest
+SM3a_6 <- inla(SM3a_6,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+```
+
+
+```{r}
+dic  <- c(SM3a$dic$dic,
+          SM3a_1$dic$dic,
+          SM3a_2$dic$dic,
+          SM3a_3$dic$dic,
+          SM3a_4$dic$dic,
+          SM3a_5$dic$dic,
+          SM3a_6$dic$dic
+          )
+
+
+waic <- c(SM3a$waic$waic,
+          SM3a_1$waic$waic,
+          SM3a_2$waic$waic,
+          SM3a_3$waic$waic,
+          SM3a_4$waic$waic,
+          SM3a_5$waic$waic,
+          SM3a_6$waic$waic
+          )
+
+
+Z.out     <- cbind(dic, waic)
+rownames(Z.out) <- c("SM3a",
+                     "SM3a_1",
+                     "SM3a_2",
+                     "SM3a_3",
+                     "SM3a_4",
+                     "SM3a_5",
+                     "SM3a_6"
+                     )
+Z.out
+```
+
+
 
 ##Results
 ```{r}
 #Modelo sin componente espacial
-SM2a$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+M2$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
 
-#Modelo con componente espacial
-SM2b$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+#Modelo con covariables y componente espacial
+SM2$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
 
+#Modelo con interacciones y componente espacial
+SM3$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+
+#Modelo con 2war interacciones y componente espacial
+SM3a$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
 ```
 
 ##Hyperpameters
 ```{r}
-spfi_w <- inla.spde2.result(inla = SM2b,
+spfi_w <- inla.spde2.result(inla = SM2,
                             name = "w",
                             spde = spde,
                             do.transfer = TRUE)
@@ -1126,7 +1241,7 @@ plot(x = d.vec,
 
 ##Interpolation
 ```{r}
-w_pm <- SM2b$summary.random$w$mean
+w_pm <- SM2$summary.random$w$mean
 
 w_proj <- inla.mesh.projector(mesh2)
 
