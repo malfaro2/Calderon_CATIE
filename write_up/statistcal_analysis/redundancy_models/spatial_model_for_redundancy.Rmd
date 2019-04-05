@@ -1,0 +1,1161 @@
+---
+title: "Spatial model for redundancy"
+author: "Erick Calderón-Morales"
+date: "March 28, 2019"
+output: 
+  html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r message=FALSE, warning=FALSE}
+#Paquetes
+library(kableExtra)
+library(lattice)
+library(tidyverse)
+library(PerformanceAnalytics)
+library(janitor)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+library(ggbiplot)
+library(GGally)
+library(INLA)
+```
+
+
+
+#Objetivo 
+Realizar un modelo linear multiple con dependencia espacial para los datos de Redundancia funcional efecto
+Ref: Capitulo 12 Zuur et al.
+
+
+```{r}
+#Load data
+dredun_eff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy.csv", header=T)
+dredun_eff <- clean_names(dredun_eff) %>% 
+  dplyr::select(-c(d))
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- clean_names(dparcelas)
+
+denv <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_enviroment_worldclim_clean.csv", header = T, row.names = 1)
+denv <- denv %>%
+  clean_names() %>% 
+    dplyr::select(-c(crtm_90_x,crtm_90_y,forest_type, slope_per,slope_deg))
+
+#Standarize data
+denvi_est <-  scale(denv,center = F, scale = T )
+denvi_est <- rownames_to_column(as.data.frame(denvi_est),var= "plot")
+```
+
+#Join Data sets
+
+```{r}
+dfull  <- left_join(dredun_eff, dparcelas,by=c("plot") ) %>% 
+  left_join(.,denvi_est, by=c("plot") )
+
+#Ordenar columnas
+dfull_est <- dfull %>% dplyr::select(plot, forest_type,longitude,latitude,crtm_90_x,crtm_90_y,n,redundancy,u , q, everything()) 
+glimpse(dfull_est)
+```
+
+#Data exploration
+##PCA sin variables de respuesta
+
+```{r}
+ncol(denvi_est)
+pca_envi <- prcomp(denvi_est[,2:18], scale. = TRUE)
+ggbiplot(pca_envi, obs.scale = 3, var.scale = 3,
+  groups = dfull_est$forest_type, ellipse = TRUE) +
+  scale_color_discrete(name = '') +
+  theme(legend.direction = 'horizontal', legend.position = 'top')+
+  theme_grey()
+```
+
+
+##Correlaciones Redundancy vrs Environment
+
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE, fig.dim= 200}
+chart.Correlation(dfull_est[,c(8,3,4, 11:27)], histogram=TRUE, pch="+") 
+```
+
+##VIFs
+```{r}
+corvif(dfull_est[,c(3,4,11:27)])
+```
+
+##Covariables que se van a eliminar 
+
+
++ __tempsd__. Debido a que no tiene relacion con redundancy
++ __mg__. Debido a que no tiene relacion con redundancy
++ __ca__. Debido a que no tiene relacion con redundancy
++ __p__. Debido a que no tiene relacion con redundancy
++ __elev__. Debido a que tiene alto VIF, alta correlacion con Latitude y en el pca tiene la misma direccion que organic matter y sand 
++ __sand__. Debido a que tiene alto VIF  y en el pca tiene la misma direccion que organic matter.
++ __prec__. alta correlacion con predriest y en el pca tiene la misma direccion que prec.
++ __preccv__. Alta correlacion con predriest, en el pca tiene la misma direccion que prec y tiene poca relacion con redundancia.
++ __limo__. Tiene poca relacion con redundancia.
++ __pH__. Tiene poca relacion con redundancia.
++ __k__. Tiene poca relacion con redundancia.
++ __acidity__. Debido a que en el PCA tiene la misma direccion que clay 
+
+####Data que se va a utilizar
+```{r}
+dredundancy_eff <- dfull_est %>% 
+  dplyr::select(-c(tempsd, mg, ca, p, elev, sand, prec, preccv, tempmin, limo, p_h, u,q,k, acidity))
+```
+
+###VIFs sin variables eliminadas 
+```{r}
+ncol(dredundancy_eff)
+corvif(dredundancy_eff[,c(3,4,7:12)])
+```
+
+##Cleveland plot
+
+```{r}
+Mydotplot(dredundancy_eff[, 8:12])
+```
+
+# Modelo lineal sin componente espacial    
+
+##Model Formulation
+$$redundancia \sim N(\mu_i, \sigma^2)$$
+
+$$E(redundancia)=\mu_i ,var(redundancia)=\sigma^2$$
+
+$$\mu_i= \beta_1*foresttype+\beta_2*long+\beta_3*lat+\beta_4*clay+\beta_5*acidity$$  $$+\beta_6*k+\beta_7*organicmatter+\beta_8*precdriest+\beta_9*temp  $$
+
+  
+
+##Codigo INLA para modelo lineal sin componente espacial
+
+###Forward con lat lon en las covariables y sin interacciones
+```{r}
+mlatlon <- inla(redundancy ~  longitude*latitude, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_1 <- inla(redundancy ~  longitude*latitude +
+                 forest_type, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+mlatlon_2 <- inla(redundancy ~  longitude*latitude +
+                 forest_type +
+                  clay, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+
+mlatlon_4 <- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  organic_matter , 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_5 <- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_6 <- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest +
+                  temp, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+```
+
+```{r}
+m_dic_forw  <- c(mlatlon$dic$dic,
+            mlatlon_1$dic$dic,
+            mlatlon_2$dic$dic, 
+            mlatlon_4$dic$dic, 
+            mlatlon_5$dic$dic,
+            mlatlon_6$dic$dic
+            ) 
+
+m_waic_forw <- c(mlatlon$waic$waic,
+            mlatlon_1$waic$waic, 
+            mlatlon_2$waic$waic, 
+            mlatlon_4$waic$waic, 
+            mlatlon_5$waic$waic,
+            mlatlon_6$waic$waic
+            )
+
+z_out_forw     <- cbind(m_dic_forw, m_waic_forw)
+
+rownames(z_out_forw) <- c("mlatlon model", 
+                     "mlatlon + forest type",
+                     "mlatlon + forest type, clay", 
+                     "mlatlon + forest type, clay, organic matter",
+                     "mlatlon + forest type, clay, organic matter, precdriest",
+                     "mlatlon + forest type, clay, organic matter, precdriest, prec")
+               
+z_out_forw
+```
+
+###Backward con lat lon en las covariables y sin interacciones
+```{r}
+mlatlon_7_b <- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest+
+                    temp, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_6_b <- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay +
+                  organic_matter, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+
+mlatlon_4_b <- inla(redundancy ~  longitude*latitude +
+                  forest_type +
+                  clay, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+mlatlon_3_b <- inla(redundancy ~  longitude*latitude +
+                  forest_type, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+```
+
+```{r}
+m_dic_back  <- c(mlatlon$dic$dic,
+                 mlatlon_7_b$dic$dic,
+                 mlatlon_6_b$dic$dic,
+                 mlatlon_4_b$dic$dic, 
+                 mlatlon_3_b$dic$dic 
+                 ) 
+
+m_waic_back <- c(mlatlon$waic$waic,
+                 mlatlon_7_b$waic$waic,
+                 mlatlon_6_b$waic$waic,
+                 mlatlon_4_b$waic$waic, 
+                 mlatlon_3_b$waic$waic
+                 )
+             
+
+z_out_back     <- cbind(m_dic_back, m_waic_back)
+
+rownames(z_out_back) <- c("mlatlon model", 
+                          "mlatlon + forest type, clay, organic matter, precdriest, temp",
+                          "mlatlon + forest type, clay, organic matter",
+                          "mlatlon + forest type, clay",
+                          "mlatlon + forest type")
+                     
+
+z_out_back
+```
+
+###Mejor modelo con lat lon en las covariables y sin interacciones
+```{r}
+best1 <- inla(redundancy ~ longitude*latitude +
+                  forest_type +
+                  clay +
+                  organic_matter, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+best1$waic$waic
+```
+
+###Forward  sin interacciones
+```{r}
+m_0 <- inla(redundancy ~  1, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+m_1 <- inla(redundancy ~ forest_type, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+m_2 <- inla(redundancy ~ forest_type +
+                  clay, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+
+m_5 <- inla(redundancy ~ forest_type +
+                  clay +
+                  organic_matter , 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_6 <- inla(redundancy ~ forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_7 <- inla(redundancy ~ forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest +
+                  temp, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+```
+
+```{r}
+m_dic_forw  <- c(m_0$dic$dic,
+            m_1$dic$dic,
+            m_2$dic$dic, 
+            m_5$dic$dic,
+            m_6$dic$dic,
+            m_7$dic$dic) 
+
+m_waic_forw <- c(m_0$waic$waic,
+            m_1$waic$waic, 
+            m_2$waic$waic, 
+            m_5$waic$waic,
+            m_6$waic$waic,
+            m_7$waic$waic)
+
+z_out_forw     <- cbind(m_dic_forw, m_waic_forw)
+
+rownames(z_out_forw) <- c("m_0 model", 
+                     "m_1  = forest type",
+                     "m_2  = forest type, clay",
+                     "m_5  = forest type, clay, organic matter",
+                     "m_6  = forest type, clay, organic matter, precdriest",
+                     "m_7  = forest type, clay, organic matter, precdriest, prec")
+               
+z_out_forw
+```
+
+###Backward sin interacciones
+```{r}
+
+m_7_b <- inla(redundancy ~ forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest +
+                  temp, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_6_b <- inla(redundancy ~ forest_type +
+                  clay +
+                  organic_matter +
+                  precdriest, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_5_b <- inla(redundancy ~ forest_type +
+                  clay +
+                  organic_matter , 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_2_b <- inla(redundancy ~ forest_type +
+                  clay, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_1_b <- inla(redundancy ~ forest_type, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_0_b <- inla(redundancy ~  1, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+```
+
+```{r}
+m_dic_back  <- c(m_0_b$dic$dic,
+                 m_1_b$dic$dic,
+                 m_2_b$dic$dic, 
+                 m_5_b$dic$dic,
+                 m_6_b$dic$dic,
+                 m_7_b$dic$dic) 
+
+m_waic_back <- c(m_0_b$waic$waic,
+                 m_1_b$waic$waic, 
+                 m_2_b$waic$waic, 
+                 m_5_b$waic$waic,
+                 m_6_b$waic$waic,
+                 m_7_b$waic$waic)
+
+z_out_back    <- cbind(m_dic_back, m_waic_back)
+
+rownames(z_out_back) <- c("m_7_b  = forest type, clay, organic matter, precdriest, prec",
+                          "m_6_b  = forest type, clay, organic matter, precdriest",
+                          "m_5_b  = forest type, clay, organic matter", 
+                          "m_2_b  = forest type, clay",
+                          "m_1_b  = forest type",
+                          "m_0_b model")
+                          
+               
+z_out_back
+```
+###Mejor modelo sin interacciones
+
+```{r}
+best2_a <- inla(redundancy ~ forest_type, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+best2_b <- inla(redundancy ~ forest_type +
+                  clay + 
+                  organic_matter +
+                  precdriest, 
+             
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+best2_a$waic$waic
+best2_b$waic$waic
+
+
+```
+
+
+##Modelo Lineal con interacciones por tipo de bosque
+###Forward con interacciones por tipo de bosque
+```{r}
+library(INLA)
+
+m_interac_0 <- inla(redundancy ~  
+                         forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp,  
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+           
+m_interac_1 <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         forest_type:clay,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_interac_2 <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         forest_type:clay +
+                         forest_type:organic_matter  ,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_interac_3 <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         
+                         forest_type:clay +
+                         forest_type:organic_matter +
+                         forest_type:precdriest  ,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_interac_4 <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         
+                         forest_type:clay +
+                         forest_type:organic_matter +
+                         forest_type:precdriest +
+                         forest_type:temp,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+
+```
+
+
+
+```{r}
+minterac_dic  <- c(m_interac_0$dic$dic,
+                   m_interac_1$dic$dic, 
+                   m_interac_2$dic$dic,  
+                   m_interac_3$dic$dic, 
+                   m_interac_4$dic$dic
+            )
+
+minterac_waic <- c(m_interac_0$waic$waic,
+                   m_interac_1$waic$waic, 
+                   m_interac_2$waic$waic, 
+                   m_interac_3$waic$waic, 
+                   m_interac_4$waic$waic
+            )
+
+z_out     <- cbind(minterac_dic, minterac_waic)
+rownames(z_out) <- c( 
+                     "lm",
+                     "lm + interacciones por bosque y clay",
+                     "lm + interacciones por bosque, clay y  organic matter",
+                     "lm + interacciones por bosque, clay y  organic matter, precdriest", 
+                     "lm + interacciones por bosque, clay y  organic matter, precdriest, temp"
+                     )
+z_out 
+```
+
+###Backward con interacciones por tipo de bosque 
+```{r}
+library(INLA)
+
+m_interac_0_b <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         
+                         forest_type:clay +
+                         forest_type:organic_matter +
+                         forest_type:precdriest +
+                         forest_type:temp,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+  
+
+           
+m_interac_1_b <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         
+                         forest_type:clay +
+                         forest_type:organic_matter +
+                         forest_type:precdriest  ,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_interac_2_b <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         
+                      forest_type:clay +
+                         forest_type:organic_matter  ,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+m_interac_3_b <- inla(redundancy ~  forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp +
+                         forest_type:clay,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+  
+  
+  
+m_interac_4_b <- inla(redundancy ~  
+                         forest_type  + clay +
+                         organic_matter +
+                         precdriest  + temp,  
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+
+```
+
+```{r}
+minterac_dic_back  <- c(m_interac_0_b$dic$dic,
+                        m_interac_1_b$dic$dic, 
+                        m_interac_2_b$dic$dic,  
+                        m_interac_3_b$dic$dic, 
+                        m_interac_4_b$dic$dic
+            )
+
+minterac_waic_back <- c(m_interac_0_b$waic$waic,
+                        m_interac_1_b$waic$waic, 
+                        m_interac_2_b$waic$waic, 
+                        m_interac_3_b$waic$waic, 
+                        m_interac_4_b$waic$waic
+            )
+
+z_out_back     <- cbind(minterac_dic_back, minterac_waic_back)
+rownames(z_out_back) <- c( 
+                     "lm + interacciones por bosque, clay y  organic matter, precdriest, temp",
+                     "lm + interacciones por bosque, clay y  organic matter, precdriest", 
+                     "lm + interacciones por bosque, clay y  organic matter",
+                     "lm + interacciones por bosque y clay",
+                     "lm"
+                     )
+z_out_back 
+```
+
+###Mejor modelo
+
+```{r}
+best3 <- m_interac_2_b <- inla(redundancy ~  forest_type  + clay +
+                          organic_matter +
+                          precdriest  + temp +
+                         
+                         forest_type:clay +
+                         forest_type:organic_matter  ,
+                         
+           family = "gaussian",
+           control.predictor = list(compute= TRUE),
+           control.compute = list(dic = TRUE, 
+                                  waic = TRUE),
+           data = dredundancy_eff)
+```
+
+
+
+
+##Model parameters
+```{r}
+beta1 <- m1$summary.fixed[, c("mean", "sd", "0.025quant", "0.975quant")] 
+kable(beta1,digits = 3) %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
+```
+
+
+##$\tau$
+
+```{r}
+tau <- m1$marginals.hyperpar$`Precision for the Gaussian observations`
+```
+
+###$\sigma$
+```{r}
+sigma <- inla.emarginal(function(x)(1/sqrt(x)), tau)
+sigma
+```
+
+
+##Model validation
+
+```{r}
+fit1 <- m1$summary.fitted.values[,"mean"]
+e1 <- dredundancy_eff$redundancy - fit1
+```
+
+#Modelo lineal con componente espacial sin interacciones 
+
+##Model Formulation
+$$redundancia \sim N(\mu_i, \sigma^2)$$
+
+$$E(redundancia)=\mu_i ,var(redundancia)=\sigma^2$$ 
+
+$$\mu_i= \beta_1*foresttype+\beta_2*long+\beta_3*lat+\beta_4*clay+\beta_5*acidity$$  $$+\beta_6*k+\beta_7*organicmatter+\beta_8*precdriest+\beta_9*temp + \mu_i $$
+$$\mu_i \sim GMRF(0, \Sigma)$$
+
+$\mu_i$ es un random intercep el cual se asume que está correlacionado espacialmente con media 0 y con una matriz de covarianza $\Sigma$ 
+
+
+
+##Defining the mesh 
+
+```{r}
+
+dredundancy_eff$crtm_90_x <- dredundancy_eff$crtm_90_x /1000
+
+dredundancy_eff$crtm_90_y <- dredundancy_eff$crtm_90_y/1000
+
+Loc <- cbind(dredundancy_eff$crtm_90_x, dredundancy_eff$crtm_90_y)
+head(Loc)
+D <- dist(Loc)
+hist(D, 
+     freq = TRUE,
+     main = "",
+     ylab = "Frequency")
+
+```
+
+```{r}
+plot(x = sort(D), 
+     y = (1:length(D))/length(D), 
+     type = "l",
+     xlab = "",
+     ylab = "Cumulative proportion")
+text(10, 1, "B", cex = 1.5)
+```
+
+
+```{r}
+##requiring necessary packages:
+#library(sp)  # vector data
+#library(rgeos)  # geometry ops
+#library(sp) 
+#library(raster)
+#
+## WGS84 -------------------------------------------------------------------
+##Create spatial object:
+#lonlat <- cbind(dredundancy_eff$longitude, dredundancy_eff$latitude)
+##Create a SpatialPoints object:
+#pts <- SpatialPoints(lonlat)
+#crdref <- CRS('+proj=longlat +datum=WGS84')
+#pts <- SpatialPoints(lonlat, proj4string=crdref)
+#
+## make spatial data frame
+#ptsdf <- SpatialPointsDataFrame(pts,data = dredundancy_eff )
+#
+#dist <- pointDistance(pts, lonlat=TRUE)
+#
+
+# CRTM05 ------------------------------------------------------------------
+#lonlat2 <- cbind(dprueba$crtm_90_x, dprueba$crtm_90_y)
+##Create a SpatialPoints object:
+#pts2 <- SpatialPoints(lonlat2)
+#
+## make spatial data frame
+#ptsdf2 <- SpatialPointsDataFrame(pts2,data = dprueba )
+#
+#dist2 <- pointDistance(pts2, lonlat=FALSE)
+#
+#View(dist)
+#View(dist2)
+```
+
+
+
+
+```{r, fig.width=10, fig.height=12}
+#Coordenadas CRTM05
+head(Loc)
+
+#mesh1 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(1,1),
+#                     cutoff = 0)
+
+mesh2 <- inla.mesh.2d(Loc,
+                      #The smaller the values, equal to more triangles 
+                      max.edge = c(10,10),
+                      cutoff = 0)
+
+#mesh3 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(50,50),
+#                      cutoff = 0)
+
+#mesh4 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(75,75),
+#                      cutoff = 0)
+#mesh5 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(25,50),
+#                      cutoff = 0)
+#
+#mesh6 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(50,80),
+#                      cutoff = 0)
+#
+#mesh7 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(100,120),
+#                      cutoff = 0)
+#
+#mesh8 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(100,100),
+#                      cutoff = 0)
+#
+#mesh9 <- inla.mesh.2d(Loc,
+#                      #The smaller the values, equal to more triangles 
+#                      max.edge = c(150,150),
+#                      cutoff = 0)
+
+#El libro recomienda trabajar con una mesh de entre 700 a 800
+mesh2$n
+
+plot(mesh2, asp = 1);points(Loc, col = 2, pch = 16, cex = 1)
+```
+
+
+
+
+```{r}
+
+#Specify a boundary area so that all sampling locations are within this boundary area 
+bound <- inla.nonconvex.hull(Loc)
+mesh10 <- inla.mesh.2d(boundary = bound,
+                       max.edge = 2,
+                       cutoff = 0)
+
+mesh10$n
+
+plot(mesh10, asp = 1);points(Loc, col = 2, pch = 16, cex = 1)
+
+
+```
+
+
+
+
+```{r}
+A2 <- inla.spde.make.A(mesh2, loc = Loc)
+dim(A2)
+```
+
+##Define the SPDE
+
+```{r}
+spde <- inla.spde2.matern(mesh2, alpha = 2)
+```
+
+##Define the spatial field
+```{r}
+w_index <- inla.spde.make.index(
+  name = "w",
+  n.spde = spde$n.spde,
+  n.group = 1,
+  n.repl = 1
+)
+
+str(w_index)
+```
+
+##Define the stack
+
+
+###Covariates
+```{r}
+xm <- model.matrix(~ -1 + forest_type + clay  +
+                         + organic_matter +
+                         precdriest + temp, 
+                   data = dredundancy_eff)
+
+N <- nrow(dredundancy_eff)
+
+colnames(xm)
+X <- data.frame(Foothills   =    xm[,1],
+                P.macroloba =    xm[,2],
+                Q.paraensis =    xm[,3],
+                clay        =    xm[,4],
+                organic_matter = xm[,5],
+                precdriest  =    xm[,6],
+                temp        =    xm[,7]
+                
+                
+)
+```
+
+###Stack fit
+```{r}
+stackfit <- inla.stack(
+  tag = "Fit",
+  
+  data = list(y = dredundancy_eff$redundancy),
+  
+  A = list(1,1, A2),
+  
+  effects = list(
+    
+  Intercept = rep(1,N),
+    
+  X = X,
+    
+  w = w_index))
+```
+
+
+##Define the formula for the spatial model
+
+
+```{r}
+#Modelo sin dependencia espacial
+f2a <- y ~ -1 + Intercept +  Foothills + P.macroloba + Q.paraensis + clay + organic_matter +
+                         precdriest + temp
+```
+
+```{r}
+#Modelo con dependencia espacial
+f2b <- y ~ -1 + Intercept + Foothills + P.macroloba + Q.paraensis + clay +
+                          organic_matter +
+                         precdriest + temp + f(w, model = spde)
+```
+
+##Execute the spacial model
+```{r}
+
+#Modelo sin dependencia espacial
+SM2a <- inla(f2a,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+               
+SM2b<- inla(f2b,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+```
+
+##Compare models
+
+```{r}
+dic  <- c(SM2a$dic$dic, SM2b$dic$dic)
+waic <- c(SM2a$waic$waic, SM2b$waic$waic)
+Z.out     <- cbind(dic, waic)
+rownames(Z.out) <- c("Gaussian lm",  
+                     "Gaussian lm + SPDE")
+Z.out
+```
+
+##Results
+```{r}
+#Modelo sin componente espacial
+SM2a$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+
+#Modelo con componente espacial
+SM2b$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+
+```
+
+##Hyperpameters
+```{r}
+spfi_w <- inla.spde2.result(inla = SM2b,
+                            name = "w",
+                            spde = spde,
+                            do.transfer = TRUE)
+
+
+kappa <- inla.emarginal(function(x) x,
+                        spfi_w$marginals.kappa[[1]])
+                        
+sigmau <- inla.emarginal(function(x) sqrt(x),
+                         spfi_w$marginals.variance.nominal[[1]])
+
+r <- inla.emarginal(function(x) x, 
+                    spfi_w$marginals.range.nominal[[1]])
+
+#Posterior mean kappa
+kappa
+
+#Posterior mean sigma_mu
+sigmau
+
+#Posterior mean r
+r
+```
+
+##Matérn correlation values
+```{r}
+#Show correlation structure
+D     <- as.matrix(dist(mesh2$loc[,1:2]))
+d.vec <- seq(0, max(D), length = 100)      
+Cor.M <- (kappa * d.vec) * besselK(kappa * d.vec, 1) 
+Cor.M[1] <- 1
+
+plot(x = d.vec, 
+     y = Cor.M, 
+     pch = 16, 
+     type = "l", 
+     cex.lab = 1.5,
+     xlab = "Distance (¿km?)", 
+     ylab = "Correlation",
+     xlim = c(0, 200))
+```
+
+##Interpolation
+```{r}
+w_pm <- SM2b$summary.random$w$mean
+
+w_proj <- inla.mesh.projector(mesh2)
+
+w_pm100_100 <- inla.mesh.project(w_proj,w_pm)
+
+```
+
+
+```{r fig.width= 10, fig.height= 12}
+grid <- expand.grid(x = w_proj$x, 
+                    y = w_proj$y)
+
+grid$z <- as.vector(w_pm100_100) 
+
+library(grid)   
+
+head(grid)  
+levelplot(z ~ x * y,
+          data = grid, 
+          aspect = "iso",
+          scales = list(draw = TRUE),
+          xlab = list( cex = 1.5),
+          ylab = list( cex = 1.5),
+          main = list("Posterior mean spatial random field", cex = 1.5),
+          panel=function(...){
+            panel.levelplot(...)
+            grid.points(x = dredundancy_eff$crtm_90_x, 
+                        y = dredundancy_eff$crtm_90_y, 
+                        pch = 1,
+                        size = unit(0.5, "char"))}  )
+```
+

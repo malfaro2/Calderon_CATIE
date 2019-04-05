@@ -51,10 +51,10 @@ kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options =
 ```{r echo=FALSE}
 #Load data
 dresp_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean_sinpalmas.csv",header = T)
-dresp_sp <- rename(dresp_sp, coespec=X) %>% select(-c(familia, especie))
+dresp_sp <- dplyr::rename(dresp_sp, coespec=X) %>% select(-c(familia, especie))
 
 despecies_sp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
-despecies_sp <- rename(despecies_sp, coespec=code) %>% filter(!coespec %in% c("EUTEPR","IRIADE","SOCREX","WELFRE"))
+despecies_sp <- dplyr::rename(despecies_sp, coespec=code) %>% filter(!coespec %in% c("EUTEPR","IRIADE","SOCREX","WELFRE"))
 dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv",header = T)
 ```
 
