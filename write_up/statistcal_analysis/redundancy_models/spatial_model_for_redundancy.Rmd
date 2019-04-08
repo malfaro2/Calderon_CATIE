@@ -124,7 +124,7 @@ Mydotplot(dredundancy_eff[, 8:12])
 
 
 
-#Modelo lineal con componente espacial sin interacciones 
+#Modelo lineal con componente espacial 
 
 ##Model Formulation
 $$redundancia \sim N(\mu_i, \sigma^2)$$
@@ -316,7 +316,7 @@ xm <- model.matrix(~ -1 + forest_type * clay  *
 
 N <- nrow(dredundancy_eff)
 
-colnames(xm)
+#colnames(xm)
 
 #En esta parte se tienen que incluir interacciones no solo main effects
 X <- data.frame(Foothills   =    xm[,1],
@@ -838,8 +838,10 @@ Z.out
 
 El modelo con todas las covariables y 2way interactions es el mejor (SM3a)
 
+##¿Cual modelo con 2way interactions es el mejor?
+
 ```{r}
-#Modelo con dependencia espacial  y 2way interacciones 
+#Modelo con dependencia espacial con todas las 2way interacciones 
 SM3a <- y ~ -1 + Intercept + 
   
                 Foothills     +  
@@ -895,10 +897,9 @@ SM3a_1 <- y ~ -1 + Intercept +
                 
                 organic_matter_temp +
                 precdriest_temp +
-
  f(w, model = spde)
 
-#Modelo con dependencia espacial dejando interacciones solo por tipo de bosque 
+#Modelo con dependencia espacial eliminando interacciones con tipo de bosque
 SM3a_2 <- y ~ -1 + Intercept + 
   
                 Foothills     +  
@@ -910,20 +911,16 @@ SM3a_2 <- y ~ -1 + Intercept +
                 temp          +
                 
                 #2way interactions
-                P.macroloba_clay +
-                Q.paraensis_clay +
-                P.macroloba_organic_matter +
-                Q.paraensis_organic_matter +
-    
-                P.macroloba_precdriest +
-                Q.paraensis_precdriest +
+                clay_organic_matter +
                 
                 
-                P.macroloba_temp +
-                Q.paraensis_temp +
+                clay_precdriest +
+                organic_matter_precdriest +
                 
                 
-
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
  f(w, model = spde)
 
 #Modelo con dependencia espacial  eliminando interacciones con clay 
@@ -950,35 +947,6 @@ SM3a_3 <- y ~ -1 + Intercept +
                 P.macroloba_temp +
                 Q.paraensis_temp +
                 
-                organic_matter_temp +
-                precdriest_temp +
-
- f(w, model = spde)
-
-#Modelo con dependencia espacial  eliminando interacciones con bosque 
-SM3a_4 <- y ~ -1 + Intercept + 
-  
-                Foothills     +  
-                P.macroloba   +  
-                Q.paraensis   +  
-                clay          +  
-                organic_matter + 
-                precdriest  +
-                temp          +
-                
-                #2way interactions
-               
-                
-                
-                
-                clay_organic_matter +
-                
-                
-                clay_precdriest +
-                organic_matter_precdriest +
-                
-                
-                clay_temp +
                 organic_matter_temp +
                 precdriest_temp +
 
@@ -1015,7 +983,7 @@ SM3a_5 <- y ~ -1 + Intercept +
  f(w, model = spde)
 
 
-#Modelo con dependencia espacial  eliminando interacciones con precdriest
+#Modelo con dependencia espacial eliminando interacciones con precdriest
 SM3a_6 <- y ~ -1 + Intercept + 
   
                 Foothills     +  
@@ -1044,6 +1012,85 @@ SM3a_6 <- y ~ -1 + Intercept +
 
  f(w, model = spde)
 
+#Modelo con dependencia espacial eliminando interacciones con temp
+SM3a_7 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+ f(w, model = spde)
+
+
+#Modelo con dependencia espacial eliminando interacciones  clay y organic matter (caracteristicas de parcela)
+SM3a_8 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                
+            
+              
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                
+                
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                
+                precdriest_temp +
+
+ f(w, model = spde)
+
+
+#Modelo con dependencia espacial eliminando interacciones con  temp y precdriest (caracteristicas de clima)
+SM3a_9 <- y ~ -1 + Intercept + 
+  
+                Foothills     +  
+                P.macroloba   +  
+                Q.paraensis   +  
+                clay          +  
+                organic_matter + 
+                precdriest  +
+                temp          +
+                
+                #2way interactions
+                P.macroloba_clay +
+                Q.paraensis_clay +
+                P.macroloba_organic_matter +
+                Q.paraensis_organic_matter +
+                clay_organic_matter +
+                P.macroloba_precdriest +
+                Q.paraensis_precdriest +
+                clay_precdriest +
+                organic_matter_precdriest +
+                P.macroloba_temp +
+                Q.paraensis_temp +
+                clay_temp +
+                organic_matter_temp +
+                precdriest_temp +
+  f(w, model = spde)
+
 
 ```
 
@@ -1062,7 +1109,7 @@ SM3a <- inla(SM3a,
              control.predictor = list(
                A = inla.stack.A(stackfit)))
 
-#Modelo con dependencia espacial eliminando interacciones que considero no son valiosas
+#Modelo con dependencia espacial eliminando interacciones que considero no son valiosas 
 SM3a_1 <- inla(SM3a_1,
              family = "gaussian",
              
@@ -1076,7 +1123,7 @@ SM3a_1 <- inla(SM3a_1,
                A = inla.stack.A(stackfit)))
 
 
-#Modelo con dependencia espacial dejando interacciones solo por tipo de bosque
+#Modelo con dependencia espacial eliminando interacciones con tipo de bosque
 SM3a_2 <- inla(SM3a_2,
              family = "gaussian",
              
@@ -1102,18 +1149,6 @@ SM3a_3 <- inla(SM3a_3,
              control.predictor = list(
                A = inla.stack.A(stackfit)))
 
-#Modelo con dependencia espacial  eliminando interacciones con bosque 
-SM3a_4 <- inla(SM3a_4,
-             family = "gaussian",
-             
-             data = inla.stack.data(stackfit),
-             
-             control.compute = list(
-               dic = TRUE,
-               waic = TRUE),
-             
-             control.predictor = list(
-               A = inla.stack.A(stackfit)))
 
 #Modelo con dependencia espacial  eliminando interacciones con organic matter
 SM3a_5 <- inla(SM3a_5,
@@ -1140,6 +1175,44 @@ SM3a_6 <- inla(SM3a_6,
              
              control.predictor = list(
                A = inla.stack.A(stackfit)))
+#Modelo con dependencia espacial  eliminando interacciones con temp
+SM3a_7 <- inla(SM3a_7,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
+#Modelo con dependencia espacial eliminando interacciones  clay y organic matter (caracteristicas de parcela)
+SM3a_8  <- inla(SM3a_8,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+#Modelo con dependencia espacial eliminando interacciones con  temp y precdriest (caracteristicas de clima)
+SM3a_9 <-  inla(SM3a_9,
+             family = "gaussian",
+             
+             data = inla.stack.data(stackfit),
+             
+             control.compute = list(
+               dic = TRUE,
+               waic = TRUE),
+             
+             control.predictor = list(
+               A = inla.stack.A(stackfit)))
+
 
 ```
 
@@ -1149,9 +1222,11 @@ dic  <- c(SM3a$dic$dic,
           SM3a_1$dic$dic,
           SM3a_2$dic$dic,
           SM3a_3$dic$dic,
-          SM3a_4$dic$dic,
           SM3a_5$dic$dic,
-          SM3a_6$dic$dic
+          SM3a_6$dic$dic,
+          SM3a_7$dic$dic,
+          SM3a_8$dic$dic,
+          SM3a_9$dic$dic
           )
 
 
@@ -1159,9 +1234,11 @@ waic <- c(SM3a$waic$waic,
           SM3a_1$waic$waic,
           SM3a_2$waic$waic,
           SM3a_3$waic$waic,
-          SM3a_4$waic$waic,
           SM3a_5$waic$waic,
-          SM3a_6$waic$waic
+          SM3a_6$waic$waic,
+          SM3a_7$waic$waic,
+          SM3a_8$waic$waic,
+          SM3a_9$waic$waic
           )
 
 
@@ -1170,9 +1247,11 @@ rownames(Z.out) <- c("SM3a",
                      "SM3a_1",
                      "SM3a_2",
                      "SM3a_3",
-                     "SM3a_4",
                      "SM3a_5",
-                     "SM3a_6"
+                     "SM3a_6",
+                     "SM3a_7",
+                     "SM3a_8",
+                     "SM3a_9"
                      )
 Z.out
 ```
@@ -1192,6 +1271,11 @@ SM3$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
 
 #Modelo con 2war interacciones y componente espacial
 SM3a$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+
+#Modelo con 2way interacciones, sin organic_matter y componente espacial
+SM3a_5$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+
+
 ```
 
 ##Hyperpameters
