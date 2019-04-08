@@ -871,7 +871,7 @@ SM3a <- y ~ -1 + Intercept +
  f(w, model = spde)
 
 
-#Modelo con dependencia espacial eliminando interacciones que considero no son valiosas 
+#Modelo con dependencia espacial eliminando interacciones que considero no tienen sentido
 SM3a_1 <- y ~ -1 + Intercept + 
   
                 Foothills     +  
@@ -896,7 +896,7 @@ SM3a_1 <- y ~ -1 + Intercept +
                 Q.paraensis_temp +
                 
                 organic_matter_temp +
-                precdriest_temp +
+                
  f(w, model = spde)
 
 #Modelo con dependencia espacial eliminando interacciones con tipo de bosque
@@ -973,7 +973,7 @@ SM3a_5 <- y ~ -1 + Intercept +
                 P.macroloba_precdriest +
                 Q.paraensis_precdriest +
                 clay_precdriest +
-                organic_matter_precdriest +
+                
                 P.macroloba_temp +
                 Q.paraensis_temp +
                 clay_temp +
