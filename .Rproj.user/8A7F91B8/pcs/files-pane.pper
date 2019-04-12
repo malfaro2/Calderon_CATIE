@@ -1,8 +1,8 @@
 {
-    "path" : "C:/tesis_catie/Calderon_CATIE/write_up/statistcal_analysis/redundancy_models",
+    "path" : "C:/tesis_catie/Calderon_CATIE/write_up/statistcal_analysis/redundancy_models/effect traits",
     "sortOrder" : [
         {
-            "ascending" : false,
+            "ascending" : true,
             "columnIndex" : 2
         }
     ]

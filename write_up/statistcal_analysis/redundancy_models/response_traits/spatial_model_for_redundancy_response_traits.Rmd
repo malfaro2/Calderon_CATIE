@@ -1,0 +1,143 @@
+---
+title: "Spatial model for redundancy response traits"
+author: "Erick Calderón-Morales"
+date: "April 9, 2019"
+output:   html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r message=FALSE, warning=FALSE}
+#Paquetes
+library(kableExtra)
+library(lattice)
+library(tidyverse)
+library(PerformanceAnalytics)
+library(janitor)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+library(ggbiplot)
+library(GGally)
+library(INLA)
+```
+
+
+```{r}
+#Load data
+dredun_resp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_resp_redundancy.csv", header=T)
+dredun_resp <- clean_names(dredun_resp) %>% 
+  dplyr::select(-c(d,x))
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- clean_names(dparcelas)
+
+denv <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_enviroment_worldclim_clean.csv", header = T, row.names = 1)
+denv <- denv %>%
+  clean_names() %>% 
+    dplyr::select(-c(crtm_90_x,crtm_90_y,forest_type, slope_per,slope_deg))
+
+#Standarize data
+denvi_est <-  scale(denv,center = F, scale = T )
+denvi_est <- rownames_to_column(as.data.frame(denvi_est),var= "plot")
+```
+
+
+
+#Join Data sets
+
+```{r}
+dfull  <- left_join(dredun_resp, dparcelas,by=c("plot") ) %>% 
+  left_join(.,denvi_est, by=c("plot") )
+
+#Ordenar columnas
+dfull_est <- dfull %>% dplyr::select(plot, forest_type,longitude,latitude,crtm_90_x,crtm_90_y,n,redundancy,u , q, everything()) 
+glimpse(dfull_est)
+```
+
+```{r}
+#Data sets que se van a utilizar
+dredundancy_resp <- dfull_est %>%
+  dplyr::select(-u,-q)
+  
+duniqueness_resp <- dfull_est %>%
+  dplyr::select(-redundancy,-q)
+
+drao_resp <- dfull_est %>%
+  dplyr::select(-u,-redundancy )
+```
+
+
+```{r}
+names(dredundancy_resp)
+m1 <- inla(redundancy ~ 
+                 
+                longitude + 
+                latitude + 
+                sand +  
+                limo +
+                clay +  
+                p_h +
+                acidity +
+                ca +
+                mg +
+                k +
+                p +
+                organic_matter +
+                elev +
+                prec +
+                precdriest +
+                preccv +
+                temp + 
+                tempmin, 
+          family = "gaussian",
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_resp)
+
+```
+
+
+
+```{r}
+#Calculate the dispersion
+ExpY <- m1$summary.fitted.values[,"mean"]
+E1   <- (dredundancy_resp$redundancy - ExpY) / sqrt(ExpY)
+dredundancy_resp$E1 <- E1
+
+
+Xkm <- dredundancy_resp$crtm_90_x / 1000
+Ykm <- dredundancy_resp$crtm_90_y /1000
+
+# Sample-variogram with distances up to 100 km
+MyData      <- data.frame(E1 = E1, 
+                          Xkm = Xkm, 
+                          Ykm = Ykm)
+
+
+coordinates(MyData)    <- c("Xkm", "Ykm")
+Vario <- variogram(object = E1 ~ Xkm + Ykm, 
+                    data = MyData, 
+                    cressie = TRUE, 
+                    cutoff = 3.21,
+                    width = 0.3)
+
+
+p <- ggplot(data = Vario, aes(x = dist, y = gamma))
+p <- p + geom_point()
+p <- p + geom_smooth(method = "gam", 
+                     formula = y ~ s(x, bs = "cs"),
+                     colour = "black") 
+#p <- p + ylim(0,1)
+p <- p + theme(text = element_text(size = 15)) 
+p <- p + xlab("Distance (km)") + ylab("Sample variogram") 
+p
+
+
+
+```
+
+
+
