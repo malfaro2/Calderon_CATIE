@@ -188,15 +188,20 @@ MyMultipanel.ggp2(Z = dredundancy_eff,
                   addSmoother = TRUE,
                   addRegressionLine = FALSE,
                   addHorizontalLine = TRUE)
+
+
 ```
 
 
 
-#Partial residuals
-```{r fig.width=15, fig.height=10}
+##Partial residuals
+```{r fig.width=10, fig.height=12}
 
 #obtener betas
 betas <- I1$summary.fixed[,c("mean", "sd")]
+
+#Obtener residuos
+residuos   <- (dredundancy_eff$redundancy - ExpY)
 
 betas <- (betas %>% rownames_to_column("variable") %>% 
             filter(!variable %in% "(Intercept)") %>% 
@@ -214,7 +219,7 @@ partial_resid <- list()
 for (i in seq_along(names(betas_list))){
   
 #  #Residuos de pearson + Betas = residuos parciales
-  residuos_parciales <-  E1 + as.numeric(betas_list[[i]][2]) 
+  residuos_parciales <-  residuos + as.numeric(betas_list[[i]][2]) 
   
   name_var <- names(betas_list[i])
   
@@ -240,20 +245,98 @@ dpart_resid2 <- dpart_resid[,-2]
 
 ggplot(data = dpart_resid2) + 
   geom_point(aes(x=valor_de_la_covariable,y= residuos_parciales)) +
-  facet_wrap(~name_var,scales = "free", ncol = 6) + 
+  facet_wrap(~name_var,scales = "free", ncol = 3) + 
   geom_smooth(data = dpart_resid2, 
               aes(x=valor_de_la_covariable,y= residuos_parciales), method = loess)
+```
+```{r }
+I2 <- inla(redundancy ~
+             longitude +
+             latitude +
+             sand +
+             limo +
+             clay +
+             p_h + 
+             acidity + 
+             ca +
+             mg + 
+             k +
+             p + 
+             organic_matter + 
+             elev +
+             I(prec^2) +
+             I(precdriest^2) +
+             preccv +
+             tempmin +
+             temp, 
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff 
+          )
 
 
 
-
-
-
+I1$waic$waic
+I2$waic$waic
 
 ```
 
+```{r fig.width=10, fig.height=12}
+#obtener betas
+betas <- I2$summary.fixed[,c("mean", "sd")]
+
+#Obtener residuos
+residuos   <- (dredundancy_eff$redundancy - ExpY)
+
+betas <- (betas %>% rownames_to_column("variable") %>% 
+            filter(!variable %in% "(Intercept)") %>% 
+            dplyr::select(-sd))
 
 
+# 1-Separar el ser de datos en una lista por variable
+betas_list <- split(betas, betas$variable)
+
+## 2-Crear una lista para almacenar 
+partial_resid <- list()
+
+
+##Loop
+for (i in seq_along(names(betas_list))){
+  
+#  #Residuos de pearson + Betas = residuos parciales
+  residuos_parciales <-  residuos + as.numeric(betas_list[[i]][2]) 
+  
+  name_var <- names(betas_list[i])
+  
+#  #Resultado
+    data <- data.frame(residuos_parciales, name_var)
+    partial_resid[[i]] <- data 
+
+}
+
+
+residuos_parciales  <-  do.call("rbind", partial_resid)
+
+
+covariables <- dredundancy_eff %>% 
+  dplyr::select(
+    -c(plot,forest_type,crtm_90_x,crtm_90_y,n, redundancy,E1)) %>%
+  gather(colnames(.),  key = "name_var", value = "valor_de_la_covariable") %>% 
+  arrange(name_var)
+
+dpart_resid <- cbind(residuos_parciales, covariables) 
+dpart_resid2 <- dpart_resid[,-2]
+
+
+ggplot(data = dpart_resid2) + 
+  geom_point(aes(x=valor_de_la_covariable,y= residuos_parciales)) +
+  facet_wrap(~name_var,scales = "free", ncol = 3) + 
+  geom_smooth(data = dpart_resid2, 
+              aes(x=valor_de_la_covariable,y= residuos_parciales), method = loess)
+```
 
 ```{r}
 #Xkm <- dredundancy_eff$crtm_90_x / 1000

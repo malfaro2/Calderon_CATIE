@@ -279,7 +279,7 @@ corvif(dredundancy_eff[,MyVar])
 ## longitude      3.001447e+00
 ## latitude       1.730230e+01
 ## sand           2.806971e+07
-## clay           2.638356e+07
+## clay           2.638355e+07
 ## limo           1.914008e+06
 ## p_h            6.825858e+00
 ## acidity        2.647557e+00
@@ -395,11 +395,14 @@ MyMultipanel.ggp2(Z = dredundancy_eff,
 
 
 
-#Partial residuals
+##Partial residuals
 
 ```r
 #obtener betas
 betas <- I1$summary.fixed[,c("mean", "sd")]
+
+#Obtener residuos
+residuos   <- (dredundancy_eff$redundancy - ExpY)
 
 betas <- (betas %>% rownames_to_column("variable") %>% 
             filter(!variable %in% "(Intercept)") %>% 
@@ -417,7 +420,7 @@ partial_resid <- list()
 for (i in seq_along(names(betas_list))){
   
 #  #Residuos de pearson + Betas = residuos parciales
-  residuos_parciales <-  E1 + as.numeric(betas_list[[i]][2]) 
+  residuos_parciales <-  residuos + as.numeric(betas_list[[i]][2]) 
   
   name_var <- names(betas_list[i])
   
@@ -443,14 +446,41 @@ dpart_resid2 <- dpart_resid[,-2]
 
 ggplot(data = dpart_resid2) + 
   geom_point(aes(x=valor_de_la_covariable,y= residuos_parciales)) +
-  facet_wrap(~name_var,scales = "free", ncol = 6) + 
+  facet_wrap(~name_var,scales = "free", ncol = 3) + 
   geom_smooth(data = dpart_resid2, 
               aes(x=valor_de_la_covariable,y= residuos_parciales), method = loess)
 ```
 
 ![](spatial_model_for_redundancy2_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
-
+```r
+I2 <- inla(redundancy ~
+             longitude +
+             latitude +
+             sand +
+             limo +
+             clay +
+             p_h + 
+             acidity + 
+             ca +
+             mg + 
+             k +
+             p + 
+             organic_matter + 
+             elev +
+             prec +
+             precdriest +
+             preccv +
+             tempmin +
+             temp, 
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff 
+          )
+```
 
 
 

@@ -1,0 +1,425 @@
+---
+title: "Spatial model for redundancy"
+author: "Erick Calderón-Morales"
+date: "April 12, 2019"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r message=FALSE, warning=FALSE}
+#Paquetes
+library(INLA)
+library(GGally)
+library(lattice)
+library(janitor)
+library(ggbiplot)
+library(tidyverse)
+library(FactoMineR)
+library(factoextra)
+library(kableExtra)
+library(PerformanceAnalytics)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+```
+
+#Modelos sin componente espaciales
+##Modelo sin covariables
+```{r}
+
+m0 <- inla(redundancy ~ 1, 
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff2
+          )
+```
+
+##Modelos con covariables
+```{r}
+m1 <- inla(redundancy ~
+             elev +
+             organic_matter +
+             mg + 
+             p_h + 
+             limo +
+             k +
+             p + 
+             preccv +
+             prec, 
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff2 
+          )
+
+```
+
+```{r}
+m2 <- inla(redundancy ~ PC1 +
+             PC2 +
+             PC3,   
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff2 
+          )
+
+
+```
+
+###waic
+```{r}
+m0$waic$waic
+m1$waic$waic
+m2$waic$waic
+
+```
+
+
+#Modelos con componente espaciales
+
+```{r}
+dredundancy_eff2$crtm_90_x <- dredundancy_eff2$crtm_90_x /1000
+dredundancy_eff2$crtm_90_y <- dredundancy_eff2$crtm_90_y/1000
+
+Loc <- cbind(dredundancy_eff2$crtm_90_x, dredundancy_eff2$crtm_90_y)
+```
+
+
+```{r}
+# We need a grid on top of our sampling points
+ConvHull <- inla.nonconvex.hull(Loc)
+mesh0 <- inla.mesh.2d(boundary = ConvHull, 
+                      max.edge = c(200))
+
+mesh0$n
+```
+
+##Mesh
+
+```{r}
+ConvHull <- inla.nonconvex.hull(Loc)
+mesh1 <- inla.mesh.2d(boundary = ConvHull, 
+                      max.edge = c(1,1),
+                      cutoff = 0)
+
+mesh2 <- inla.mesh.2d(boundary = ConvHull, 
+                      max.edge = c(2,2),
+                      cutoff = 0)
+
+mesh3 <- inla.mesh.2d(boundary = ConvHull, 
+                      max.edge = c(4,4),
+                      cutoff = 0)
+
+
+mesh4 <- inla.mesh.2d(boundary = ConvHull, 
+                      max.edge = c(8,8),
+                      cutoff = 0)
+
+mesh5 <- inla.mesh.2d(boundary = ConvHull, 
+                      max.edge = c(16,16),
+                      cutoff = 0)
+
+mesh1$n
+mesh2$n
+mesh3$n
+mesh4$n
+mesh5$n
+```
+
+
+##Projector matrix
+
+```{r}
+A2 <- inla.spde.make.A(mesh1,loc=Loc)
+dim(A2)
+```
+
+##SPDE
+
+```{r}
+spde <- inla.spde2.matern(mesh1, alpha = 2)
+```
+
+
+##Spatial field
+```{r}
+w_index <- inla.spde.make.index(
+                   name    = 'w', 
+                   n.spde  = spde$n.spde,
+                   n.group = 1,
+                   n.repl  = 1)
+```
+
+##Stack 
+```{r}
+N <- nrow(dredundancy_eff2)
+X <- data.frame(Intercept       = rep(1, N), 
+                p_h             = dredundancy_eff2$p_h  ,   
+                acidity         = dredundancy_eff2$acidity,
+                k               = dredundancy_eff2$k,
+                p               = dredundancy_eff2$p,
+                organic_matter  = dredundancy_eff2$organic_matter, 
+                prec            = dredundancy_eff2$prec,
+                temp            = dredundancy_eff2$temp,
+                PC1             = dredundancy_eff2$PC1,
+                PC2             = dredundancy_eff2$PC2,
+                PC3             = dredundancy_eff2$PC3
+                
+                )
+```
+
+###Tell INLA at which mesh points the covariates are sampled
+```{r}
+stk2 <- inla.stack(
+             tag  = "Fit",
+             data = list(y = dredundancy_eff2$redundancy),  
+	           A    = list(A2, 1),                      
+	           effects = list(                 
+	              w = w_index,           #Spatial field  
+	              X = as.data.frame(X)))  #Covariates
+```
+
+
+###Modelo con PC y componente espacial
+```{r}
+f1 <- y  ~ -1 + Intercept +
+  PC1 +
+  PC2 +
+  PC3 +
+  f(w, model=spde)
+
+  
+MS1_pca <- inla(f1,
+             family = "gaussian", 
+             data=inla.stack.data(stk2),
+             control.compute = list(dic = TRUE, waic = TRUE),
+             control.predictor = list(A = inla.stack.A(stk2)))
+
+MS1_pca$waic$waic
+MS1_pca$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+```
+
+###Modelo con componente espacial
+```{r}
+#f3 <- y  ~ -1 + Intercept + p_h + acidity + k + p + organic_matter + prec + temp +f(w, model=spde)
+#
+#
+#I3 <- inla(f3,
+#             family = "gaussian", 
+#             data=inla.stack.data(stk2),
+#             control.compute = list(dic = TRUE, waic = TRUE),
+#             control.predictor = list(A = inla.stack.A(stk2)))
+```
+
+```{r}
+f4 <- y  ~ -1 + Intercept + f(w, model=spde)
+
+I4 <- inla(f4,
+             family = "gaussian", 
+             data=inla.stack.data(stk2),
+             control.compute = list(dic = TRUE, waic = TRUE),
+             control.predictor = list(A = inla.stack.A(stk2)))
+
+I4$waic$waic
+
+```
+
+
+
+```{r}
+#dic2  <- c(I2$dic$dic, 
+#           I3$dic$dic,
+#           I4$dic$dic)
+#
+#waic2 <- c(I2$waic$waic, 
+#           I3$waic$waic,
+#           I4$waic$waic)
+#
+#Z     <- cbind(dic2, waic2)
+#rownames(Z) <- c("Gaussian GLM",  "Gaussian GLM + SPDE","Sin Covariables")
+#Z
+
+```
+
+```{r}
+#Combined <- rbind(I2$summary.fixed[, c("mean", "0.025quant", "0.975quant")],
+#                  I3$summary.fixed[, c("mean", "0.025quant", "0.975quant")]
+#                 )
+#
+#Combined$WhichModel <- rep(c("GLM", "spatial GLM"), each = 8)
+#Combined$WhichVariable <- rep(rownames(I2$summary.fixed), 2)
+#colnames(Combined) <- c("Mean", "Lo", "Up", "WhichModel", "WhichVariable")
+#Combined
+```
+
+
+
+
+```{r}
+# Fitted values and Pearson residuals I2
+#IndexFit <- inla.stack.index(stk2, tag = "Fit")$data
+#
+#mu2 <- I2$summary.fitted.values[IndexFit, "mean"]
+#E2 <- (dredundancy_eff2$redundancy - mu2) / sqrt(mu2)
+#Dispersion2 <- sum(E2^2) / (N - 8)
+#Dispersion2
+```
+
+
+```{r}
+# Fitted values and Pearson residuals I3
+#mu3 <- I3$summary.fitted.values[IndexFit, "mean"]
+#E3 <- (dredundancy_eff2$redundancy - mu3) / sqrt(mu3)
+#sum(E3^2) / (N - 8)
+#Dispersion3 <- sum(E3^2) / (N - 10)
+#Dispersion3
+```
+
+
+```{r}
+# Variogram model I3
+#MyData3 <- data.frame(E3 = E3, 
+#                      Xkm , 
+#                      Ykm )
+#
+#coordinates(MyData3) <- c("Xkm", "Ykm")
+#
+#Vario3 <- variogram(E3 ~ 1, 
+#                MyData3, 
+#                cressie = TRUE, 
+#                cutoff = 3,
+#                width = 0.2)
+#
+#VarioComb <- rbind(Vario, Vario3)
+#
+#p <- ggplot(data = Vario3, aes(x = dist, y = gamma))
+#p <- p + geom_point()
+#p <- p + geom_smooth(method = "gam", 
+#                     formula = y ~ s(x, bs = "cs"),
+#                     colour = "black") 
+##p <- p + ylim(0,1)
+#p <- p + theme(text = element_text(size = 15)) 
+#p <- p + xlab("Distance (km)") + ylab("Sample variogram") 
+##p <- p + facet_grid(~ID)
+#p
+
+```
+
+```{r}
+w.pm <- MS1_pca$summary.random$w$mean  
+w.sd <- MS1_pca$summary.random$w$sd
+length(w.pm)
+
+wproj <- inla.mesh.projector(mesh1) 
+w.pm100_100 <- inla.mesh.project(wproj, w.pm)
+w.sd100_100 <- inla.mesh.project(wproj, w.sd)
+
+
+Grid <- expand.grid(Xkm = wproj$x, 
+                    Ykm = wproj$y)
+Grid$w.pm <- as.vector(w.pm100_100)     
+Grid$w.sd <- as.vector(w.sd100_100)               
+
+col.l <- colorRampPalette(c('red', 'green'))(50) 
+col.r <- rev(rainbow(30, alpha = 0.35))
+
+plot.wpm <- levelplot(w.pm ~ Xkm * Ykm,
+          data = Grid, 
+          aspect = "iso",
+          col.regions = col.r,
+          scales = list(draw = TRUE),
+          xlab = list("X-coordinates (km)", cex = 1.5),
+          ylab = list("Y-coordinates (km)", cex = 1.5),
+          main = list("Posterior mean spatial random field", cex = 1.5))
+plot.wpm
+
+
+
+w.pm <- I4$summary.random$w$mean  
+w.sd <- I4$summary.random$w$sd
+length(w.pm)
+
+wproj <- inla.mesh.projector(mesh1) 
+w.pm100_100 <- inla.mesh.project(wproj, w.pm)
+w.sd100_100 <- inla.mesh.project(wproj, w.sd)
+
+
+Grid <- expand.grid(Xkm = wproj$x, 
+                    Ykm = wproj$y)
+Grid$w.pm <- as.vector(w.pm100_100)     
+Grid$w.sd <- as.vector(w.sd100_100)               
+
+col.l <- colorRampPalette(c('red', 'green'))(50) 
+col.r <- rev(rainbow(30, alpha = 0.35))
+
+plot.wpm1 <- levelplot(w.pm ~ Xkm * Ykm,
+          data = Grid, 
+          aspect = "iso",
+          col.regions = col.r,
+          scales = list(draw = TRUE),
+          xlab = list("X-coordinates (km)", cex = 1.5),
+          ylab = list("Y-coordinates (km)", cex = 1.5),
+          main = list("Posterior mean spatial random field", cex = 1.5))
+plot.wpm1
+
+```
+
+
+```{r}
+levelplot(w.sd ~ Xkm * Ykm,
+          col.regions = col.l,
+          data = Grid, 
+          scales = list(draw = TRUE),
+          xlab = list("X-coordinates (km)", cex = 1.5),
+          ylab = list("Y-coordinates (km)", cex = 1.5),
+          main = list("Posterior sd spatial random field", cex = 1.5))
+
+```
+
+```{r}
+# Alternative code
+#GridNoNA  <- na.exclude(Grid)  
+#col.y <- colorRampPalette(c('red', 'yellow'))(50) 
+#
+#glgmap <- ggplot(GridNoNA, aes(x = Xkm, y = Ykm)) +
+#    geom_raster(aes(fill = w.pm)) + 
+#    scale_fill_gradientn(colours = col.y) +
+#    coord_fixed()
+#glgmap
+#
+#  
+#u.proj <- inla.mesh.projector(mesh = mesh1, loc = Loc)
+#u.mean <- inla.mesh.project(u.proj, I3$summary.random$w$mean)
+#dredundancy_eff2$u.mean <- u.mean
+#dredundancy_eff2$Col    <- abs(u.mean)  #c(0,1)[as.numeric(u.mean > 0) + 1]
+#
+#glgmap +
+#  geom_point(data = dredundancy_eff2, 
+#             aes(Xkm, Ykm, 
+#               colour = Col
+#                ),
+#             size = 2.5,
+#             show.legend = FALSE) +
+#             scale_shape_manual(values=c(16, 1)) +
+#             #scale_color_gradient(low="black", high="green") +
+#xlab("X-coordinates (km)") + ylab("Y-coordinates (km)")+
+#theme(text = element_text(size=15))#, legend.position="none") 
+
+```
+
+
+
+

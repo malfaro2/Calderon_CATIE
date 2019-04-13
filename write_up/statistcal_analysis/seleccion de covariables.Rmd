@@ -1,0 +1,419 @@
+---
+title: "Seleccion de variables para modelos"
+author: "Erick Calderón-Morales"
+date: "April 12, 2019"
+output:
+  html_document:
+    code_folding: hide
+    fig_height: 8
+    fig_width: 10
+    keep_md: yes
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+```{r message=FALSE, warning=FALSE}
+#Paquetes
+library(INLA)
+library(GGally)
+library(lattice)
+library(janitor)
+library(ggbiplot)
+library(INLAutils)
+library(tidyverse)
+library(FactoMineR)
+library(factoextra)
+library(kableExtra)
+library(PerformanceAnalytics)
+source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
+```
+
+
+#Load data
+```{r}
+#Load data
+dredun_eff <- read.csv("C:/tesis_catie/Calderon_CATIE/data/resultados_csv/data_indices_eff_redundancy.csv", header=T)
+dredun_eff <- clean_names(dredun_eff) %>% 
+  dplyr::select(-c(d))
+
+dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
+dparcelas <- clean_names(dparcelas)
+
+denv <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_enviroment_worldclim_clean.csv", header = T, row.names = 1)
+denv <- denv %>%
+  clean_names() %>% 
+    dplyr::select(-c(crtm_90_x,crtm_90_y,forest_type, slope_per,slope_deg))
+
+```
+
+
+##Standarize data
+```{r}
+denvi_est <-  scale(denv,center = F, scale = T )
+denvi_est <- rownames_to_column(as.data.frame(denvi_est),var= "plot")
+```
+
+
+##Join Data sets
+```{r}
+dfull  <- left_join(dredun_eff, dparcelas,by=c("plot") ) %>% 
+  left_join(.,denvi_est, by=c("plot") )
+
+#Ordenar columnas
+dfull_est <- dfull %>% dplyr::select(plot, forest_type,longitude,latitude,crtm_90_x,crtm_90_y,n,redundancy,u , q, everything()) 
+glimpse(dfull_est)
+```
+
+```{r}
+#Data sets que se van a utilizar
+dredundancy_eff <- dfull_est %>%
+  dplyr::select(-u,-q)
+  
+duniqueness_eff <- dfull_est %>%
+  dplyr::select(-redundancy,-q)
+
+drao_eff <- dfull_est %>%
+  dplyr::select(-u,-redundancy )
+```
+
+
+#PCA
+
+
+```{r}
+#Extraer PCs para analisis
+pca<- dredundancy_eff %>% 
+  dplyr::select(-c(n,x,redundancy, crtm_90_x, crtm_90_y, forest_type)) %>%
+  column_to_rownames("plot") %>% 
+  prcomp(., scale = T)
+
+pc <- as.data.frame(pca$x[,1:3]) %>% 
+  rownames_to_column("plot")
+
+#Data con PCs
+dredundancy_eff2 <- left_join(dredundancy_eff, pc ,by=c("plot")) %>% 
+  dplyr::select(-c(x, tempsd))
+
+#Analsis de PCA con paquete FactoMineR
+data_pca <- dredundancy_eff %>% 
+  dplyr::select(-c(n,x,redundancy, crtm_90_x, crtm_90_y)) %>% 
+  unite(plot,forest_type,plot) %>% 
+  column_to_rownames("plot")
+
+pca_envi2 <- PCA(data_pca[, 2:ncol(data_pca)], scale.unit = TRUE, graph = F)
+fviz_screeplot(pca_envi2, ncp=10)
+
+
+```
+
+Los 3 primeros componentes explican 75% de la variabilidad en los datos  
+
+```{r}
+fviz_contrib(pca_envi2, choice = "var", axes = 1)
+```
+
+
+```{r}
+fviz_contrib(pca_envi2, choice = "var", axes = 2)
+```
+
+
+
+```{r}
+fviz_contrib(pca_envi2, choice = "var", axes = 3)
+```
+
++ The cos2 values are used to estimate the quality of the representation
++ The closer a variable is to the circle of correlations, the better its representation on the factor map (and the more important     it is to interpret these components)
++ Variables that are closed to the center of the plot are less important for the first components.
+
+This is helpful to highlight the most important variables in explaining the variations retained by the principal components.
+
+```{r}
+fviz_pca_var(pca_envi2, col.var="contrib") +
+  scale_color_gradient2(low= "white", mid= "blue", high= "red", midpoint=5) + 
+  theme_minimal()
+```
+
+
+
+Dimension description
+
+The function dimdesc()can be used to identify the most correlated variables with a given principal component.
+
+
+```{r}
+description <- dimdesc(pca_envi2, axes = c(1,2,3))
+description$Dim.1
+description$Dim.2
+description$Dim.3
+```
+
+
+
+The squared cosine shows the importance of a component for a given observation.
+
+```{r fig.height=10, fig.width=18 , eval=F }
+#fviz_pca_ind(pca_envi2, col.ind="cos2") +
+#scale_color_gradient2(low="white", mid="blue", 
+#   high="red", midpoint=0.50) + theme_minimal()
+#
+
+fviz_contrib(pca_envi2, choice = "ind", axes = 1, xtickslab.rt = 90)
+```
+
+
+```{r,eval=F}
+fviz_pca_ind(pca_envi2, col.ind="contrib") +
+scale_color_gradient2(low="white", mid="blue", 
+                  high="red", midpoint=5) + theme_minimal()
+```
+
+
+
+```{r,eval=F}
+fviz_pca_ind(pca_envi2, col.ind="cos2") +
+scale_color_gradient2(low="white", mid="blue", 
+                  high="red", midpoint=.5) + theme_minimal()
+```
+
+##Outliers
+```{r, fig.width=12, fig.height=12}
+
+MyVar <- c("elev","sand", "tempmin", "temp","clay","organic_matter","latitude",  #PC1
+            "mg","ca","p_h","limo","k","p",                                      #PC2
+            "preccv","precdriest","prec")                                        #PC3
+           
+          
+Mydotplot(dredundancy_eff[,MyVar])
+
+```
+
+
+##Collinearity
+
+```{r}
+corvif(dredundancy_eff[,MyVar])
+```
+
+
+
+```{r}
+MyVar2 <-c("elev","organic_matter",                                #PC1
+            "ca","p_h","limo","k","p",                              #PC2
+            "preccv","prec")                                        #PC3                             
+
+
+corvif(dredundancy_eff[,MyVar2])
+```
+
+
+
+#Correlaciones
+
+```{r fig.width=40, fig.height=40, results='asis', fig.fullwidth=TRUE, fig.dim= 200}
+chart.Correlation(dfull_est[,c("redundancy", MyVar2)], histogram=TRUE, pch="+") 
+```
+
+
+```{r}
+# Mi variables según pasos anteriores
+#           "elev","organic_matter",                                 #PC1
+#            "p_h","limo","k","p",                                   #PC2
+#            "preccv","prec")                                        #PC3   
+```
+
+#Partial residuals
+```{r}
+m3 <- inla(redundancy ~
+             longitude +
+             latitude +
+             sand +
+             limo +
+             clay +
+             p_h + 
+             acidity + 
+             ca +
+             mg + 
+             k +
+             p + 
+             organic_matter + 
+             elev +
+             prec +
+             precdriest +
+             preccv +
+             tempmin +
+             temp, 
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff2 
+          )
+
+
+INLAstep(m3, fam1 = "gaussian")
+
+
+
+m3$summary.fixed[,c("mean", "sd", "0.025quant", "0.975quant")]
+m3$waic$waic
+```
+
+
+```{r, fig.width= 12, fig.height=15}
+#Observados
+ExpY <- m3$summary.fitted.values[,"mean"]
+
+#Residuos de pearson
+E1   <- (dredundancy_eff2$redundancy - ExpY) / sqrt(ExpY)
+
+
+#obtener betas
+betas <- m3$summary.fixed[,c("mean", "sd")]
+
+#Obtener residuos
+residuos   <- (dredundancy_eff2$redundancy - ExpY)
+
+betas <- (betas %>% rownames_to_column("variable") %>% 
+            filter(!variable %in% "(Intercept)") %>% 
+            dplyr::select(-sd))
+
+
+# 1-Separar el ser de datos en una lista por variable
+betas_list <- split(betas, betas$variable)
+
+## 2-Crear una lista para almacenar 
+partial_resid <- list()
+
+
+##Loop
+for (i in seq_along(names(betas_list))){
+  
+#  #Residuos de pearson + Betas = residuos parciales
+  residuos_parciales <-  residuos + as.numeric(betas_list[[i]][2]) 
+  
+  name_var <- names(betas_list[i])
+  
+#  #Resultado
+    data <- data.frame(residuos_parciales, name_var)
+    partial_resid[[i]] <- data 
+
+}
+
+
+residuos_parciales  <-  do.call("rbind", partial_resid)
+
+covariables <- dredundancy_eff2 %>% 
+  dplyr::select(
+    -c(plot,forest_type,crtm_90_x,crtm_90_y,n, redundancy, PC1, PC2,PC3)) %>%  
+  gather(colnames(.),  key = "name_var", value = "valor_de_la_covariable") %>% 
+  arrange(name_var)
+
+#127*18=2286
+dpart_resid <- cbind(residuos_parciales, covariables) 
+
+dpart_resid2 <- dpart_resid[,-2]
+
+
+ggplot(data = dpart_resid2) + 
+  geom_point(aes(x=valor_de_la_covariable,y= residuos_parciales)) +
+  facet_wrap(~name_var,scales = "free", ncol = 3) + 
+  geom_smooth(data = dpart_resid2, 
+              aes(x=valor_de_la_covariable,y= residuos_parciales), method = loess)
+```
+```{r}
+m3_a <- inla(redundancy ~
+             longitude +
+             latitude +
+             sand +
+             limo +
+             clay +
+             p_h + 
+             acidity + 
+             ca +
+             mg + 
+             k +
+             p + 
+             organic_matter + 
+             elev +
+             I(prec^2) +
+             I(precdriest^2) +
+             preccv +
+             tempmin +
+             temp, 
+          family = "gaussian",
+           control.compute = list(
+                               dic = TRUE,
+                               waic = TRUE),
+          control.predictor = list(compute = TRUE),
+          data = dredundancy_eff2 
+          )
+
+
+m3_a$summary.fixed[,c("mean", "sd", "0.025quant", "0.975quant")]
+m3_a$waic$waic
+```
+```{r, fig.width= 12, fig.height=15}
+#Observados
+ExpY <- m3_a$summary.fitted.values[,"mean"]
+
+#Residuos de pearson
+E1   <- (dredundancy_eff2$redundancy - ExpY) / sqrt(ExpY)
+
+
+#obtener betas
+betas <- m3$summary.fixed[,c("mean", "sd")]
+
+#Obtener residuos
+residuos   <- (dredundancy_eff2$redundancy - ExpY)
+
+betas <- (betas %>% rownames_to_column("variable") %>% 
+            filter(!variable %in% "(Intercept)") %>% 
+            dplyr::select(-sd))
+
+
+# 1-Separar el ser de datos en una lista por variable
+betas_list <- split(betas, betas$variable)
+
+## 2-Crear una lista para almacenar 
+partial_resid <- list()
+
+
+##Loop
+for (i in seq_along(names(betas_list))){
+  
+#  #Residuos de pearson + Betas = residuos parciales
+  residuos_parciales <-  residuos + as.numeric(betas_list[[i]][2]) 
+  
+  name_var <- names(betas_list[i])
+  
+#  #Resultado
+    data <- data.frame(residuos_parciales, name_var)
+    partial_resid[[i]] <- data 
+
+}
+
+
+residuos_parciales  <-  do.call("rbind", partial_resid)
+
+covariables <- dredundancy_eff2 %>% 
+  dplyr::select(
+    -c(plot,forest_type,crtm_90_x,crtm_90_y,n, redundancy, PC1, PC2,PC3)) %>%  
+  gather(colnames(.),  key = "name_var", value = "valor_de_la_covariable") %>% 
+  arrange(name_var)
+
+#127*18=2286
+dpart_resid <- cbind(residuos_parciales, covariables) 
+
+dpart_resid2 <- dpart_resid[,-2]
+
+
+ggplot(data = dpart_resid2) + 
+  geom_point(aes(x=valor_de_la_covariable,y= residuos_parciales)) +
+  facet_wrap(~name_var,scales = "free", ncol = 3) + 
+  geom_smooth(data = dpart_resid2, 
+              aes(x=valor_de_la_covariable,y= residuos_parciales), method = loess)
+```
