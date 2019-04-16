@@ -26,7 +26,7 @@ source("C:/tesis_catie/Calderon_CATIE/scripts/functions/HighstatLibV10.R")
 
 #Objetivo
 
-El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales respuesta con palmas 
+El objetivo de este Rmarkdown es mostrar las medias de resumen para lo datos de rasgos funcionales respuesta con palmas 
 
 
 ##Significado de las variables 
