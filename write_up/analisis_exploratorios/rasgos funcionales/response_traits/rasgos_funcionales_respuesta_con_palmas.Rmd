@@ -32,12 +32,12 @@ El objetivo de este Rmarkdown es mostrar las medias de resumen para lo datos de 
 ##Significado de las variables 
 
 ```{r echo=FALSE}
-Categorias <- c("Anemocoria","Hidrocoria","Zoocoria","Dos o mas tipos de dispersion","Autocoria",
-                 "Dioico","Monoico","Hermafrodita","Poligama",
+Categorias <- c("Anemocoria","Hidrocoria","Zoocoria voladora","Zoocoria no voladora","Dos o mas tipos de dispersion","Autocoria",
+                 "Dioico","Monoico","Hermafrodita","Varios","Poligama",
                 "Viento","Insectos","Aves","Dos o mas tipos de polinizacion","Mamiferos")
 
-Abreviaturas <- c("DW","DH","DANI","DVAR","DA",
-                  "D","M","H","P",
+Abreviaturas <- c("DW","DH","DV","DNV","DVAR","DA",
+                  "D","M","H","VAR","P",
                    "PW","PI","PAV","PVAR","PMA")
 
 d1 <- data.frame(Categorias, Abreviaturas, row.names = 1)
@@ -51,8 +51,7 @@ kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options =
 ```{r echo=FALSE}
 #Load data
 dresp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean.csv",header = T)
-dresp <- rename(dresp, coespec= X) %>% 
-  select(-c(familia, especie))
+
 
 despecies <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
 despecies <- rename(despecies, coespec=code)
