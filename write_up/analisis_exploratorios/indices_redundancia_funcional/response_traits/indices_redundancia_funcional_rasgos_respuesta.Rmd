@@ -35,7 +35,7 @@ source("C:/tesis_catie/Calderon_CATIE/scripts/functions/function_functional_redu
 #Load data
 #Rasgos funcionales
 dresp_redun <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean.csv",header = T)
-dresp_redun <- dresp_redun %>% dplyr::select(-c( familia, especie)) %>% column_to_rownames("X")
+dresp_redun <- dresp_redun %>% dplyr::select(-c( familia, especie)) %>% column_to_rownames("coespec")
 
 #Data parcelas
 dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_parcelas.csv", header = T)
@@ -65,25 +65,25 @@ str(dresp_redun)
 __Indices redundancia funcional ponderados por la abundancia relativa(w.abund=T) de las especies presentes (total de individuos presentes 4801). Los rasgos estan estandarizados con media 0 y misma varianza.__
 
 ```{r echo=FALSE}
-Categorias <- c("Anemocoria","Hidrocoria","Zoocoria","Dos o mas tipos de dispersion","Autocoria",
-                 "Dioico","Monoico","Hermafrodita","Poligama",
-                "Viento","Insectos","Aves","Dos o mas tipos de polinizacion","Mamiferos",
+Categorias <- c("Anemocoria","Hidrocoria","Zoocoria voladora","Zoocoria no voladora","Dos o mas tipos de dispersion","Autocoria",
+                 "Dioico","Monoico","Hermafrodita","Varios","Poligama",
+                "Viento","Insectos","Dos o mas tipos de polinizacion","Mamiferos",
                 "Especie fijadora","Especie no fijadora",
                 "Never resprouting","Very poor resprouting","Moderate resprouting","Substantial resprouting","Abundant resprouting","Very abundant resprouting")
 
-Abreviaturas <- c("DW","DH","DANI","DVAR","DA",
-                  "D","M","H","P",
-                   "PW","PI","PAV","PVAR","PMA",
+Abreviaturas <- c("DW","DH","DV","DNV","DVAR","DA",
+                  "D","M","H","VAR","P",
+                   "PW","PI","PVAR","PMA",
                   "Si","No",
                   "0","20","40","60","80","100")
 
 d1 <- data.frame(Categorias, Abreviaturas, row.names = 1)
 
-kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% pack_rows("Tipo de dispersion", 1, 5) %>% 
-    pack_rows("Sistema sexual", 6, 9) %>%
-    pack_rows("Tipo de polinizacion ", 10, 14) %>% 
-    pack_rows("Potencial de fijar Nitrogeno ", 15, 16)  %>% 
-    pack_rows("Capacidad de rebrote (%)", 17, 22)
+kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% pack_rows("Tipo de dispersion", 1, 6) %>% 
+    pack_rows("Sistema sexual", 7, 11) %>%
+    pack_rows("Tipo de polinizacion ", 12, 15) %>% 
+    pack_rows("Potencial de fijar Nitrogeno ", 16, 17)  %>% 
+    pack_rows("Capacidad de rebrote (%)", 18, 23)
 ```
 
 #Objetivo 

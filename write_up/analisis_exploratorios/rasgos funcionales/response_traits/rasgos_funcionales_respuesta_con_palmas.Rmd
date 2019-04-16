@@ -34,24 +34,24 @@ El objetivo de este Rmarkdown es mostrar las medias de resumen para lo datos de 
 ```{r echo=FALSE}
 Categorias <- c("Anemocoria","Hidrocoria","Zoocoria voladora","Zoocoria no voladora","Dos o mas tipos de dispersion","Autocoria",
                  "Dioico","Monoico","Hermafrodita","Varios","Poligama",
-                "Viento","Insectos","Aves","Dos o mas tipos de polinizacion","Mamiferos")
+                "Viento","Insectos","Dos o mas tipos de polinizacion","Mamiferos")
 
 Abreviaturas <- c("DW","DH","DV","DNV","DVAR","DA",
                   "D","M","H","VAR","P",
-                   "PW","PI","PAV","PVAR","PMA")
+                   "PW","PI","PVAR","PMA")
 
 d1 <- data.frame(Categorias, Abreviaturas, row.names = 1)
 
-kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% pack_rows("Tipo de dispersion", 1, 5) %>% 
-    pack_rows("Sistema sexual", 6, 9) %>%
-    pack_rows("Tipo de polinizacion ", 10, 14)
+kable(d1, caption = "Rasgos de respuesta") %>% kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F) %>% pack_rows("Tipo de dispersion", 1, 6) %>% 
+    pack_rows("Sistema sexual", 7, 11) %>%
+    pack_rows("Tipo de polinizacion ", 12, 15)
 ```
 
 
 ```{r echo=FALSE}
 #Load data
 dresp <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/dresp_clean.csv",header = T)
-
+dresp <- dresp %>% dplyr::select(-c(familia, especie))
 
 despecies <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/despecies_por_parcela.csv",header = T)
 despecies <- rename(despecies, coespec=code)
@@ -62,6 +62,7 @@ dparcelas <- read.csv("C:/tesis_catie/Calderon_CATIE/data/clean/data_posicion_pa
 #Dimensiones de los datos
 dim(dresp)
 str(dresp)
+
 #Especies
 length(unique(despecies$coespec))
 
@@ -71,6 +72,7 @@ length(unique(despecies$plot))
 
 ```{r}
 summary(dresp)
+summary(dparcelas)
 ```
 
 #Medidas de resumen para los rasgos de respuesta 
@@ -82,6 +84,7 @@ dresp %>% gather(colnames(dresp[,-1])  , key = "rasgo", value = "valor_del_rasgo
   group_by(rasgo,valor_del_rasgo) %>% 
   summarise(n=n())  %>% 
   mutate(porcentaje= round((n/sum(n))*100, 3)) %>%
+  
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 
@@ -128,12 +131,24 @@ dfull %>% gather(colnames(dresp[,-1])  , key = "rasgo", value = "valor_del_rasgo
   group_by(forest_type, rasgo) %>% 
    
   mutate(porcentaje= round((n/sum(n))*100, 3)) %>%
-  arrange(forest_type) %>% 
+  arrange(rasgo) %>% 
   
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"),full_width = F)
 ```
 
+
+```{r}
+dfull %>% ggplot(aes(x=longitude, y= latitude, color= forest_type)) + geom_point()
+```
+
+
+```{r}
+#Plots con palmas en foothills
+dfull %>% filter(forest_type %in% "Foothills" &  coespec %in% c("IRIADE","EUTEPR","SOCREX","WELFRE" )) %>% 
+ggplot(data = ., aes(x=longitude, y= latitude)) + geom_point() 
+  
+```
 
 
 

@@ -316,7 +316,7 @@ div.tocify {
 
 <div id="objetivo" class="section level1">
 <h1>Objetivo</h1>
-<p>El objetivo de este Rmartkdown es mostrar las medias de resumen para lo datos de rasgos funcionales respuesta con palmas</p>
+<p>El objetivo de este Rmarkdown es mostrar las medias de resumen para lo datos de rasgos funcionales respuesta con palmas</p>
 <div id="significado-de-las-variables" class="section level2">
 <h2>Significado de las variables</h2>
 <table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
@@ -333,7 +333,7 @@ Abreviaturas
 </tr>
 </thead>
 <tbody>
-<tr grouplength="5">
+<tr grouplength="6">
 <td colspan="2" style="border-bottom: 1px solid;">
 <strong>Tipo de dispersion</strong>
 </td>
@@ -356,10 +356,18 @@ DH
 </tr>
 <tr>
 <td style="text-align:left; padding-left: 2em;" indentlevel="1">
-Zoocoria
+Zoocoria voladora
 </td>
 <td style="text-align:left;">
-DANI
+DV
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
+Zoocoria no voladora
+</td>
+<td style="text-align:left;">
+DNV
 </td>
 </tr>
 <tr>
@@ -378,7 +386,7 @@ Autocoria
 DA
 </td>
 </tr>
-<tr grouplength="4">
+<tr grouplength="5">
 <td colspan="2" style="border-bottom: 1px solid;">
 <strong>Sistema sexual</strong>
 </td>
@@ -409,13 +417,21 @@ H
 </tr>
 <tr>
 <td style="text-align:left; padding-left: 2em;" indentlevel="1">
+Varios
+</td>
+<td style="text-align:left;">
+VAR
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left: 2em;" indentlevel="1">
 Poligama
 </td>
 <td style="text-align:left;">
 P
 </td>
 </tr>
-<tr grouplength="5">
+<tr grouplength="4">
 <td colspan="2" style="border-bottom: 1px solid;">
 <strong>Tipo de polinizacion </strong>
 </td>
@@ -434,14 +450,6 @@ Insectos
 </td>
 <td style="text-align:left;">
 PI
-</td>
-</tr>
-<tr>
-<td style="text-align:left; padding-left: 2em;" indentlevel="1">
-Aves
-</td>
-<td style="text-align:left;">
-PAV
 </td>
 </tr>
 <tr>
@@ -467,12 +475,12 @@ dim(dresp)</code></pre>
 <pre><code>## [1] 257   6</code></pre>
 <pre class="r"><code>str(dresp)</code></pre>
 <pre><code>## 'data.frame':    257 obs. of  6 variables:
-##  $ coespec           : Factor w/ 257 levels &quot;ABARAD&quot;,&quot;ABARRA&quot;,..: 1 37 235 236 237 97 55 225 233 69 ...
-##  $ fijacion_nitrogeno: Factor w/ 2 levels &quot;NO&quot;,&quot;SI&quot;: 2 NA 1 1 1 1 1 1 1 1 ...
-##  $ dispersion        : Factor w/ 4 levels &quot;DA&quot;,&quot;DANI&quot;,&quot;DVAR&quot;,..: 3 4 4 4 4 2 2 2 2 2 ...
-##  $ sist_sexual       : Factor w/ 4 levels &quot;D&quot;,&quot;H&quot;,&quot;M&quot;,&quot;P&quot;: 2 2 2 2 2 1 2 2 2 2 ...
-##  $ polinizacion      : Factor w/ 5 levels &quot;PAV&quot;,&quot;PI&quot;,&quot;PMA&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...
-##  $ resprout_capacity : int  20 20 100 100 100 20 20 20 20 20 ...</code></pre>
+##  $ coespec           : Factor w/ 257 levels &quot;ABARAD&quot;,&quot;ABARRA&quot;,..: 224 232 6 85 86 211 242 243 255 10 ...
+##  $ fijacion_nitrogeno: Factor w/ 2 levels &quot;NO&quot;,&quot;SI&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ dispersion        : Factor w/ 5 levels &quot;DA&quot;,&quot;DNV&quot;,&quot;DV&quot;,..: 4 4 2 3 3 4 3 3 3 5 ...
+##  $ sist_sexual       : Factor w/ 5 levels &quot;D&quot;,&quot;H&quot;,&quot;M&quot;,&quot;P&quot;,..: 3 1 2 2 2 2 2 2 2 2 ...
+##  $ polinizacion      : Factor w/ 4 levels &quot;PI&quot;,&quot;PMA&quot;,&quot;PVAR&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ resprout_capacity : int  60 60 20 20 20 20 20 20 20 20 ...</code></pre>
 <pre class="r"><code>#Especies
 length(unique(despecies$coespec))</code></pre>
 <pre><code>## [1] 257</code></pre>
@@ -481,18 +489,18 @@ length(unique(despecies$plot))</code></pre>
 <pre><code>## [1] 127</code></pre>
 <pre class="r"><code>summary(dresp)</code></pre>
 <pre><code>##     coespec    fijacion_nitrogeno dispersion sist_sexual polinizacion
-##  ABARAD :  1   NO  :212           DA  : 29   D   : 55    PAV : 12    
-##  ABARRA :  1   SI  : 41           DANI:182   H   :186    PI  :219    
-##  ALCOFL :  1   NA's:  4           DVAR: 18   M   : 14    PMA :  6    
-##  AMPEMA :  1                      DW  : 28   P   :  1    PVAR: 17    
-##  ANDIIN :  1                                 NA's:  1    PW  :  2    
-##  ANNOMO :  1                                             NA's:  1    
+##  ABARAD :  1   NO  :212           DA  :  6   D  : 56     PI  :218    
+##  ABARRA :  1   SI  : 43           DNV : 38   H  :186     PMA :  6    
+##  ALCOFL :  1   NA's:  2           DV  :148   M  : 13     PVAR: 32    
+##  AMPEMA :  1                      DVAR: 34   P  :  1     PW  :  1    
+##  ANDIIN :  1                      DW  : 31   VAR:  1                 
+##  ANNOMO :  1                                                         
 ##  (Other):251                                                         
 ##  resprout_capacity
 ##  Min.   :  0.00   
 ##  1st Qu.: 20.00   
 ##  Median : 20.00   
-##  Mean   : 26.85   
+##  Mean   : 26.93   
 ##  3rd Qu.: 40.00   
 ##  Max.   :100.00   
 ## </code></pre>
@@ -506,6 +514,7 @@ length(unique(despecies$plot))</code></pre>
   group_by(rasgo,valor_del_rasgo) %&gt;% 
   summarise(n=n())  %&gt;% 
   mutate(porcentaje= round((n/sum(n))*100, 3)) %&gt;%
+  
   kable() %&gt;% 
   kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;),full_width = F)</code></pre>
 <pre><code>## Warning: attributes are not identical across measure variables;
@@ -536,10 +545,10 @@ dispersion
 DA
 </td>
 <td style="text-align:right;">
-29
+6
 </td>
 <td style="text-align:right;">
-11.284
+2.335
 </td>
 </tr>
 <tr>
@@ -547,13 +556,27 @@ DA
 dispersion
 </td>
 <td style="text-align:left;">
-DANI
+DNV
 </td>
 <td style="text-align:right;">
-182
+38
 </td>
 <td style="text-align:right;">
-70.817
+14.786
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DV
+</td>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:right;">
+57.588
 </td>
 </tr>
 <tr>
@@ -564,10 +587,10 @@ dispersion
 DVAR
 </td>
 <td style="text-align:right;">
-18
+34
 </td>
 <td style="text-align:right;">
-7.004
+13.230
 </td>
 </tr>
 <tr>
@@ -578,10 +601,10 @@ dispersion
 DW
 </td>
 <td style="text-align:right;">
-28
+31
 </td>
 <td style="text-align:right;">
-10.895
+12.062
 </td>
 </tr>
 <tr>
@@ -592,10 +615,10 @@ fijacion_nitrogeno
 NA
 </td>
 <td style="text-align:right;">
-4
+2
 </td>
 <td style="text-align:right;">
-1.556
+0.778
 </td>
 </tr>
 <tr>
@@ -620,38 +643,10 @@ fijacion_nitrogeno
 SI
 </td>
 <td style="text-align:right;">
-41
+43
 </td>
 <td style="text-align:right;">
-15.953
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.389
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PAV
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-4.669
+16.732
 </td>
 </tr>
 <tr>
@@ -662,10 +657,10 @@ polinizacion
 PI
 </td>
 <td style="text-align:right;">
-219
+218
 </td>
 <td style="text-align:right;">
-85.214
+84.825
 </td>
 </tr>
 <tr>
@@ -690,10 +685,10 @@ polinizacion
 PVAR
 </td>
 <td style="text-align:right;">
-17
+32
 </td>
 <td style="text-align:right;">
-6.615
+12.451
 </td>
 </tr>
 <tr>
@@ -704,10 +699,10 @@ polinizacion
 PW
 </td>
 <td style="text-align:right;">
-2
+1
 </td>
 <td style="text-align:right;">
-0.778
+0.389
 </td>
 </tr>
 <tr>
@@ -746,10 +741,10 @@ resprout_capacity
 20
 </td>
 <td style="text-align:right;">
-187
+186
 </td>
 <td style="text-align:right;">
-72.763
+72.374
 </td>
 </tr>
 <tr>
@@ -760,10 +755,10 @@ resprout_capacity
 40
 </td>
 <td style="text-align:right;">
-45
+46
 </td>
 <td style="text-align:right;">
-17.510
+17.899
 </td>
 </tr>
 <tr>
@@ -785,27 +780,13 @@ resprout_capacity
 sist_sexual
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.389
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
 D
 </td>
 <td style="text-align:right;">
-55
+56
 </td>
 <td style="text-align:right;">
-21.401
+21.790
 </td>
 </tr>
 <tr>
@@ -830,10 +811,10 @@ sist_sexual
 M
 </td>
 <td style="text-align:right;">
-14
+13
 </td>
 <td style="text-align:right;">
-5.447
+5.058
 </td>
 </tr>
 <tr>
@@ -842,6 +823,20 @@ sist_sexual
 </td>
 <td style="text-align:left;">
 P
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.389
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+VAR
 </td>
 <td style="text-align:right;">
 1
@@ -1459,7 +1454,7 @@ dfull %&gt;% gather(colnames(dresp[,-1])  , key = &quot;rasgo&quot;, value = &qu
   group_by(forest_type, rasgo) %&gt;% 
    
   mutate(porcentaje= round((n/sum(n))*100, 3)) %&gt;%
-  arrange(forest_type) %&gt;% 
+  arrange(rasgo) %&gt;% 
   
   kable() %&gt;% 
   kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;),full_width = F)</code></pre>
@@ -1497,6 +1492,57 @@ DA
 Foothills
 </td>
 <td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1.379
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DA
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2.747
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DA
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2.479
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DNV
+</td>
+<td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
 19
 </td>
 <td style="text-align:right;">
@@ -1508,16 +1554,84 @@ Foothills
 dispersion
 </td>
 <td style="text-align:left;">
-DANI
+DNV
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+16.484
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DNV
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+17.355
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DV
 </td>
 <td style="text-align:left;">
 Foothills
 </td>
 <td style="text-align:right;">
-105
+92
 </td>
 <td style="text-align:right;">
-72.414
+63.448
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DV
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+96
+</td>
+<td style="text-align:right;">
+52.747
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DV
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+53.719
 </td>
 </tr>
 <tr>
@@ -1531,10 +1645,44 @@ DVAR
 Foothills
 </td>
 <td style="text-align:right;">
-6
+16
 </td>
 <td style="text-align:right;">
-4.138
+11.034
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DVAR
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+14.835
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DVAR
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+13.223
 </td>
 </tr>
 <tr>
@@ -1548,10 +1696,44 @@ DW
 Foothills
 </td>
 <td style="text-align:right;">
-15
+16
 </td>
 <td style="text-align:right;">
-10.345
+11.034
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DW
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+13.187
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dispersion
+</td>
+<td style="text-align:left;">
+DW
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+13.223
 </td>
 </tr>
 <tr>
@@ -1562,13 +1744,30 @@ fijacion_nitrogeno
 NA
 </td>
 <td style="text-align:left;">
-Foothills
+P.macroloba
 </td>
 <td style="text-align:right;">
 1
 </td>
 <td style="text-align:right;">
-0.690
+0.549
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fijacion_nitrogeno
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.826
 </td>
 </tr>
 <tr>
@@ -1593,329 +1792,6 @@ Foothills
 fijacion_nitrogeno
 </td>
 <td style="text-align:left;">
-SI
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-22
-</td>
-<td style="text-align:right;">
-15.172
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.690
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PAV
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-5.517
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PI
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-123
-</td>
-<td style="text-align:right;">
-84.828
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PMA
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-2.069
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PVAR
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-6.897
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.759
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-100
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-2.069
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-20
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-95
-</td>
-<td style="text-align:right;">
-65.517
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-40
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-20.000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-60
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-9.655
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-D
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-42
-</td>
-<td style="text-align:right;">
-28.966
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-H
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-91
-</td>
-<td style="text-align:right;">
-62.759
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-M
-</td>
-<td style="text-align:left;">
-Foothills
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-8.276
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DA
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-9.341
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DANI
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-132
-</td>
-<td style="text-align:right;">
-72.527
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DVAR
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-7.692
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DW
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-19
-</td>
-<td style="text-align:right;">
-10.440
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fijacion_nitrogeno
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.549
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fijacion_nitrogeno
-</td>
-<td style="text-align:left;">
 NO
 </td>
 <td style="text-align:left;">
@@ -1926,380 +1802,6 @@ P.macroloba
 </td>
 <td style="text-align:right;">
 82.967
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fijacion_nitrogeno
-</td>
-<td style="text-align:left;">
-SI
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-16.484
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.549
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PAV
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-3.297
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PI
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-155
-</td>
-<td style="text-align:right;">
-85.165
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PMA
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.198
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PVAR
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-8.242
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-polinizacion
-</td>
-<td style="text-align:left;">
-PW
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.549
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-0
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-2.747
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-100
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.648
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-20
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-133
-</td>
-<td style="text-align:right;">
-73.077
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-40
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-32
-</td>
-<td style="text-align:right;">
-17.582
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-resprout_capacity
-</td>
-<td style="text-align:left;">
-60
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-4.945
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.549
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-D
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-22.527
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-H
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-128
-</td>
-<td style="text-align:right;">
-70.330
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-M
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-6.044
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sist_sexual
-</td>
-<td style="text-align:left;">
-P
-</td>
-<td style="text-align:left;">
-P.macroloba
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0.549
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DA
-</td>
-<td style="text-align:left;">
-Q.paraensis
-</td>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-9.091
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DANI
-</td>
-<td style="text-align:left;">
-Q.paraensis
-</td>
-<td style="text-align:right;">
-89
-</td>
-<td style="text-align:right;">
-73.554
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DVAR
-</td>
-<td style="text-align:left;">
-Q.paraensis
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-5.785
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-dispersion
-</td>
-<td style="text-align:left;">
-DW
-</td>
-<td style="text-align:left;">
-Q.paraensis
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-11.570
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fijacion_nitrogeno
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-Q.paraensis
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-1.653
 </td>
 </tr>
 <tr>
@@ -2327,13 +1829,47 @@ fijacion_nitrogeno
 SI
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+15.862
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fijacion_nitrogeno
+</td>
+<td style="text-align:left;">
+SI
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+16.484
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fijacion_nitrogeno
+</td>
+<td style="text-align:left;">
+SI
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
-17
+18
 </td>
 <td style="text-align:right;">
-14.050
+14.876
 </td>
 </tr>
 <tr>
@@ -2341,16 +1877,16 @@ Q.paraensis
 polinizacion
 </td>
 <td style="text-align:left;">
-NA
+PI
 </td>
 <td style="text-align:left;">
-Q.paraensis
+Foothills
 </td>
 <td style="text-align:right;">
-1
+122
 </td>
 <td style="text-align:right;">
-0.826
+84.138
 </td>
 </tr>
 <tr>
@@ -2358,16 +1894,16 @@ Q.paraensis
 polinizacion
 </td>
 <td style="text-align:left;">
-PAV
+PI
 </td>
 <td style="text-align:left;">
-Q.paraensis
+P.macroloba
 </td>
 <td style="text-align:right;">
-3
+154
 </td>
 <td style="text-align:right;">
-2.479
+84.615
 </td>
 </tr>
 <tr>
@@ -2381,10 +1917,44 @@ PI
 Q.paraensis
 </td>
 <td style="text-align:right;">
-106
+107
 </td>
 <td style="text-align:right;">
-87.603
+88.430
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+polinizacion
+</td>
+<td style="text-align:left;">
+PMA
+</td>
+<td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2.069
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+polinizacion
+</td>
+<td style="text-align:left;">
+PMA
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2.198
 </td>
 </tr>
 <tr>
@@ -2412,13 +1982,47 @@ polinizacion
 PVAR
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+13.793
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+polinizacion
+</td>
+<td style="text-align:left;">
+PVAR
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+13.187
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+polinizacion
+</td>
+<td style="text-align:left;">
+PVAR
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
-8
+11
 </td>
 <td style="text-align:right;">
-6.612
+9.091
 </td>
 </tr>
 <tr>
@@ -2446,6 +2050,40 @@ resprout_capacity
 0
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+2.759
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+2.747
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
@@ -2453,6 +2091,40 @@ Q.paraensis
 </td>
 <td style="text-align:right;">
 3.306
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+100
+</td>
+<td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2.069
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+100
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1.648
 </td>
 </tr>
 <tr>
@@ -2480,6 +2152,40 @@ resprout_capacity
 20
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+96
+</td>
+<td style="text-align:right;">
+66.207
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+20
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+135
+</td>
+<td style="text-align:right;">
+74.176
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+20
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
@@ -2487,6 +2193,40 @@ Q.paraensis
 </td>
 <td style="text-align:right;">
 71.074
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+40
+</td>
+<td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+19.310
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+40
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+16.484
 </td>
 </tr>
 <tr>
@@ -2514,6 +2254,40 @@ resprout_capacity
 60
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+9.655
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+60
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+4.945
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+resprout_capacity
+</td>
+<td style="text-align:left;">
+60
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
@@ -2528,16 +2302,33 @@ Q.paraensis
 sist_sexual
 </td>
 <td style="text-align:left;">
-NA
+D
 </td>
 <td style="text-align:left;">
-Q.paraensis
+Foothills
 </td>
 <td style="text-align:right;">
-1
+43
 </td>
 <td style="text-align:right;">
-0.826
+29.655
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+D
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+22.527
 </td>
 </tr>
 <tr>
@@ -2565,6 +2356,40 @@ sist_sexual
 H
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:right;">
+62.069
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+H
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+128
+</td>
+<td style="text-align:right;">
+70.330
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+H
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
@@ -2582,6 +2407,40 @@ sist_sexual
 M
 </td>
 <td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+7.586
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+M
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+6.044
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+M
+</td>
+<td style="text-align:left;">
 Q.paraensis
 </td>
 <td style="text-align:right;">
@@ -2589,6 +2448,74 @@ Q.paraensis
 </td>
 <td style="text-align:right;">
 8.264
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+P
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.549
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+VAR
+</td>
+<td style="text-align:left;">
+Foothills
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.690
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+VAR
+</td>
+<td style="text-align:left;">
+P.macroloba
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.549
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sist_sexual
+</td>
+<td style="text-align:left;">
+VAR
+</td>
+<td style="text-align:left;">
+Q.paraensis
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.826
 </td>
 </tr>
 </tbody>

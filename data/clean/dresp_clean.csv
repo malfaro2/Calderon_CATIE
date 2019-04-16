@@ -1,4 +1,4 @@
-,familia,especie,fijacion_nitrogeno,dispersion,sist_sexual,polinizacion,resprout_capacity
+coespec,familia,especie,fijacion_nitrogeno,dispersion,sist_sexual,polinizacion,resprout_capacity
 SPONMO,ANACARDIACEAE,Spondias_mombin,NO,DVAR,M,PI,60
 TAPIGU,ANACARDIACEAE,Tapirira_guianensis,NO,DVAR,D,PI,60
 ANNOMO,ANNONACEAE,Annona_montana,NO,DNV,H,PI,20
@@ -140,7 +140,7 @@ CASESP,FLACOURTIACEAE,Casearia_sp.,NO,DV,H,PI,40
 LAETPR,FLACOURTIACEAE,Laetia_procera,NO,DV,H,PI,40
 MACAMA,FLACOURTIACEAE,Macrohasseltia_macroterantha,NO,DW,H,PI,20
 HERNDI,HERNANDIACEAE,Hernandia_didymantha,NO,DV,M,PI,40
-BILLCO,HIPPOCASTANACEAE,Billia_colombiana,NO,NV,H,PI,20
+BILLCO,HIPPOCASTANACEAE,Billia_colombiana,NO,DNV,H,PI,20
 HUMIDI,HUMIRIACEAE,Humiriastrum_diguense,NO,DV,H,PI,20
 SACOTR,HUMIRIACEAE,Sacoglottis_trichogyna,NO,DV,H,PI,20
 VANTOC,HUMIRIACEAE,Vantanea_barbourii,NO,DNV,H,PI,20
